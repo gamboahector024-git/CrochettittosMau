@@ -1,0 +1,217 @@
+/* ====== Fuente global ====== */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* ====== Estilo General ====== */
+body {
+    font-family: "Inter", sans-serif;
+    background-color: #FBF9E4;
+    color: #000000;
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+}
+
+/* ====== Navbar ====== */
+.navbar {
+    background-color: #122C4F;
+    color: #FBF9E4;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.2rem 2.5rem;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    letter-spacing: 0.5px;
+}
+
+.navbar h1 a {
+    color: #FBF9E4;
+    text-decoration: none;
+    font-size: 1.7rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.nav-links a {
+    color: #FBF9E4;
+    text-decoration: none;
+    margin-left: 1.8rem;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+    color: #5B88B2;
+}
+
+.nav-greeting {
+    margin-left: 1.5rem;
+    font-weight: 500;
+    font-size: 0.95rem;
+}
+
+/* ====== Contenedor principal ====== */
+.container {
+    padding: 2rem 4%;
+}
+
+/* ====== Secciones ====== */
+.category-section {
+    margin-bottom: 4rem;
+}
+
+.category-section h2 {
+    border-left: 5px solid #122C4F;
+    padding-left: 1rem;
+    color: #122C4F;
+    font-size: 1.9rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    margin-bottom: 1.8rem;
+}
+
+/* ====== Productos ====== */
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+}
+
+.product-card {
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.product-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 8px 14px rgba(0,0,0,0.15);
+}
+
+.product-card img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+}
+
+.product-card h3 {
+    font-size: 1.15rem;
+    margin: 0.8rem 0;
+    color: #122C4F;
+    font-weight: 600;
+}
+
+.price {
+    font-weight: 700;
+    color: #5B88B2;
+    font-size: 1.05rem;
+    margin-bottom: 1.2rem;
+}
+
+/* ====== Botones ====== */
+.buy-button {
+    background-color: #122C4F;
+    color: #FBF9E4;
+    border: none;
+    padding: 0.7rem 1.4rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.buy-button:hover {
+    background-color: #5B88B2;
+    transform: scale(1.05);
+}
+
+/* ====== Modal ====== */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.7);
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+}
+
+.modal-content {
+    background-color: #FBF9E4;
+    color: #000000;
+    border-radius: 14px;
+    padding: 2rem;
+    width: 90%;
+    max-width: 600px;
+    text-align: center;
+    position: relative;
+    box-shadow: 0 5px 25px rgba(0,0,0,0.3);
+    font-weight: 400;
+}
+
+.close-button {
+    position: absolute;
+    top: 12px;
+    right: 18px;
+    font-size: 1.8rem;
+    color: #122C4F;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.close-button:hover {
+    color: #5B88B2;
+}
+
+.modal-image {
+    width: 100%;
+    height: 280px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+}
+
+.modal-content h2 {
+    font-weight: 600;
+    color: #122C4F;
+    margin-bottom: 0.5rem;
+}
+
+.modal-content p {
+    font-size: 1rem;
+    color: #000000;
+}
+
+/* ====== Responsive ====== */
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .nav-links {
+        margin-top: 0.8rem;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .category-section h2 {
+        font-size: 1.5rem;
+    }
+
+    .product-card h3 {
+        font-size: 1rem;
+    }
+}
