@@ -9,9 +9,9 @@
     <div class="sidebar">
         <h2>Admin Panel</h2>
         <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">Dashboard</a>
-        <a href="{{ route('admin.productos') }}" class="{{ request()->routeIs('admin.productos') ? 'active' : '' }}">Gestionar Productos</a>
-        <a href="{{ route('admin.usuarios') }}" class="{{ request()->routeIs('admin.usuarios') ? 'active' : '' }}">Gestionar Usuarios</a>
-        <a href="{{ route('admin.pedidos') }}" class="{{ request()->routeIs('admin.pedidos') ? 'active' : '' }}">Ver Pedidos</a>
+        <a href="{{ route('admin.productos.index') }}" class="{{ request()->routeIs('admin.productos.*') ? 'active' : '' }}">Gestionar Productos</a>
+        <a href="{{ route('admin.usuarios.index') }}" class="{{ request()->routeIs('admin.usuarios.*') ? 'active' : '' }}">Gestionar Usuarios</a>
+        <a href="{{ route('admin.pedidos.index') }}" class="{{ request()->routeIs('admin.pedidos.*') ? 'active' : '' }}">Ver Pedidos</a>
         <a href="{{ url('/') }}">Ver Tienda</a>
         <a href="{{ url('/logout') }}">Cerrar Sesión</a>
     </div>

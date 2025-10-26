@@ -29,4 +29,9 @@ class Usuario extends Authenticatable
     protected $hidden = [
         'password_hash',
     ];
+
+    public function getRouteKeyName(): string
+    {
+        return 'id_usuario';
+    }
 }

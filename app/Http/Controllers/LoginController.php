@@ -57,16 +57,22 @@ class LoginController extends Controller
     public function procesarRegistro(Request $request)
     {
         $request->validate([
-            'nombre' => 'required|string|max:255',
+            'nombre' => 'required|string|max:100',
+            'apellido' => 'required|string|max:100',
             'email' => 'required|email|unique:usuarios,email',
             'password' => 'required|string|min:6|confirmed',
+            'telefono' => 'nullable|string|max:20',
+            'direccion' => 'nullable|string',
         ]);
 
         Usuario::create([
             'nombre' => $request->nombre,
+            'apellido' => $request->apellido,
             'email' => $request->email,
-            'password_hash' => Hash::make($request->password),
-            'rol' => 'usuario', // por defecto
+            'password_hash' => \Illuminate\Support\Facades\Hash::make($request->password),
+            'telefono' => $request->telefono,
+            'direccion' => $request->direccion,
+            'rol' => 'cliente', // por defecto
         ]);
 
         return redirect()->route('login.form')->with('success', 'Registro exitoso. Inicia sesión.');

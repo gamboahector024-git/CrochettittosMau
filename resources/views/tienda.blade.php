@@ -107,6 +107,7 @@
             </div>
         </section>
 
+        
     </div>
 
     <div id="productModal" class="modal">
