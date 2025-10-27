@@ -81,4 +81,33 @@ class UsuarioController extends Controller
         Session::flash('success', 'Usuario eliminado correctamente');
         return redirect()->route('admin.usuarios.index');
     }
+
+    /**
+     * Cambia el estado de un usuario (activo/inactivo).
+     */
+    public function toggleStatus(Usuario $usuario)
+    {
+        // Asume una columna 'status' con valores 'activo' e 'inactivo'
+        $usuario->status = ($usuario->status === 'activo') ? 'inactivo' : 'activo';
+        $usuario->save();
+
+        Session::flash('success', 'Estado del usuario actualizado correctamente.');
+        return back();
+    }
+
+    /**
+     * Elimina múltiples usuarios en lote.
+     */
+    public function bulkDelete(Request $request)
+    {
+        $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'exists:usuarios,id_usuario' // Valida que cada ID exista
+        ]);
+
+        Usuario::destroy($request->ids);
+
+        Session::flash('success', 'Usuarios seleccionados eliminados correctamente.');
+        return back();
+    }
 }

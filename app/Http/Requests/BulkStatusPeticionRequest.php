@@ -4,14 +4,14 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateProductRequest extends FormRequest
+class BulkStatusPeticionRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return auth('web')->check() && auth('web')->user()->rol === 'admin';
+        return true;
     }
 
     /**
@@ -22,11 +22,9 @@ class UpdateProductRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nombre' => 'sometimes|required|string|max:255',
-            'descripcion' => 'sometimes|nullable|string',
-            'precio' => 'sometimes|required|numeric|min:0',
-            'id_categoria' => 'sometimes|nullable|exists:categorias,id_categoria',
-            'imagen' => 'sometimes|nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'ids' => 'required|array',
+            'ids.*' => 'exists:peticiones,id_peticion',
+            'estado' => 'required|in:pendiente,en revisión,aceptada,rechazada,completada'
         ];
     }
 }

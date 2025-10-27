@@ -25,7 +25,8 @@ class StoreProductRequest extends FormRequest
             'nombre' => 'required|string|max:255',
             'descripcion' => 'nullable|string',
             'precio' => 'required|numeric|min:0',
-            'categoria' => 'required|string|in:llaveros,flores,personalizados',
+            'id_categoria' => 'nullable|exists:categorias,id_categoria',
+            'stock' => 'required|integer|min:0',
             'imagen' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ];
     }

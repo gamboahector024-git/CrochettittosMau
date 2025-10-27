@@ -34,6 +34,20 @@
                         <option value="{{ $e }}" {{ $pedido->estado === $e ? 'selected' : '' }}>{{ ucfirst($e) }}</option>
                     @endforeach
                 </select>
+                <label for="metodo_pago"><strong>Método pago:</strong></label>
+                <input type="text" id="metodo_pago" name="metodo_pago" value="{{ old('metodo_pago', $pedido->metodo_pago) }}" placeholder="tarjeta / transferencia / ..." />
+
+                <label for="empresa_envio"><strong>Empresa envío:</strong></label>
+                <input type="text" id="empresa_envio" name="empresa_envio" value="{{ old('empresa_envio', $pedido->empresa_envio) }}" placeholder="DHL / FedEx / ..." />
+
+                <label for="codigo_rastreo"><strong>Código rastreo:</strong></label>
+                <input type="text" id="codigo_rastreo" name="codigo_rastreo" value="{{ old('codigo_rastreo', $pedido->codigo_rastreo) }}" placeholder="ABC123..." />
+
+                <label for="fecha_envio"><strong>Fecha envío:</strong></label>
+                <input type="datetime-local" id="fecha_envio" name="fecha_envio" value="{{ old('fecha_envio', optional($pedido->fecha_envio)->format('Y-m-d\TH:i')) }}" />
+
+                <label for="fecha_entrega_estimada"><strong>Entrega estimada:</strong></label>
+                <input type="date" id="fecha_entrega_estimada" name="fecha_entrega_estimada" value="{{ old('fecha_entrega_estimada', optional($pedido->fecha_entrega_estimada)->format('Y-m-d')) }}" />
                 <button type="submit">Actualizar</button>
             </form>
         </div>

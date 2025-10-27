@@ -15,7 +15,17 @@ class Pedido extends Model
         'id_usuario',
         'total',
         'estado', 
-        'direccion_envio'
+        'direccion_envio',
+        'metodo_pago',
+        'empresa_envio',
+        'codigo_rastreo',
+        'fecha_envio',
+        'fecha_entrega_estimada'
+    ];
+
+    protected $casts = [
+        'fecha_envio' => 'datetime',
+        'fecha_entrega_estimada' => 'date',
     ];
 
     // Relación con Usuario

@@ -14,8 +14,7 @@ return new class extends Migration
             $table->text('descripcion')->nullable();
             $table->enum('tipo', ['porcentaje', 'fijo'])->default('porcentaje');
             $table->decimal('valor', 10, 2);
-            $table->foreignId('id_categoria')->nullable()->constrained('categorias', 'id_categoria')->onDelete('set null');
-            $table->foreignId('id_producto')->nullable()->constrained('productos', 'id_producto')->onDelete('set null');
+            $table->foreignId('id_producto')->constrained('productos', 'id_producto')->onDelete('restrict');
             $table->date('fecha_inicio');
             $table->date('fecha_fin');
             $table->boolean('activa')->default(true);

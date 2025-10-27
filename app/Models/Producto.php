@@ -5,9 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use App\Models\Promocion;
 
 class Producto extends Model
 {
+    protected $primaryKey = 'id_producto';
+
     protected $fillable = [
         'nombre', 
         'descripcion',
@@ -16,6 +21,11 @@ class Producto extends Model
         'id_categoria',
         'imagen_url',
     ];
+
+    public function getRouteKeyName(): string
+    {
+        return 'id_producto';
+    }
 
     public function categoria(): BelongsTo
     {
@@ -26,5 +36,19 @@ class Producto extends Model
     {
         return $this->belongsToMany(Pedido::class, 'detalles_pedido', 'id_producto', 'id_pedido')
             ->withPivot(['cantidad', 'precio_unitario']);
+    }
+
+    public function promociones(): HasMany
+    {
+        return $this->hasMany(Promocion::class, 'id_producto', 'id_producto');
+    }
+
+    public function promocionActiva(): HasOne
+    {
+        return $this->hasOne(Promocion::class, 'id_producto', 'id_producto')
+            ->where('activa', true)
+            ->whereDate('fecha_inicio', '<=', now())
+            ->whereDate('fecha_fin', '>=', now())
+            ->latest('id_promocion');
     }
 }

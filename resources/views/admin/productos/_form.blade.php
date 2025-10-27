@@ -19,15 +19,19 @@
     </div>
 
     <div>
-        <label for="categoria">Categoría</label>
-        <select id="categoria" name="categoria" required>
-            @php($current = old('categoria', $isEdit ? $producto->categoria : ''))
-            <option value="" disabled {{ $current === '' ? 'selected' : '' }}>Selecciona una categoría</option>
-            <option value="llaveros" {{ $current === 'llaveros' ? 'selected' : '' }}>Llaveros</option>
-            <option value="flores" {{ $current === 'flores' ? 'selected' : '' }}>Flores</option>
-            <option value="personalizados" {{ $current === 'personalizados' ? 'selected' : '' }}>Personalizados</option>
+        <label for="id_categoria">Categoría</label>
+        <select id="id_categoria" name="id_categoria">
+            @php($current = old('id_categoria', $isEdit ? $producto->id_categoria : ''))
+            <option value="" {{ $current === '' ? 'selected' : '' }}>Sin categoría</option>
+            @isset($categorias)
+                @foreach($categorias as $cat)
+                    <option value="{{ $cat->id_categoria }}" {{ (string)$current === (string)$cat->id_categoria ? 'selected' : '' }}>
+                        {{ $cat->nombre }}
+                    </option>
+                @endforeach
+            @endisset
         </select>
-        @error('categoria')<div class="error">{{ $message }}</div>@enderror
+        @error('id_categoria')<div class="error">{{ $message }}</div>@enderror
     </div>
 
     <div class="mb-3">

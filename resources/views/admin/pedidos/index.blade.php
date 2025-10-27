@@ -49,6 +49,11 @@
                 <th>Cliente</th>
                 <th>Estado</th>
                 <th>Total</th>
+                <th>Método pago</th>
+                <th>Empresa envío</th>
+                <th>Código rastreo</th>
+                <th>Fecha envío</th>
+                <th>Entrega estimada</th>
                 <th>Acciones</th>
             </tr>
         </thead>
@@ -63,6 +68,11 @@
                     </td>
                     <td>{{ ucfirst($pedido->estado) }}</td>
                     <td>$ {{ number_format($pedido->total, 2) }}</td>
+                    <td>{{ $pedido->metodo_pago ?? '—' }}</td>
+                    <td>{{ $pedido->empresa_envio ?? '—' }}</td>
+                    <td>{{ $pedido->codigo_rastreo ?? '—' }}</td>
+                    <td>{{ optional($pedido->fecha_envio)->format('Y-m-d H:i') ?? '—' }}</td>
+                    <td>{{ optional($pedido->fecha_entrega_estimada)->format('Y-m-d') ?? '—' }}</td>
                     <td>
                         <a href="{{ route('admin.pedidos.show', $pedido) }}">Ver</a>
                         <a href="{{ route('admin.pedidos.edit', $pedido) }}">Editar</a>

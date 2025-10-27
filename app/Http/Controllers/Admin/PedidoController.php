@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Pedido;
+use Illuminate\Support\Facades\Session;
 
 class PedidoController extends Controller
 {
@@ -85,11 +86,18 @@ class PedidoController extends Controller
     {
         $data = $request->validate([
             'estado' => 'required|in:pendiente,procesando,enviado,entregado,cancelado',
+            'metodo_pago' => 'nullable|string|max:50',
+            'empresa_envio' => 'nullable|string|max:100',
+            'codigo_rastreo' => 'nullable|string|max:100',
+            'fecha_envio' => 'nullable|date',
+            'fecha_entrega_estimada' => 'nullable|date',
         ]);
 
-        $pedido->update($data);
+        $pedido->fill($data);
+        $pedido->save();
 
-        return back()->with('success', 'Estado del pedido actualizado correctamente.');
+        Session::flash('success', 'Estado del pedido actualizado correctamente.');
+        return back();
     }
 
     /**
@@ -97,6 +105,22 @@ class PedidoController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        // Generalmente los pedidos no se eliminan, se cancelan.
+    }
+
+    /**
+     * Elimina múltiples pedidos en lote.
+     */
+    public function bulkDelete(Request $request)
+    {
+        $validated = $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'exists:pedidos,id_pedido'
+        ]);
+
+        $deleted = Pedido::whereIn('id_pedido', $validated['ids'])->delete();
+
+        Session::flash('success', "{$deleted} pedidos eliminados correctamente.");
+        return back();
     }
 }

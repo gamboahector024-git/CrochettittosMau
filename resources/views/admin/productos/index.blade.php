@@ -5,69 +5,84 @@
 
 @section('content')
     @if(session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
+        <div role="alert" class="alert alert-success">{{ session('success') }}</div>
     @endif
 
-    <div class="actions" style="margin-bottom:16px; display:flex; gap:12px; align-items:center;">
+    <section class="actions" style="margin-bottom:16px; display:flex; gap:12px; align-items:center;">
         <a href="{{ route('admin.productos.create') }}" class="btn btn-primary">+ Nuevo Producto</a>
         <form action="{{ route('admin.productos.index') }}" method="GET" style="display:flex; gap:8px; align-items:center;">
-            <input type="text" name="q" value="{{ request('q') }}" placeholder="Buscar por nombre o descripción">
-            <select name="categoria">
+            <label for="search-input" style="display:none;">Buscar productos</label>
+            <input type="text" id="search-input" name="q" value="{{ request('q') }}" placeholder="Buscar por nombre o descripción" aria-label="Buscar productos">
+            
+            <label for="category-select" style="display:none;">Filtrar por categoría</label>
+            <select id="category-select" name="categoria" aria-label="Seleccionar categoría">
                 <option value="">Todas las categorías</option>
-                @foreach(['llaveros' => 'Llaveros','flores' => 'Flores','personalizados' => 'Personalizados'] as $val => $label)
-                    <option value="{{ $val }}" {{ request('categoria') === $val ? 'selected' : '' }}>{{ $label }}</option>
-                @endforeach
+                @isset($categorias)
+                    @foreach($categorias as $cat)
+                        <option value="{{ $cat->id_categoria }}" {{ (string)request('categoria') === (string)$cat->id_categoria ? 'selected' : '' }}>
+                            {{ $cat->nombre }}
+                        </option>
+                    @endforeach
+                @endisset
             </select>
+            
             <button type="submit">Buscar</button>
+            
             @if(request()->has('q') || request()->has('categoria'))
-                <a href="{{ route('admin.productos.index') }}">Limpiar</a>
+                <a href="{{ route('admin.productos.index') }}" aria-label="Limpiar filtros de búsqueda">Limpiar</a>
             @endif
         </form>
+    </section>
+
+    <div role="region" aria-labelledby="productos-table-caption" tabindex="0">
+        <table border="1" cellpadding="8" cellspacing="0" width="100%">
+            <caption id="productos-table-caption" style="caption-side: top; text-align: left; font-weight: bold; margin-bottom: 8px;">
+                Lista de productos
+            </caption>
+            <thead>
+                <tr>
+                    <th scope="col">Imagen</th>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Stock</th>
+                    <th scope="col">Categoría</th>
+                    <th scope="col">Precio</th>
+                    <th scope="col">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($productos as $producto)
+                    <tr>
+                        <td style="width:100px; text-align:center;">
+                            @if($producto->imagen_url)
+                                <img src="/{{ $producto->imagen_url }}" alt="{{ $producto->nombre }}" style="max-width:90px; max-height:90px; object-fit:cover;" loading="lazy">
+                            @else
+                                <span aria-hidden="true">—</span>
+                                <span class="sr-only">Sin imagen</span>
+                            @endif
+                        </td>
+                        <td>{{ $producto->nombre }}</td>
+                        <td>{{ $producto->stock }}</td>
+                        <td>{{ $producto->categoria?->nombre ?? 'Sin categoría' }}</td>
+                        <td>$ {{ number_format($producto->precio, 2) }}</td>
+                        <td>
+                            <a href="{{ route('admin.productos.edit', $producto) }}" aria-label="Editar {{ $producto->nombre }}">Editar</a>
+                            <form action="{{ route('admin.productos.destroy', $producto) }}" method="POST" style="display:inline" onsubmit="return confirm('¿Eliminar este producto?');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" aria-label="Eliminar {{ $producto->nombre }}">Eliminar</button>
+                            </form>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="6" style="text-align:center;">No hay productos.</td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
     </div>
 
-    <table border="1" cellpadding="8" cellspacing="0" width="100%">
-        <thead>
-            <tr>
-                <th>Imagen</th>
-                <th>Nombre</th>
-                <th>Stock</th>
-                <th>Categoría</th>
-                <th>Precio</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            @forelse($productos as $producto)
-                <tr>
-                    <td style="width:100px; text-align:center;">
-                        @if($producto->imagen_url)
-                            <img src="/{{ $producto->imagen_url }}" alt="{{ $producto->nombre }}" style="max-width:90px; max-height:90px; object-fit:cover;">
-                        @else
-                            —
-                        @endif
-                    </td>
-                    <td>{{ $producto->nombre }}</td>
-                    <td>{{ $producto->stock }}</td>
-                    <td>{{ ucfirst($producto->categoria) }}</td>
-                    <td>$ {{ number_format($producto->precio, 2) }}</td>
-                    <td>
-                        <a href="{{ route('admin.productos.edit', $producto) }}">Editar</a>
-                        <form action="{{ route('admin.productos.destroy', $producto) }}" method="POST" style="display:inline" onsubmit="return confirm('¿Eliminar este producto?');">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit">Eliminar</button>
-                        </form>
-                    </td>
-                </tr>
-            @empty
-                <tr>
-                    <td colspan="6" style="text-align:center;">No hay productos.</td>
-                </tr>
-            @endforelse
-        </tbody>
-    </table>
-
-    <div style="margin-top:12px;">
+    <nav style="margin-top:12px;" aria-label="Navegación de páginas de productos">
         {{ $productos->links() }}
-    </div>
+    </nav>
 @endsection

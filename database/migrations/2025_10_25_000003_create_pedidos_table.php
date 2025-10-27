@@ -23,6 +23,12 @@ return new class extends Migration
                 'cancelado'
             ])->default('pendiente');
             $table->text('direccion_envio');
+            // Nuevos campos integrados (antes en envios)
+            $table->string('metodo_pago', 50)->nullable();
+            $table->string('empresa_envio', 100)->nullable();
+            $table->string('codigo_rastreo', 100)->nullable();
+            $table->timestamp('fecha_envio')->nullable();
+            $table->date('fecha_entrega_estimada')->nullable();
             $table->timestamps();
         });
     }

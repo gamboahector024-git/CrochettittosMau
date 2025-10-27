@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Producto;
+use App\Models\Categoria;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use Illuminate\Support\Facades\Storage;
@@ -30,12 +31,12 @@ class ProductoController extends Controller
         }
 
         if ($categoria) {
-            $query->where('categoria', $categoria);
+            $query->where('id_categoria', $categoria);
         }
 
         $productos = $query->latest()->paginate(10)->withQueryString();
-
-        return view('admin.productos.index', compact('productos', 'q', 'categoria'));
+        $categorias = Categoria::orderBy('nombre')->get();
+        return view('admin.productos.index', compact('productos', 'q', 'categoria', 'categorias'));
     }
 
     /**
@@ -43,7 +44,8 @@ class ProductoController extends Controller
      */
     public function create()
     {
-        return view('admin.productos.create');
+        $categorias = Categoria::orderBy('nombre')->get();
+        return view('admin.productos.create', compact('categorias'));
     }
 
     /**
@@ -81,7 +83,8 @@ class ProductoController extends Controller
      */
     public function edit(Producto $producto)
     {
-        return view('admin.productos.edit', compact('producto'));
+        $categorias = Categoria::orderBy('nombre')->get();
+        return view('admin.productos.edit', compact('producto', 'categorias'));
     }
 
     /**
@@ -124,5 +127,22 @@ class ProductoController extends Controller
 
         Session::flash('success', 'Producto eliminado correctamente');
         return redirect()->route('admin.productos.index');
+    }
+
+
+    /**
+     * Elimina múltiples productos en lote.
+     */
+    public function bulkDelete(Request $request)
+    {
+        $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'exists:productos,id_producto' // Validar con PK real
+        ]);
+
+        Producto::destroy($request->ids);
+
+        Session::flash('success', 'Productos seleccionados eliminados correctamente.');
+        return back();
     }
 }
