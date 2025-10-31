@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Database\Seeder;
 use Database\Seeders\CategoriaSeeder;
 use Database\Seeders\AdminSeeder;
+use Database\Seeders\UsuarioSeeder;
 use Database\Seeders\ProductoSeeder;
 use Database\Seeders\PedidoSeeder;
 use Database\Seeders\PeticionSeeder;
@@ -20,6 +21,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             AdminSeeder::class,
             CategoriaSeeder::class,
+            UsuarioSeeder::class,
             ProductoSeeder::class,
             PedidoSeeder::class,
             PeticionSeeder::class,

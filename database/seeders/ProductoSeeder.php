@@ -17,8 +17,8 @@ class ProductoSeeder extends Seeder
 
         $productos = [
             [
-                'nombre' => 'Llavero Corazón',
-                'descripcion' => 'Llavero tejido en forma de corazón',
+                'nombre' => 'Llavero Corazón Rosa',
+                'descripcion' => 'Llavero tejido a mano en forma de corazón con detalles en rosa. Perfecto como regalo o accesorio personal. Medida: 8cm',
                 'precio' => 79.90,
                 'stock' => 50,
                 'id_categoria' => $idLlaveros,
@@ -27,8 +27,8 @@ class ProductoSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'nombre' => 'Ramo de Rosas',
-                'descripcion' => 'Arreglo floral con rosas artificiales',
+                'nombre' => 'Ramo de Rosas Artificiales',
+                'descripcion' => 'Hermoso arreglo floral con rosas artificiales de alta calidad. Incluye florero de cristal. Ideal para decoración o regalo especial.',
                 'precio' => 249.00,
                 'stock' => 20,
                 'id_categoria' => $idFlores,
@@ -37,8 +37,8 @@ class ProductoSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'nombre' => 'Muñeco Personalizado',
-                'descripcion' => 'Muñeco a crochet personalizado',
+                'nombre' => 'Muñeco Amigurumi Gato',
+                'descripcion' => 'Adorable muñeco a crochet con forma de gato. Hecho a mano con materiales de calidad. Medida: 20cm. Personalizable en colores.',
                 'precio' => 399.00,
                 'stock' => 10,
                 'id_categoria' => $idPers,

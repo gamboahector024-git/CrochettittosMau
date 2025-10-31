@@ -71,6 +71,32 @@
             </div>
         </div>
 
+        <!-- Resumen Visitas Diarias -->
+        <div class="bg-white p-6 rounded-xl shadow-lg text-gray-800 md:col-span-2 lg:col-span-3">
+            <h3 class="text-lg font-semibold mb-4">📈 Visitas de los últimos 7 días</h3>
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
+                @foreach ($visitasDiariasLabels as $index => $label)
+                    <div class="text-center">
+                        <div class="text-sm text-gray-500">{{ $label }}</div>
+                        <div class="text-2xl font-semibold">{{ $visitasDiariasData[$index] }}</div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+
+        <!-- Resumen Visitas Mensuales -->
+        <div class="bg-white p-6 rounded-xl shadow-lg text-gray-800 md:col-span-2 lg:col-span-3">
+            <h3 class="text-lg font-semibold mb-4">📊 Visitas de los últimos 6 meses</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-3">
+                @foreach ($visitasMensualesLabels as $index => $label)
+                    <div class="text-center">
+                        <div class="text-sm text-gray-500">{{ $label }}</div>
+                        <div class="text-2xl font-semibold">{{ $visitasMensualesData[$index] }}</div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+
         <!-- Reloj + Calendario -->
         <div class="bg-white p-6 rounded-xl shadow-lg text-gray-800 md:col-span-2 lg:col-span-3">
             <div class="flex flex-col lg:flex-row lg:items-start gap-6">
@@ -103,7 +129,6 @@
         const dateEl = document.getElementById('clock-date');
         const optsTime = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
         const optsDate = { weekday: 'long', year: 'numeric', month: 'long', day: '2-digit' };
-        function pad(n){return String(n).padStart(2,'0');}
         function tick(){
             const now = new Date();
             timeEl.textContent = now.toLocaleTimeString('es-MX', optsTime);

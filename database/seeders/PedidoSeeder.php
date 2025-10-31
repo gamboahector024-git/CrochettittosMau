@@ -11,79 +11,65 @@ class PedidoSeeder extends Seeder
 {
     public function run(): void
     {
-        // Asegurar que haya al menos 1 usuario
-        $usuarioId = DB::table('usuarios')->min('id_usuario');
-        if (!$usuarioId) {
-            // Si no existe, crear uno rápido (en caso de fallo de AdminSeeder)
-            $usuarioId = DB::table('usuarios')->insertGetId([
-                'nombre' => 'Cliente',
-                'apellido' => 'Pruebas',
-                'email' => 'cliente+'.Str::random(5).'@mail.test',
-                'password_hash' => bcrypt('123456'),
-                'direccion' => 'Dirección de prueba 123',
-                'telefono' => '555-0000',
-                'rol' => 'cliente',
-                'fecha_registro' => now(),
-            ]);
+        // Obtener usuarios creados por UsuarioSeeder
+        $usuarios = DB::table('usuarios')->pluck('id_usuario', 'nombre');
+        $mariaId = $usuarios['María'] ?? null;
+        $carlosId = $usuarios['Carlos'] ?? null;
+
+        if (!$mariaId || !$carlosId) {
+            return; // No continuar si no existen los usuarios
         }
 
         // Asegurar que existan productos (dependencia de ProductoSeeder)
-        $productoIds = DB::table('productos')->pluck('id_producto')->take(3)->all();
+        $productoIds = DB::table('productos')->pluck('id_producto')->all();
         if (count($productoIds) === 0) {
-            // Crear productos mínimos
-            DB::table('productos')->insert([
-                [
-                    'nombre' => 'Producto Test 1',
-                    'descripcion' => 'Desc 1',
-                    'precio' => 100,
-                    'stock' => 100,
-                    'id_categoria' => null,
-                    'imagen_url' => null,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ],
-                [
-                    'nombre' => 'Producto Test 2',
-                    'descripcion' => 'Desc 2',
-                    'precio' => 200,
-                    'stock' => 50,
-                    'id_categoria' => null,
-                    'imagen_url' => null,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ],
-            ]);
-            $productoIds = DB::table('productos')->pluck('id_producto')->take(3)->all();
+            return; // No continuar si no existen productos
         }
 
         // Crear pedidos de prueba
         $pedidos = [
+            // Pedidos de María
             [
-                'id_usuario' => $usuarioId,
-                'fecha_pedido' => now()->subDays(3),
-                'total' => 350.75,
-                'estado' => 'procesando',
-                'direccion_envio' => 'Calle 1 #123',
+                'id_usuario' => $mariaId,
+                'fecha_pedido' => now()->subDays(20),
+                'total' => 329.90,
+                'estado' => 'entregado',
+                'direccion_envio' => 'Calle Principal 123, Apto 4B',
                 'metodo_pago' => 'tarjeta',
-                'empresa_envio' => 'DHL',
-                'codigo_rastreo' => 'DHL'.Str::upper(Str::random(8)),
-                'fecha_envio' => now()->subDays(2),
-                'fecha_entrega_estimada' => now()->addDays(3)->toDateString(),
-                'created_at' => now(),
-                'updated_at' => now(),
+                'empresa_envio' => 'FedEx',
+                'codigo_rastreo' => 'FDX'.Str::upper(Str::random(10)),
+                'fecha_envio' => now()->subDays(18),
+                'fecha_entrega_estimada' => now()->subDays(12)->toDateString(),
+                'created_at' => now()->subDays(20),
+                'updated_at' => now()->subDays(12),
             ],
             [
-                'id_usuario' => $usuarioId,
-                'fecha_pedido' => now()->subDay(),
-                'total' => 120.00,
-                'estado' => 'pendiente',
-                'direccion_envio' => 'Avenida 2 #456',
+                'id_usuario' => $mariaId,
+                'fecha_pedido' => now()->subDays(8),
+                'total' => 249.00,
+                'estado' => 'procesando',
+                'direccion_envio' => 'Calle Principal 123, Apto 4B',
                 'metodo_pago' => 'transferencia',
+                'empresa_envio' => 'DHL',
+                'codigo_rastreo' => 'DHL'.Str::upper(Str::random(10)),
+                'fecha_envio' => now()->subDays(6),
+                'fecha_entrega_estimada' => now()->addDays(1)->toDateString(),
+                'created_at' => now()->subDays(8),
+                'updated_at' => now()->subDays(1),
+            ],
+            // Pedido de Carlos
+            [
+                'id_usuario' => $carlosId,
+                'fecha_pedido' => now()->subDays(3),
+                'total' => 79.90,
+                'estado' => 'pendiente',
+                'direccion_envio' => 'Avenida Central 456, Piso 2',
+                'metodo_pago' => 'efectivo',
                 'empresa_envio' => null,
                 'codigo_rastreo' => null,
                 'fecha_envio' => null,
                 'fecha_entrega_estimada' => null,
-                'created_at' => now(),
+                'created_at' => now()->subDays(3),
                 'updated_at' => now(),
             ],
         ];
