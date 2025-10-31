@@ -77,10 +77,9 @@
                 <div class="mb-3">
                     <label for="estado" class="form-label">Estado después de responder:</label>
                     <select id="estado" name="estado" class="form-select">
-                        <option value="en revisión">En revisión</option>
-                        <option value="completada">Completada</option>
-                        <option value="aceptada">Aceptada</option>
-                        <option value="rechazada">Rechazada</option>
+                        <option value="en revisión" {{ old('estado', $peticion->estado) === 'en revisión' ? 'selected' : '' }}>En revisión</option>
+                        <option value="aceptada" {{ old('estado', $peticion->estado) === 'aceptada' ? 'selected' : '' }}>Aceptada</option>
+                        <option value="rechazada" {{ old('estado', $peticion->estado) === 'rechazada' ? 'selected' : '' }}>Rechazada</option>
                     </select>
                 </div>
                 
@@ -88,6 +87,15 @@
                     {{ $peticion->estado === 'pendiente' ? 'Enviar respuesta' : 'Actualizar respuesta' }}
                 </button>
             </form>
+
+            @if($peticion->estado === 'aceptada')
+            <form action="{{ route('admin.peticiones.completar', $peticion->id_peticion) }}" method="POST" style="display:inline-block; margin-left:8px;">
+                @csrf
+                <button type="submit" class="btn btn-success" onclick="return confirm('¿Marcar como completada y generar pedido?');">
+                    Completar y generar pedido
+                </button>
+            </form>
+            @endif
         </div>
     </div>
 </div>

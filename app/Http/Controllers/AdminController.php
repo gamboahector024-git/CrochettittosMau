@@ -7,17 +7,20 @@ use App\Models\Pedido;
 use App\Models\Visita;
 use App\Models\Usuario;
 use App\Models\Producto;
+use App\Models\Peticion;
 
 class AdminController extends Controller
 {
     public function dashboard() {
         // Ventas del mes
-        $ventasMes = Pedido::whereMonth('created_at', now()->month)
+        $ventasMes = Pedido::where('estado', 'entregado')
+            ->whereMonth('created_at', now()->month)
             ->whereYear('created_at', now()->year)
             ->sum('total');
 
-        // Productos vendidos (suma de cantidades)
-        $productosVendidos = Pedido::whereMonth('created_at', now()->month)
+        // Productos vendidos (suma de cantidades) solo en pedidos ENTREGADOS del mes actual
+        $productosVendidos = Pedido::where('estado', 'entregado')
+            ->whereMonth('created_at', now()->month)
             ->whereYear('created_at', now()->year)
             ->with('detalles')
             ->get()
@@ -37,12 +40,16 @@ class AdminController extends Controller
         $visitas = Visita::where('created_at', '>=', now()->subDays(7))
             ->count();
 
+        // Contador de Peticiones
+        $peticionesCount = Peticion::count();
+
         return view('admin.dashboard', [
             'ventasMes' => $ventasMes,
             'productosVendidos' => $productosVendidos,
             'usuariosActivos' => $usuariosActivos,
             'pedidosPendientes' => $pedidosPendientes,
-            'visitas' => $visitas
+            'visitas' => $visitas,
+            'peticionesCount' => $peticionesCount,
         ]);
     }
 }

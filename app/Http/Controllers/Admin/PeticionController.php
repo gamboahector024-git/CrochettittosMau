@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Peticion;
+use App\Models\Pedido;
 use Illuminate\Http\Request;
 use App\Http\Requests\UpdatePeticionRequest;
 use App\Http\Requests\BulkStatusPeticionRequest;
@@ -30,7 +31,6 @@ class PeticionController extends Controller
                     });
             });
         }
-
         if ($estado) {
             $query->where('estado', $estado);
         }
@@ -53,15 +53,9 @@ class PeticionController extends Controller
 
     public function responder(UpdatePeticionRequest $request, Peticion $peticion)
     {
-        $request->validate([
-            'respuesta_admin' => 'required|string',
-            'estado' => 'required|in:pendiente,en revisión,aceptada,rechazada,completada'
-        ]);
-
-        $peticion->update([
-            'respuesta_admin' => $request->respuesta_admin,
-            'estado' => $request->estado
-        ]);
+        $peticion->respuesta_admin = $request->respuesta_admin;
+        $peticion->estado = $request->estado;
+        $peticion->save();
 
         Session::flash('success', 'Respuesta y estado actualizados');
         return back();
@@ -69,9 +63,9 @@ class PeticionController extends Controller
     
     public function toggleStatus(Peticion $peticion)
     {
-        // Alternar entre pendiente <-> rechazada (como "archivado")
+        // Alternar entre en revisión <-> rechazada (como "archivado")
         if ($peticion->estado === 'rechazada') {
-            $peticion->estado = 'pendiente';
+            $peticion->estado = 'en revisión';
         } else {
             $peticion->estado = 'rechazada';
         }
@@ -81,12 +75,44 @@ class PeticionController extends Controller
         return back();
     }
 
+    public function completar(Peticion $peticion)
+    {
+        if ($peticion->estado === 'completada') {
+            Session::flash('success', 'La petición ya estaba completada.');
+            return back();
+        }
+        if ($peticion->estado !== 'aceptada') {
+            Session::flash('error', 'Solo se puede completar una petición que esté en estado ACEPTADA.');
+            return back();
+        }
+
+        $peticion->estado = 'completada';
+        $peticion->save();
+
+        $direccion = optional($peticion->usuario)->direccion ?: 'Sin dirección especificada';
+        \App\Models\Pedido::create([
+            'id_usuario' => $peticion->id_usuario,
+            'id_peticion' => $peticion->id_peticion,
+            'total' => 0,
+            'estado' => 'pendiente',
+            'direccion_envio' => $direccion,
+            'metodo_pago' => null,
+            'empresa_envio' => null,
+            'codigo_rastreo' => null,
+            'fecha_envio' => null,
+            'fecha_entrega_estimada' => null,
+        ]);
+
+        Session::flash('success', 'Petición completada y pedido generado.');
+        return back();
+    }
+
     public function bulkStatus(BulkStatusPeticionRequest $request)
     {
         $request->validate([
             'ids' => 'required|array',
             'ids.*' => 'exists:peticiones,id_peticion',
-            'estado' => 'required|in:pendiente,en revisión,aceptada,rechazada,completada'
+            'estado' => 'required|in:en revisión,aceptada,rechazada'
         ]);
 
         Peticion::whereIn('id_peticion', $request->ids)

@@ -18,10 +18,30 @@ return new class extends Migration
             $table->text('respuesta_admin')->nullable();
             $table->timestamps();
         });
+
+        // Agregar FK a pedidos.id_peticion ahora que 'peticiones' existe
+        Schema::table('pedidos', function (Blueprint $table) {
+            if (Schema::hasColumn('pedidos', 'id_peticion')) {
+                $table->foreign('id_peticion')
+                      ->references('id_peticion')
+                      ->on('peticiones')
+                      ->nullOnDelete();
+            }
+        });
     }
 
     public function down()
     {
+        // Soltar FK desde pedidos antes de eliminar 'peticiones'
+        Schema::table('pedidos', function (Blueprint $table) {
+            if (Schema::hasColumn('pedidos', 'id_peticion')) {
+                try {
+                    $table->dropForeign(['id_peticion']);
+                } catch (\Throwable $e) {
+                    // Ignorar si ya fue eliminada o no existe
+                }
+            }
+        });
         Schema::dropIfExists('peticiones');
     }
 };

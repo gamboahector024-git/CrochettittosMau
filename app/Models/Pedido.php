@@ -13,6 +13,7 @@ class Pedido extends Model
     
     protected $fillable = [
         'id_usuario',
+        'id_peticion',
         'total',
         'estado', 
         'direccion_envio',
@@ -45,5 +46,10 @@ class Pedido extends Model
     {
         return $this->belongsToMany(Producto::class, 'detalles_pedido', 'id_pedido', 'id_producto')
             ->withPivot(['cantidad', 'precio_unitario']);
+    }
+
+    public function peticion(): BelongsTo
+    {
+        return $this->belongsTo(Peticion::class, 'id_peticion', 'id_peticion');
     }
 }

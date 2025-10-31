@@ -23,10 +23,37 @@
             <strong>Dirección de envío:</strong><br>
             {{ $pedido->direccion_envio }}
         </div>
+        @if($pedido->peticion || $pedido->id_peticion)
+        <div class="alert alert-secondary" role="alert">
+            <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+                @if($pedido->peticion)
+                    <div>
+                        <strong>Petición origen:</strong>
+                        #{{ $pedido->peticion->id_peticion }} — {{ $pedido->peticion->titulo }}
+                    </div>
+                    <span class="badge bg-{{
+                        $pedido->peticion->estado === 'pendiente' ? 'warning' :
+                        ($pedido->peticion->estado === 'en revisión' ? 'info' :
+                        ($pedido->peticion->estado === 'aceptada' ? 'primary' :
+                        ($pedido->peticion->estado === 'rechazada' ? 'secondary' : 'success')))
+                    }}">{{ ucfirst($pedido->peticion->estado) }}</span>
+                    <a class="btn btn-sm btn-outline-primary" href="{{ route('admin.peticiones.show', $pedido->peticion->id_peticion) }}">Ver petición</a>
+                @else
+                    <div>
+                        <strong>Petición origen:</strong>
+                        #{{ $pedido->id_peticion }}
+                    </div>
+                    <a class="btn btn-sm btn-outline-primary" href="{{ route('admin.peticiones.show', $pedido->id_peticion) }}">Ver petición</a>
+                @endif
+            </div>
+        </div>
+        @endif
         <div>
             <form action="{{ route('admin.pedidos.update', $pedido) }}" method="POST" style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
                 @csrf
                 @method('PUT')
+                <label for="total"><strong>Total:</strong></label>
+                <input type="number" step="0.01" min="0" id="total" name="total" value="{{ old('total', $pedido->total) }}" />
                 <label for="estado"><strong>Estado:</strong></label>
                 @php($estados = ['pendiente','procesando','enviado','entregado','cancelado'])
                 <select id="estado" name="estado">
@@ -53,6 +80,26 @@
         </div>
     </div>
 
+    @if($pedido->peticion)
+    <h3>Detalles de la Petición</h3>
+    <div style="display:grid; gap:8px; border:1px solid #e5e7eb; border-radius:6px; padding:12px;">
+        <div><strong>Título:</strong> {{ $pedido->peticion->titulo }}</div>
+        <div><strong>Descripción:</strong> {{ $pedido->peticion->descripcion }}</div>
+        @if(!empty($pedido->peticion->respuesta_admin))
+            <div><strong>Respuesta admin:</strong> {{ $pedido->peticion->respuesta_admin }}</div>
+        @endif
+        <div><strong>Estado:</strong> {{ ucfirst($pedido->peticion->estado) }}</div>
+        <div><strong>Fecha petición:</strong> {{ optional($pedido->peticion->created_at)->format('d/m/Y H:i') }}</div>
+        @if(!empty($pedido->peticion->imagen_referencia))
+            <div>
+                <img src="{{ asset('storage/'.$pedido->peticion->imagen_referencia) }}" class="img-thumbnail" style="max-width: 320px;">
+            </div>
+        @endif
+        <div>
+            <a class="btn btn-sm btn-outline-primary" href="{{ route('admin.peticiones.show', $pedido->peticion->id_peticion) }}">Ver petición</a>
+        </div>
+    </div>
+    @else
     <h3>Productos</h3>
     <table border="1" cellpadding="8" cellspacing="0" width="100%">
         <thead>
@@ -78,6 +125,7 @@
             @endforelse
         </tbody>
     </table>
+    @endif
 
     <div style="margin-top:12px; text-align:right;">
         <strong>Total:</strong> $ {{ number_format($pedido->total, 2) }}

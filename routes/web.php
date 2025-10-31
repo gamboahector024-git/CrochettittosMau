@@ -69,11 +69,14 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::delete('pedidos/bulk-delete', [PedidoController::class, 'bulkDelete'])->name('pedidos.bulk-delete');
 
     // Peticiones
-    Route::resource('peticiones', PeticionController::class);
+    Route::resource('peticiones', PeticionController::class)
+        ->only(['index', 'show', 'destroy'])
+        ->parameters(['peticiones' => 'peticion']);
     Route::post('peticiones/{peticion}/toggle-status', [PeticionController::class, 'toggleStatus'])->name('peticiones.toggle-status');
     Route::post('peticiones/bulk-status', [PeticionController::class, 'bulkStatus'])->name('peticiones.bulk-status');
-    Route::delete('peticiones/bulk-delete', [PeticionController::class, 'bulkDelete'])->name('peticiones.bulk-delete');
+    Route::post('peticiones/bulk-delete', [PeticionController::class, 'bulkDelete'])->name('peticiones.bulk-delete');
     Route::post('peticiones/{peticion}/responder', [PeticionController::class, 'responder'])->name('peticiones.responder');
+    Route::post('peticiones/{peticion}/completar', [PeticionController::class, 'completar'])->name('peticiones.completar');
     
     // Promociones
     Route::resource('promociones', PromocionController::class);

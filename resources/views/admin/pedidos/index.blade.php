@@ -41,7 +41,7 @@
         </form>
     </div>
 
-    <table border="1" cellpadding="8" cellspacing="0" width="100%">
+    <table class="table table-striped table-hover align-middle">
         <thead>
             <tr>
                 <th>ID</th>
@@ -64,9 +64,16 @@
                     <td>{{ $pedido->fecha_pedido }}</td>
                     <td>
                         {{ $pedido->usuario->nombre ?? '—' }} {{ $pedido->usuario->apellido ?? '' }}<br>
-                        <small>{{ $pedido->usuario->email ?? '' }}</small>
+                        <small class="text-muted">{{ $pedido->usuario->email ?? '' }}</small>
                     </td>
-                    <td>{{ ucfirst($pedido->estado) }}</td>
+                    <td>
+                        <span class="badge bg-{{
+                            $pedido->estado === 'pendiente' ? 'warning' :
+                            ($pedido->estado === 'procesando' ? 'info' :
+                            ($pedido->estado === 'enviado' ? 'primary' :
+                            ($pedido->estado === 'entregado' ? 'success' : 'secondary')))
+                        }}">{{ ucfirst($pedido->estado) }}</span>
+                    </td>
                     <td>$ {{ number_format($pedido->total, 2) }}</td>
                     <td>{{ $pedido->metodo_pago ?? '—' }}</td>
                     <td>{{ $pedido->empresa_envio ?? '—' }}</td>
@@ -74,8 +81,8 @@
                     <td>{{ optional($pedido->fecha_envio)->format('Y-m-d H:i') ?? '—' }}</td>
                     <td>{{ optional($pedido->fecha_entrega_estimada)->format('Y-m-d') ?? '—' }}</td>
                     <td>
-                        <a href="{{ route('admin.pedidos.show', $pedido) }}">Ver</a>
-                        <a href="{{ route('admin.pedidos.edit', $pedido) }}">Editar</a>
+                        <a class="btn btn-sm btn-primary" href="{{ route('admin.pedidos.show', $pedido) }}">Ver</a>
+                        <a class="btn btn-sm btn-secondary" href="{{ route('admin.pedidos.edit', $pedido) }}">Editar</a>
                     </td>
                 </tr>
             @empty

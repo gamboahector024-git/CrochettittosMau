@@ -23,7 +23,7 @@ class UpdatePeticionRequest extends FormRequest
     {
         return [
             'respuesta_admin' => 'required|string',
-            'estado' => 'required|in:pendiente,en revisión,aceptada,rechazada,completada'
+            'estado' => 'required|in:en revisión,aceptada,rechazada'
         ];
     }
 }

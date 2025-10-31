@@ -59,24 +59,23 @@
         
         <div class="mb-3 d-flex gap-2">
             <select name="estado" class="form-select" style="width: auto;">
-                <option value="pendiente">Marcar como pendientes</option>
                 <option value="en revisión">Marcar como en revisión</option>
                 <option value="aceptada">Marcar como aceptadas</option>
                 <option value="rechazada">Marcar como rechazadas</option>
-                <option value="completada">Marcar como completadas</option>
             </select>
             <button type="submit" class="btn btn-outline-primary">Aplicar</button>
-            
-            <button type="button" class="btn btn-outline-danger ms-auto" 
-                    onclick="handleBulkDelete()">
-                Eliminar seleccionados
-            </button>
         </div>
 
     </form>
 
+    <div class="mb-3 text-end">
+        <button type="button" class="btn btn-outline-danger" onclick="handleBulkDelete()">
+            Eliminar seleccionados
+        </button>
+    </div>
+
         <div class="table-responsive">
-            <table class="table">
+            <table class="table table-striped table-hover align-middle">
                 <thead>
                     <tr>
                         <th><input type="checkbox" id="select-all"></th>
@@ -93,7 +92,12 @@
                     <tr class="@if($peticion->estado === 'pendiente') table-warning @elseif($peticion->estado === 'rechazada') table-secondary @elseif($peticion->estado === 'completada') table-success @endif">
                         <td><input type="checkbox" name="ids[]" value="{{ $peticion->id_peticion }}" class="row-checkbox"></td>
                         <td>{{ $peticion->id_peticion }}</td>
-                        <td>{{ $peticion->usuario->nombre }}</td>
+                        <td>
+                            {{ $peticion->usuario->nombre }}
+                            @if(!empty($peticion->usuario->email))
+                                <br><small class="text-muted">{{ $peticion->usuario->email }}</small>
+                            @endif
+                        </td>
                         <td>{{ $peticion->titulo }}</td>
                         <td>
                             <span class="badge bg-{{
@@ -111,8 +115,19 @@
                             <form action="{{ route('admin.peticiones.toggle-status', $peticion->id_peticion) }}" method="POST" style="display: inline-block;">
                                 @csrf
                                 <button type="submit" class="btn btn-sm btn-secondary">
-                                    {{ $peticion->estado === 'rechazada' ? 'Restaurar' : 'Rechazar' }}
+                                    {{ $peticion->estado === 'rechazada' ? 'Poner en revisión' : 'Rechazar' }}
                                 </button>
+                            </form>
+                            @if($peticion->estado === 'aceptada')
+                            <form action="{{ route('admin.peticiones.completar', $peticion->id_peticion) }}" method="POST" style="display:inline-block; margin-left:6px;">
+                                @csrf
+                                <button type="submit" class="btn btn-sm btn-success" onclick="return confirm('¿Marcar como completada y generar pedido?');">Completar</button>
+                            </form>
+                            @endif
+                            <form action="{{ route('admin.peticiones.destroy', $peticion->id_peticion) }}" method="POST" style="display: inline-block;" onsubmit="return confirm('¿Eliminar esta petición?');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
                             </form>
                         </td>
                     </tr>
@@ -124,7 +139,6 @@
 
     <form action="{{ route('admin.peticiones.bulk-delete') }}" method="POST" id="bulk-delete-form" style="display:none;">
         @csrf
-        @method('DELETE')
     </form>
 </div>
 

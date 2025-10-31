@@ -67,7 +67,7 @@ class PedidoController extends Controller
      */
     public function show(Pedido $pedido)
     {
-        $pedido->load(['usuario', 'detalles.producto']);
+        $pedido->load(['usuario', 'detalles.producto', 'peticion']);
         return view('admin.pedidos.show', compact('pedido'));
     }
 
@@ -85,6 +85,7 @@ class PedidoController extends Controller
     public function update(Request $request, Pedido $pedido)
     {
         $data = $request->validate([
+            'total' => 'required|numeric|min:0',
             'estado' => 'required|in:pendiente,procesando,enviado,entregado,cancelado',
             'metodo_pago' => 'nullable|string|max:50',
             'empresa_envio' => 'nullable|string|max:100',

@@ -24,7 +24,7 @@ class BulkStatusPeticionRequest extends FormRequest
         return [
             'ids' => 'required|array',
             'ids.*' => 'exists:peticiones,id_peticion',
-            'estado' => 'required|in:pendiente,en revisión,aceptada,rechazada,completada'
+            'estado' => 'required|in:en revisión,aceptada,rechazada'
         ];
     }
 }

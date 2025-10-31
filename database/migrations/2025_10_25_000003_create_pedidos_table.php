@@ -13,6 +13,7 @@ return new class extends Migration
             $table->foreignId('id_usuario')
                   ->constrained('usuarios', 'id_usuario')
                   ->cascadeOnDelete();
+            $table->foreignId('id_peticion')->nullable();
             $table->timestamp('fecha_pedido')->useCurrent();
             $table->decimal('total', 10, 2);
             $table->enum('estado', [
