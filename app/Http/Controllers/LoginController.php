@@ -41,10 +41,12 @@ class LoginController extends Controller
     }
 
     // Cierra la sesión
-    public function logout()
+    public function logout(Request $request)
     {
         auth('web')->logout();
-        return redirect()->route('login.form')->with('success', 'Sesión cerrada correctamente.');
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        return redirect()->route('tienda')->with('success', 'Sesión cerrada correctamente.');
     }
 
     // Muestra el formulario de registro

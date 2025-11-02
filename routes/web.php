@@ -13,17 +13,18 @@ use App\Http\Controllers\Admin\{
 };
 use App\Http\Controllers\CarritoController;
 use App\Http\Controllers\TiendaController;
+use App\Http\Controllers\PerfilController;
 
 /*
 |--------------------------------------------------------------------------
-| Rutas principales (públicas)
+| Rutas principales
 |--------------------------------------------------------------------------
 */
 
 Route::middleware(['web', 'track-user-activity'])->group(function () {
     // Página principal y tienda
-    Route::get('/', [TiendaController::class, 'index'])->name('inicio');
-    Route::get('/tienda', [TiendaController::class, 'index'])->name('tienda');
+    Route::get('/', [TiendaController::class, 'index'])->name('tienda');
+    Route::get('/tienda', [TiendaController::class, 'index']);
 
     // Autenticación
     Route::get('/login', [LoginController::class, 'mostrarLogin'])->name('login.form');
@@ -43,6 +44,18 @@ Route::middleware(['web', 'track-user-activity'])->group(function () {
         Route::put('/actualizar/{detalle}', [CarritoController::class, 'update'])->name('update');
         Route::delete('/eliminar/{detalle}', [CarritoController::class, 'destroy'])->name('destroy');
         Route::delete('/vaciar', [CarritoController::class, 'clear'])->name('clear');
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | Perfil de usuario
+    |--------------------------------------------------------------------------
+    */
+    Route::middleware('auth')->prefix('perfil')->name('perfil.')->group(function () {
+        Route::get('/', [PerfilController::class, 'index'])->name('index');
+        Route::get('/lista-deseos', [PerfilController::class, 'listaDeseos'])->name('lista-deseos');
+        Route::post('/lista-deseos/agregar/{producto}', [PerfilController::class, 'agregarListaDeseos'])->name('lista-deseos.agregar');
+        Route::delete('/lista-deseos/eliminar/{producto}', [PerfilController::class, 'eliminarListaDeseos'])->name('lista-deseos.eliminar');
     });
 
     /*
