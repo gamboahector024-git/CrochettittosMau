@@ -3,6 +3,7 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Http\Request; // <-- 1. AÑADE ESTA LÍNEA AL INICIO
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -11,19 +12,22 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        /**
-         * Aquí se registran tus middlewares personalizados
-         */
+         /**
+          * Aquí se registran tus middlewares personalizados
+          */
 
-        // Registrar alias de middleware
-        $middleware->alias([
-            'admin' => \App\Http\Middleware\VerificarAdmin::class,
-        ]);
+         // Registrar alias de middleware
+         $middleware->alias([
+             'admin' => \App\Http\Middleware\VerificarAdmin::class,
+         ]);
 
-        // También puedes agregar globales o de grupo si los necesitas:
-        // $middleware->web(prepend: [\App\Http\Middleware\OtroMiddleware::class]);
+         // --- 2. AÑADE ESTA LÍNEA AQUÍ ---
+         // Esto le dice a Laravel que tu ruta de login se llama 'login.form'
+         $middleware->redirectGuestsTo(fn (Request $request) => route('login.form'));
+         // ---------------------------------
+
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+         //
     })
     ->create();

@@ -1,67 +1,209 @@
-/* css/registro.css */
+/* ====== css/registro.css (Versión "Rose & Green Pastel Glassmorphism") ====== */
+
+/* 1. Fuentes */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Playfair+Display:wght@700&display=swap');
+
+/* ====== 2. Paleta de Colores (NUEVA PALETA COMPLETA - Consistente con tienda.css) ====== */
+:root {
+  --font-heading: 'Playfair Display', serif;
+  --font-body: 'Poppins', sans-serif;
+
+  /* Colores de tu imagen */
+  --color-sorbet-stem: #C2DC80; /* Verde Suave */
+  --color-petal-glaze: #EA9CAF; /* Rosa Suave */
+  --color-dusty-orchid: #D56989; /* Rosa Fuerte */
+  --color-powdered-lilac-grey: #F3EEF1; /* Fondo muy claro */
+
+  /* Fondos */
+  --bg-main: linear-gradient(135deg, var(--color-powdered-lilac-grey), #EAE6F9); /* Base + un toque lavanda */
+  --bg-card: #FFFFFF;
+  
+  /* Glassmorphism */
+  --bg-glass: rgba(255, 255, 255, 0.4);
+  --glass-border: 1px solid rgba(255, 255, 255, 0.6);
+  --glass-blur: blur(15px);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), 0 0 15px rgba(255, 255, 255, 0.3);
+
+  /* Textos (Armonizados con la paleta) */
+  --text-main: #5D4A56;
+  --text-dark: #4A3A44;
+  --text-muted: #7A6A74;
+
+  /* Acentos (Mapeo a tus nuevos colores) */
+  --accent-primary-pastel: var(--color-petal-glaze);    /* Rosa Suave */
+  --accent-secondary-pastel: var(--color-dusty-orchid); /* Rosa Fuerte */
+  --accent-highlight-green: var(--color-sorbet-stem);   /* Verde para acentos de éxito/acción */
+
+  /* Mapeo de acentos anteriores */
+  --accent-dark-contrast: var(--color-dusty-orchid);
+  --accent-light-contrast: var(--color-petal-glaze);
+}
+
+/* ====== 3. Estilo general (Con Footer) ====== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    color: #333;
-    line-height: 1.6;
+  font-family: var(--font-body);
+  background: var(--bg-main);
+  color: var(--text-main);
+  line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
-.navbar {
-    background: #333;
-    color: #fff;
-    padding: 1rem;
-    text-align: center;
-}
+/* ====== 4. Header (Estilos eliminados para el registro) ====== */
+/* ... */
 
-.navbar h1 a {
-    color: white;
-    text-decoration: none;
-}
-
+/* ====== 5. Contenedor del formulario (Efecto Cristal) ====== */
 .container {
-    max-width: 500px;
-    margin: 2rem auto;
-    padding: 2rem;
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  max-width: 460px;
+  width: 100%;
+  margin: 60px auto;
+  padding: 2.5rem;
+  border-radius: 16px;
+  
+  /* Estilos Glassmorphism */
+  background: var(--bg-glass);
+  backdrop-filter: var(--glass-blur);
+  border: var(--glass-border);
+  box-shadow: var(--glass-shadow);
 }
 
-h2 {
-    text-align: center;
-    margin-bottom: 1.5rem;
+.container h2 {
+  text-align: center;
+  margin-bottom: 2rem;
+  font-family: var(--font-heading);
+  color: var(--accent-dark-contrast); /* Rosa Fuerte */
+  font-size: 2rem;
 }
 
+/* ====== 6. Grupos de formulario (Estilo Rosa Pastel) ====== */
 .form-group {
-    margin-bottom: 1rem;
+  margin-bottom: 1.2rem;
 }
 
 .form-group label {
-    display: block;
-    margin-bottom: 5px;
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: var(--text-muted);
+  font-family: var(--font-body);
 }
 
-.form-group input {
-    width: 100%;
-    padding: 10px;
-    box-sizing: border-box;
-    border: 1px solid #ddd;
-    border-radius: 5px;
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--accent-light-contrast); /* Rosa Suave */
+  border-radius: 10px;
+  background-color: rgba(255, 255, 255, 0.3);
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  font-family: var(--font-body);
+  color: var(--text-main);
 }
 
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--accent-dark-contrast); /* Rosa Fuerte */
+  box-shadow: 0 0 10px rgba(234, 156, 175, 0.2); /* Sombra Rosa */
+}
+
+/* ====== 7. Botón de enviar (Estilo Rosa) ====== */
 .submit-btn {
-    display: block;
-    width: 100%;
-    padding: 10px 15px;
-    border: none;
-    background: #5cb85c;
-    color: white;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: background 0.3s;
+  display: block;
+  width: 100%;
+  padding: 12px 15px;
+  border: none;
+  font-size: 1.05rem;
+  letter-spacing: 0.5px;
+  
+  text-decoration: none;
+  border-radius: 25px;
+  font-weight: 700;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  background: var(--accent-secondary-pastel); /* Rosa Fuerte */
+  color: white; /* Texto blanco */
+  box-shadow: 0 4px 10px rgba(213, 105, 137, 0.4); /* Sombra Rosa */
 }
 
 .submit-btn:hover {
-    background: #4cae4c;
+  background: #C75E7E; /* Un tono más oscuro de Rosa Fuerte */
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(213, 105, 137, 0.6);
+}
+
+/* ====== 8. Enlace de login (Estilo Rosa) ====== */
+.register-link {
+  text-align: center;
+  margin-top: 1.5rem;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+.register-link a {
+  color: var(--accent-dark-contrast); /* Rosa Fuerte */
+  text-decoration: none;
+  font-weight: 700;
+  transition: color 0.3s ease;
+}
+
+.register-link a:hover {
+  color: var(--accent-light-contrast); /* Rosa Suave */
+  text-decoration: underline;
+}
+
+/* ====== 9. Mensajes (Estilo Rosa/Verde) ====== */
+.error-message {
+  background-color: rgba(234, 156, 175, 0.2); /* Fondo Rosa Suave */
+  color: #D8000C; /* Texto Rojo Fuerte */
+  border: 1px solid var(--accent-primary-pastel);
+  padding: 10px;
+  border-radius: 10px;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.success-message {
+  background: rgba(194, 220, 128, 0.3); /* Fondo Verde Suave */
+  color: #4F8A10; /* Texto Verde Oscuro */
+  border: 1px solid var(--accent-highlight-green);
+  padding: 10px;
+  border-radius: 10px;
+  text-align: center;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+/* ====== 10. Footer (Estilo Cristal) ====== */
+.site-footer {
+  text-align: center;
+  padding: 2rem 8%;
+  background: var(--bg-glass);
+  border-top: var(--glass-border);
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  letter-spacing: 0.5px;
+  backdrop-filter: var(--glass-blur);
+  margin-top: auto;
+  box-shadow: var(--glass-shadow);
+}
+
+/* ====== 11. Responsive (Ajustado) ====== */
+@media (max-width: 480px) {
+  .container {
+    margin: 40px 1rem;
+    padding: 2rem 1.5rem;
+  }
+
+  .container h2 {
+    font-size: 1.7rem;
+  }
 }

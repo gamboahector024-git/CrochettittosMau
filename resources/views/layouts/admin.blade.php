@@ -3,7 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>@yield('title', 'Panel de Administrador')</title>
-    <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
+
+    <!-- CSS base general -->
+    <link rel="stylesheet" href="{{ asset('css/admin_style.css') }}?v=12">
+
+    <!-- CSS específico por vista (opcional) -->
+    @yield('styles')
 </head>
 <body>
     <div class="sidebar">

@@ -1,17 +1,36 @@
 @extends('layouts.admin')
 
+@section('title', 'Nueva Promoción')
+
 @section('content')
-<div class="container">
-    <h1>Nueva Promoción</h1>
+    <div class="content-header">
+        <h1>Crear Nueva Promoción</h1>
+    </div>
 
-    <form action="{{ route('admin.promociones.store') }}" method="POST">
-        @csrf
-        @include('admin.promociones._form')
-
-        <div class="mt-3">
-            <button type="submit">Guardar</button>
-            <a href="{{ route('admin.promociones.index') }}">Cancelar</a>
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
         </div>
-    </form>
-</div>
+    @endif
+    
+    @if(session('success'))
+        <div class="alert alert-success">{{ session('success') }}</div>
+    @endif
+
+    <div class="form-container">
+        <form action="{{ route('admin.promociones.store') }}" method="POST">
+            @csrf
+            
+            @include('admin.promociones._form', ['isEdit' => false, 'promocion' => null])
+            
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Guardar Promoción</button>
+                <a href="{{ route('admin.promociones.index') }}" class="btn btn-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
 @endsection

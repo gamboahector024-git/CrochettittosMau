@@ -1,43 +1,64 @@
-// Espera a que todo el contenido del DOM esté cargado antes de ejecutar el script
-document.addEventListener('DOMContentLoaded', function() {
+// Espera a que el DOM esté completamente cargado
+document.addEventListener('DOMContentLoaded', () => {
 
-    // Obtiene los elementos del DOM que vamos a necesitar
-    const modal = document.getElementById("productModal");
-    const closeButton = document.querySelector(".close-button");
+    // Referencias a los modales
+    const productModal = document.getElementById("productModal");
+    const loginModal = document.getElementById("loginModal");
 
-    /**
-     * Función global para abrir el modal y mostrar los detalles del producto.
-     * Se asigna al objeto window para que pueda ser llamada desde el atributo onclick en el HTML.
-     * @param {string} name - El nombre del producto.
-     * @param {string} price - El precio del producto.
-     * @param {string} description - La descripción del producto.
-     * @param {string} imageUrl - La URL de la imagen del producto.
-     */
-    window.openModal = function(name, price, description, imageUrl) {
-        // Verifica si el modal existe antes de intentar manipularlo
-        if (modal) {
-            // Rellena el contenido del modal con los datos del producto
-            document.getElementById("modalName").textContent = name;
-            document.getElementById("modalPrice").textContent = '$' + price;
-            document.getElementById("modalDescription").textContent = description;
-            document.getElementById("modalImage").src = imageUrl;
-            
-            // Muestra el modal
-            modal.style.display = "block";
-        }
+    // Función para abrir el modal del producto
+    window.openModal = function (name, price, description, imageUrl) {
+        if (!productModal) return;
+
+        document.getElementById("modalName").textContent = name;
+        document.getElementById("modalPrice").textContent = '$' + price;
+        document.getElementById("modalDescription").textContent = description;
+        document.getElementById("modalImage").src = imageUrl;
+
+        openModalWindow(productModal);
+    };
+
+    // Función para abrir el modal de login
+    window.openLoginModal = function () {
+        if (!loginModal) return;
+        openModalWindow(loginModal);
+    };
+
+    // Función genérica para abrir un modal
+    function openModalWindow(modal) {
+        modal.style.display = "block";
+        document.body.style.overflow = "hidden"; // Evita el scroll de fondo
     }
 
-    // Evento para cerrar el modal al hacer clic en el botón (X)
-    if (closeButton) {
-        closeButton.onclick = function() {
-            modal.style.display = "none";
-        }
+    // Función genérica para cerrar un modal
+    function closeModalWindow(modal) {
+        modal.style.display = "none";
+        document.body.style.overflow = "auto"; // Restaura el scroll
     }
 
-    // Evento para cerrar el modal si el usuario hace clic fuera del contenido
-    window.onclick = function(event) {
-        if (event.target == modal) {
-            modal.style.display = "none";
+    // Cerrar modales al hacer clic en el botón con clase "close-button"
+    document.querySelectorAll(".close-button").forEach(btn => {
+        btn.addEventListener("click", (e) => {
+            const modal = e.target.closest(".modal");
+            if (modal) closeModalWindow(modal);
+        });
+    });
+
+    // Cerrar al hacer clic fuera del contenido
+    window.addEventListener("click", (event) => {
+        if (event.target.classList.contains("modal")) {
+            closeModalWindow(event.target);
         }
-    }
+    });
+
+    // Cerrar con tecla Escape
+    document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+            [productModal, loginModal].forEach(modal => {
+                if (modal && modal.style.display === "block") {
+                    closeModalWindow(modal);
+                }
+            });
+        }
+    });
+
 });

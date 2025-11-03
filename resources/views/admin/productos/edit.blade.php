@@ -1,12 +1,15 @@
 @extends('layouts.admin')
 
 @section('title', 'Editar Producto')
-@section('header', 'Editar Producto')
 
 @section('content')
+    <div class="content-header">
+        <h1>Editar Producto</h1>
+    </div>
+
     @if ($errors->any())
-        <div class="alert alert-danger" style="margin-bottom:12px;">
-            <ul style="margin:0; padding-left:18px;">
+        <div class="alert alert-danger">
+            <ul>
                 @foreach ($errors->all() as $error)
                     <li>{{ $error }}</li>
                 @endforeach
@@ -18,13 +21,17 @@
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
-    <form action="{{ route('admin.productos.update', $producto) }}" method="POST" enctype="multipart/form-data">
-        @csrf
-        @method('PUT')
-        @include('admin.productos._form', ['producto' => $producto])
-        <div style="margin-top:12px; display:flex; gap:8px;">
-            <button type="submit">Actualizar</button>
-            <a href="{{ route('admin.productos.index') }}">Cancelar</a>
-        </div>
-    </form>
+    <div class="form-container">
+        <form action="{{ route('admin.productos.update', $producto) }}" method="POST" enctype="multipart/form-data">
+            @csrf
+            @method('PUT')
+            
+            @include('admin.productos._form', ['isEdit' => true, 'producto' => $producto])
+            
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Actualizar Producto</button>
+                <a href="{{ route('admin.productos.index') }}" class="btn btn-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
 @endsection

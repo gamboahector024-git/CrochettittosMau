@@ -2,28 +2,25 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Registro de Usuario</title>
-    <link rel="stylesheet" href="{{ asset('css/registro.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear una Cuenta - Crochettittos</title>
+    
+    <link rel="stylesheet" href="{{ asset('css/registro.css') }}?v=11">
 </head>
 <body>
-
-    <nav class="navbar">
-        <h1><a href="{{ url('/') }}">Mi Tienda</a></h1>
-    </nav>
 
     <div class="container">
         <h2>Crear una Cuenta</h2>
 
-        {{-- Mensaje de éxito --}}
         @if(session('success'))
-            <div style="color: #28a745; background: #d4edda; border: 1px solid #c3e6cb; padding: 10px; border-radius: 5px; text-align: center; margin-bottom: 1rem;">
+            <div class="success-message">
                 {{ session('success') }}
             </div>
         @endif
 
-        {{-- Muestra errores de validación --}}
         @if ($errors->any())
-            <div style="color: red; margin-bottom: 1rem;">
+            <div class="error-message">
+                <strong>¡Ups! Algo salió mal.</strong>
                 <ul>
                     @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>
@@ -31,7 +28,7 @@
                 </ul>
             </div>
         @endif
-
+        
         <form action="{{ route('registro.guardar') }}" method="POST">
             @csrf
             <div class="form-group">
@@ -43,7 +40,7 @@
                 <input type="text" id="apellido" name="apellido" value="{{ old('apellido') }}" required>
             </div>
             <div class="form-group">
-                <label for="email">Email:</label>
+                <label for="email">Correo electrónico:</label>
                 <input type="email" id="email" name="email" value="{{ old('email') }}" required>
             </div>
             <div class="form-group">
@@ -62,13 +59,18 @@
                 <label for="direccion">Dirección:</label>
                 <textarea id="direccion" name="direccion" rows="3">{{ old('direccion') }}</textarea>
             </div>
+
             <button type="submit" class="submit-btn">Registrarse</button>
         </form>
 
-        <div class="register-link" style="text-align: center; margin-top: 1rem;">
+        <div class="register-link">
             <p>¿Ya tienes una cuenta? <a href="{{ url('/login') }}">Inicia Sesión</a></p>
         </div>
     </div>
+
+    <footer class="site-footer">
+        © 2025 Crochettitos. Todos los derechos reservados.
+    </footer>
 
 </body>
 </html>
