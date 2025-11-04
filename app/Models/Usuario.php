@@ -21,9 +21,7 @@ class Usuario extends Authenticatable
         'direccion',
         'telefono',
         'rol',
-        'fecha_registro',
-        'last_activity',
-        'is_online'
+        'fecha_registro'
     ];
 
     protected $hidden = [
@@ -35,10 +33,9 @@ class Usuario extends Authenticatable
         return 'id_usuario';
     }
 
-    // Verifica si el usuario está activo (últimos 5 minutos)
+    // Estado activo sin depender de columnas específicas
     public function isActive(): bool
     {
-        return $this->is_online || 
-               ($this->last_activity && $this->last_activity > now()->subMinutes(5));
+        return true;
     }
 }

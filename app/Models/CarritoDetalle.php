@@ -13,9 +13,15 @@ class CarritoDetalle extends Model
     protected $fillable = [
         'id_carrito',
         'id_producto',
-        'cantidad',
-        'precio_unitario'
+        'cantidad'
     ];
+
+    protected $touches = ['carrito'];
+
+    public function getRouteKeyName()
+    {
+        return 'id_detalle';
+    }
 
     public function carrito(): BelongsTo
     {

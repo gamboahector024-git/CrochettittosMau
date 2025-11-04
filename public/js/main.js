@@ -6,13 +6,34 @@ document.addEventListener('DOMContentLoaded', () => {
     const loginModal = document.getElementById("loginModal");
 
     // Función para abrir el modal del producto
-    window.openModal = function (name, price, description, imageUrl) {
+    window.openModal = function (productId, name, price, description, imageUrl, categoryName, originalPrice, discountBadgeText) {
         if (!productModal) return;
 
+        // Asignar valores a los elementos del modal
+        document.getElementById("modalProductId").value = productId;
         document.getElementById("modalName").textContent = name;
         document.getElementById("modalPrice").textContent = '$' + price;
         document.getElementById("modalDescription").textContent = description;
         document.getElementById("modalImage").src = imageUrl;
+        document.getElementById("modalCategory").textContent = categoryName ? `Categoría: ${categoryName}` : '';
+
+        // Lógica para mostrar/ocultar precios y badge de descuento
+        const originalPriceEl = document.getElementById("modalOriginalPrice");
+        const discountBadgeEl = document.getElementById("modalDiscountBadge");
+
+        if (originalPrice && originalPrice !== price) {
+            originalPriceEl.textContent = '$' + originalPrice;
+            originalPriceEl.style.display = 'inline';
+        } else {
+            originalPriceEl.style.display = 'none';
+        }
+
+        if (discountBadgeText) {
+            discountBadgeEl.textContent = discountBadgeText;
+            discountBadgeEl.style.display = 'inline-block';
+        } else {
+            discountBadgeEl.style.display = 'none';
+        }
 
         openModalWindow(productModal);
     };

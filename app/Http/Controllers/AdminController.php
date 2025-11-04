@@ -29,10 +29,8 @@ class AdminController extends Controller
                 return $pedido->detalles->sum('cantidad');
             });
 
-        // Usuarios activos (últimos 30 días)
-        $usuariosActivos = Usuario::where('is_online', true)
-            ->orWhere('last_activity', '>', now()->subMinutes(5))
-            ->count();
+        // Usuarios activos (métrica deshabilitada)
+        $usuariosActivos = 0;
 
         // Pedidos pendientes
         $pedidosPendientes = Pedido::where('estado', 'pendiente')

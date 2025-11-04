@@ -128,12 +128,5 @@
 @endsection
 
 @section('scripts')
-<script>
-// Script para seleccionar/deseleccionar todas las casillas
-document.getElementById('select-all')?.addEventListener('change', function (event) {
-    document.querySelectorAll('.row-checkbox').forEach(function (checkbox) {
-        checkbox.checked = event.target.checked;
-    });
-});
-</script>
+<script src="{{ asset('js/admin/peticiones.js') }}"></script>
 @endsection

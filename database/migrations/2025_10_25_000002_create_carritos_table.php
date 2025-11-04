@@ -12,6 +12,8 @@ return new class extends Migration
             $table->id('id_carrito');
             
             $table->foreignId('id_usuario')->constrained('usuarios', 'id_usuario')->onDelete('cascade');
+            // Un carrito por usuario
+            $table->unique('id_usuario', 'carritos_id_usuario_unique');
             $table->timestamps();
         });
     }

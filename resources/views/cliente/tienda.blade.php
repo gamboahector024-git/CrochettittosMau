@@ -41,6 +41,10 @@
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
+    @if(session('error'))
+        <div class="alert alert-error">{{ session('error') }}</div>
+    @endif
+
     <div class="search-container">
         <form action="{{ route('tienda') }}" method="GET">
             <input type="text" name="busqueda" placeholder="Buscar productos..." value="{{ request('busqueda') }}">
@@ -87,12 +91,17 @@
                         <div class="card-content">
                             <h3>{{ $producto->nombre }}</h3>
                             <p class="price">${{ number_format($producto->precio, 2) }}</p>
-                            <button class="buy-button" onclick="openModal(
-                                '{{ addslashes($producto->nombre) }}',
-                                '{{ number_format($producto->precio, 2) }}',
-                                '{{ addslashes($producto->descripcion) }}',
-                                '{{ addslashes($producto->imagen_url ?? 'https://via.placeholder.com/250') }}'
-                            )">
+                            <button class="buy-button" onclick='openModal(
+                                {{ json_encode($producto->id_producto) }},
+                                {{ json_encode($producto->nombre) }},
+                                {{ json_encode(number_format($producto->precio_promocional ?? $producto->precio, 2)) }},
+                                {{ json_encode($producto->descripcion) }},
+                                {{ json_encode($producto->imagen_url ?? 'https://via.placeholder.com/250') }},
+                                {{ json_encode($producto->categoria->nombre) }},
+                                {{ $producto->promocionActiva ? 'true' : 'false' }},
+                                {{ $producto->promocionActiva ? $producto->promocionActiva->descuento : 'null' }},
+                                {{ $producto->promocionActiva ? json_encode(number_format($producto->precio, 2)) : 'null' }}
+                            )'>
                                 Ver Detalles
                             </button>
                         </div>
@@ -104,6 +113,63 @@
         </main>
     </div>
 </div>
+
+<dialog id="productModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-image">
+            <img id="modalProductImage" src="" alt="">
+        </div>
+        <div class="modal-details">
+            <h2 id="modalProductName"></h2>
+            <div class="price-section">
+                <span id="modalProductPrice" class="price"></span>
+                <span id="modalProductDiscount" class="discount-badge" style="display: none"></span>
+                <span id="modalProductOriginalPrice" class="original-price" style="display: none"></span>
+            </div>
+            <div class="category">
+                <span>Categoría:</span>
+                <span id="modalProductCategory"></span>
+            </div>
+            <div class="description-section">
+                <h4>Descripción:</h4>
+                <p id="modalProductDescription" class="description"></p>
+            </div>
+            
+            <div class="modal-actions">
+                <div class="quantity-selector">
+                    <label for="modalProductQuantity">Cantidad:</label>
+                    <input type="number" id="modalProductQuantity" name="cantidad" min="1" value="1" class="quantity-input">
+                </div>
+                
+                @auth
+                    <form action="{{ route('carrito.store') }}" method="POST" id="addToCartForm">
+                        @csrf
+                        <input type="hidden" name="id_producto" id="modalProductId">
+                        <input type="hidden" name="cantidad" id="modalProductQuantityHidden" value="1">
+                        <button type="submit" class="add-to-cart primary-button">
+                            <i class="fas fa-shopping-cart"></i> Añadir al carrito
+                        </button>
+                    </form>
+                    <button class="buy-button secondary-button" disabled>
+                        <i class="fas fa-credit-card"></i> Comprar ahora
+                    </button>
+                    <button class="wishlist tertiary-button">
+                        <i class="fas fa-heart"></i> Lista de deseos
+                    </button>
+                @else
+                    <a href="{{ route('login.form') }}" class="add-to-cart primary-button" style="display: inline-block; text-align: center; text-decoration: none;">
+                        <i class="fas fa-sign-in-alt"></i> Inicia sesión para agregar al carrito
+                    </a>
+                    <p style="margin-top: 10px; color: #666; font-size: 14px;">
+                        ¿No tienes cuenta? <a href="{{ route('registro.form') }}" style="color: #A77BFF; font-weight: bold;">Regístrate aquí</a>
+                    </p>
+                @endauth
+            </div>
+        </div>
+        <button class="close-modal" onclick="closeModal()">×</button>
+    </div>
+</dialog>
+
 @endsection
 
 {{-- JAVASCRIPT EXCLUSIVO PARA ESTA PÁGINA (EL CARRUSEL) --}}
@@ -177,5 +243,59 @@
             startAutoSlide();
         }
     });
+</script>
+
+<script>
+    function openModal(id, nombre, precio, descripcion, imagen, categoria, promocionActiva = null, descuento = null, precioOriginal = null) {
+        console.log('Abriendo modal con:', {id, nombre, precio, descripcion, imagen, categoria, promocionActiva, descuento, precioOriginal});
+        
+        const modal = document.getElementById('productModal');
+        
+        // Asignar valores
+        document.getElementById('modalProductId').value = id;
+        document.getElementById('modalProductName').textContent = nombre;
+        document.getElementById('modalProductPrice').textContent = '$' + precio;
+        document.getElementById('modalProductDescription').textContent = descripcion;
+        document.getElementById('modalProductImage').src = imagen;
+        document.getElementById('modalProductImage').alt = nombre;
+        document.getElementById('modalProductCategory').textContent = categoria;
+        
+        console.log('Nombre asignado:', document.getElementById('modalProductName').textContent);
+        console.log('Precio asignado:', document.getElementById('modalProductPrice').textContent);
+        console.log('Descripción asignada:', document.getElementById('modalProductDescription').textContent);
+        console.log('Categoría asignada:', document.getElementById('modalProductCategory').textContent);
+        
+        // Manejar promoción si existe
+        const discountBadge = document.getElementById('modalProductDiscount');
+        const originalPrice = document.getElementById('modalProductOriginalPrice');
+        
+        if (promocionActiva && descuento && precioOriginal) {
+            discountBadge.style.display = 'inline';
+            originalPrice.style.display = 'inline';
+            discountBadge.textContent = `-${descuento}%`;
+            originalPrice.textContent = `$${precioOriginal}`;
+        } else {
+            discountBadge.style.display = 'none';
+            originalPrice.style.display = 'none';
+        }
+        
+        document.getElementById('modalProductQuantity').value = 1;
+        document.getElementById('modalProductQuantityHidden').value = 1;
+        modal.showModal();
+    }
+
+    // Sincronizar cantidad
+    document.getElementById('modalProductQuantity')?.addEventListener('change', function() {
+        document.getElementById('modalProductQuantityHidden').value = this.value;
+    });
+
+    document.getElementById('addToCartForm')?.addEventListener('submit', function(e) {
+        const quantity = document.getElementById('modalProductQuantity').value;
+        document.getElementById('modalProductQuantityHidden').value = quantity;
+    });
+
+    function closeModal() {
+        document.getElementById('productModal').close();
+    }
 </script>
 @endpush

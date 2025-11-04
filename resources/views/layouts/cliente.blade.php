@@ -28,6 +28,10 @@
                         Hola, {{ Auth::user()->nombre }}
                     </a>
 
+                    <a href="{{ route('carrito.index') }}" class="nav-button nav-button-pastel-primary">
+                        <i class="fas fa-shopping-cart"></i> Carrito
+                    </a>
+
                     <a href="{{ route('logout') }}" class="nav-button nav-button-pastel-secondary">Cerrar Sesión</a>
 
                 @else
@@ -54,8 +58,27 @@
             <span class="close-button">&times;</span>
             <img id="modalImage" src="" alt="Imagen del Producto" class="modal-image">
             <h2 id="modalName"></h2>
-            <p id="modalPrice" class="modal-price"></p>
+            
+            <div class="modal-price-row">
+                <span id="modalPrice" class="modal-price"></span>
+                <span id="modalOriginalPrice" class="modal-price-original"></span>
+                <span id="modalDiscountBadge" class="modal-discount-badge"></span>
+            </div>
+
+            <p id="modalCategory" class="modal-category"></p>
             <p id="modalDescription" class="modal-description"></p>
+
+            <form action="{{ route('carrito.store') }}" method="POST" class="modal-form">
+                @csrf
+                <input type="hidden" name="id_producto" id="modalProductId">
+                
+                <div class="quantity-selector">
+                    <label for="modalQuantity">Cantidad:</label>
+                    <input type="number" id="modalQuantity" name="cantidad" value="1" min="1" class="quantity-input">
+                </div>
+
+                <button type="submit" class="add-to-cart-button">Agregar al Carrito</button>
+            </form>
         </div>
     </div>
 

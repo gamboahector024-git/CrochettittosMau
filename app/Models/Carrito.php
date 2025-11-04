@@ -15,6 +15,13 @@ class Carrito extends Model
         'id_usuario'
     ];
 
+    protected $casts = [
+        'last_reminder_sent_at' => 'datetime',
+    ];
+
+    // Cargar siempre los detalles y el producto asociado
+    protected $with = ['detalles.producto.categoria'];
+
     // Relación con Usuario
     public function usuario(): BelongsTo
     {
@@ -31,6 +38,6 @@ class Carrito extends Model
     public function productos()
     {
         return $this->belongsToMany(Producto::class, 'carrito_detalles', 'id_carrito', 'id_producto')
-            ->withPivot(['cantidad', 'precio_unitario']);
+            ->withPivot(['cantidad']);
     }
 }

@@ -12,10 +12,7 @@ class TrackUserActivity
     public function handle(Request $request, Closure $next)
     {
         if (Auth::check()) {
-            $user = Auth::user();
-            $user->last_activity = now();
-            $user->is_online = true;
-            $user->save();
+            // No-op: removed last_activity / is_online updates
         }
 
         return $next($request);
