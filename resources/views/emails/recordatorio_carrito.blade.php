@@ -24,19 +24,16 @@
         <p>Hola {{ $usuario->nombre }},</p>
         <p>Notamos que dejaste algunos productos en tu carrito hace un rato. Aquí tienes un recordatorio por si deseas completar tu compra:</p>
 
-        @foreach($detalles as $detalle)
+        @foreach($productos as $producto)
             <div class="product">
-                <img src="{{ $detalle->producto->imagen_url ?? 'https://via.placeholder.com/80' }}" alt="{{ $detalle->producto->nombre }}">
+                <img src="{{ $producto->imagen_url ?? 'https://via.placeholder.com/80' }}" alt="{{ $producto->nombre }}">
                 <div>
-                    <h4>{{ $detalle->producto->nombre }}</h4>
-                    <div>
-                        Cantidad: {{ $detalle->cantidad }}
-                    </div>
+                    <h4>{{ $producto->nombre }}</h4>
                     <div>
                         @php
-                            $precio = $detalle->producto->promocionActiva
-                                ? $detalle->producto->precio * (1 - $detalle->producto->promocionActiva->descuento/100)
-                                : $detalle->producto->precio;
+                            $precio = $producto->promocionActiva
+                                ? $producto->precio * (1 - $producto->promocionActiva->descuento/100)
+                                : $producto->precio;
                         @endphp
                         Precio: ${{ number_format($precio, 2) }}
                     </div>

@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\Carrito;
-use App\Mail\AbandonedCartReminder;
+use App\Mail\RecordatorioCarrito;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
@@ -17,7 +17,7 @@ class SendAbandonedCartReminders extends Command
 
     public function handle(): int
     {
-        $cutoff = now()->subHours(2);
+        $cutoff = now()->subMinutes(1);
         $processed = 0;
 
         // Cargar carritos con detalles y usuario
@@ -50,7 +50,12 @@ class SendAbandonedCartReminders extends Command
                         continue;
                     }
 
-                    Mail::to($carrito->usuario->email)->queue(new AbandonedCartReminder($carrito));
+                    // Extraer productos desde los detalles del carrito
+                    $productos = $carrito->detalles->map(function ($detalle) {
+                        return $detalle->producto;
+                    });
+
+                    Mail::to($carrito->usuario->email)->queue(new RecordatorioCarrito($carrito->usuario, $productos));
 
                     $carrito->last_reminder_sent_at = now();
                     $carrito->save();

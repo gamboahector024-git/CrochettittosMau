@@ -15,6 +15,7 @@ return new class extends Migration
             // Un carrito por usuario
             $table->unique('id_usuario', 'carritos_id_usuario_unique');
             $table->timestamps();
+            $table->timestamp('last_reminder_sent_at')->nullable();
         });
     }
 

@@ -79,6 +79,9 @@ class AdminController extends Controller
         // Contador de Peticiones
         $peticionesCount = Peticion::count();
 
+        // Productos con stock bajo
+        $lowStockProducts = Producto::where('stock', '<', 5)->orderBy('stock')->take(10)->get();
+
         return view('admin.dashboard', [
             'ventasMes' => $ventasMes,
             'productosVendidos' => $productosVendidos,
@@ -90,6 +93,7 @@ class AdminController extends Controller
             'visitasDiariasData' => $visitasDiariasData,
             'visitasMensualesLabels' => $visitasMensualesLabels,
             'visitasMensualesData' => $visitasMensualesData,
+            'lowStockProducts' => $lowStockProducts,
         ]);
     }
 }

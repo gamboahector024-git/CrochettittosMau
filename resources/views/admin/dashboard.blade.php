@@ -60,6 +60,24 @@
             <div class="label">Últimas 24 horas</div>
         </div>
 
+        <div class="stat-card red"> {{-- Assuming a red class for alert styling, add to CSS if needed --}}
+            <div class="stat-card-header">
+                <i class="fas fa-exclamation-triangle"></i>
+                <h3>Productos por agotarse</h3>
+            </div>
+            <div class="value">
+                @if($lowStockProducts->isNotEmpty())
+                    @foreach($lowStockProducts as $product)
+                        {{ $product->nombre }} (Stock: {{ $product->stock }})
+                        @if(!$loop->last), @endif
+                    @endforeach
+                @else
+                    Ningún producto con bajo stock
+                @endif
+            </div>
+            <div class="label">Primeros 10 productos con poco stock &lt; 5</div>
+        </div>
+
         {{-- Puedes añadir más tarjetas aquí si es necesario --}}
 
     </div>
