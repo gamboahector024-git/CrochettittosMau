@@ -5,11 +5,11 @@
 @section('content')
 <div class="container">
     <div class="welcome-message">
-        <h2>¡Bienvenido a Crochettittos!</h2>
+        <h2>¡Bienvenido a Crochettittos! 🧶</h2>
         <p>
             En nuestra tienda encontrarás un universo de creaciones tejidas con amor y dedicación.
             Desde llaveros adorables y flores únicas, hasta piezas personalizadas para ti o tus seres queridos.  
-            Aquí hay un poquito de todo... pero siempre hecho con mucho corazón.
+            Aquí hay un poquito de todo... pero siempre hecho con mucho corazón 💖.
         </p>
     </div>
 
@@ -17,13 +17,8 @@
         <div class="carousel-track">
             
             <div class="carousel-slide">
-                {{-- 
-                    INSTRUCCIONES PARA TU IMAGEN:
-                    1. Mueve 'image_a2e101.jpg' a la carpeta 'public/img' (si no existe, créala).
-                    2. Descomenta la línea de abajo y borra la línea de 'via.placeholder.com'.
-                --}}
                 {{-- <img src="{{ asset('img/image_a2e101.jpg') }}" alt="Amigurumi Especial"> --}}
-                <img src="https://via.placeholder.com/1200x400/A77BFF/FFFFFF?text=Tu+Imagen+Principal+Aqu%C3%AD" alt="Imagen de Bienvenida 1">
+                <img src="https://via.placeholder.com/1200x400/A77BFF/FFFFFF?text=Tu+Imagen+Principal+Aqu%C3%BA" alt="Imagen de Bienvenida 1">
             </div>
             
             <div class="carousel-slide">
@@ -37,8 +32,12 @@
         </div>
         <div class="carousel-dots"></div>
     </section>
+    
     @if(session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
+    @endif
+    @if(session('error'))
+        <div class="alert alert-error">{{ session('error') }}</div>
     @endif
 
     <div class="search-container">
@@ -77,26 +76,62 @@
             </form>
         </aside>
 
+        <!-- ===== GRID DE PRODUCTOS (CON ONCLICK CORREGIDO) ===== -->
         <main class="products-grid">
             @if($productos->count())
                 @foreach($productos as $producto)
+                    
+                    {{-- 1. Pre-calculamos los valores de la oferta --}}
+                    @php
+                        $oferta = $producto->promocionActiva;
+                        // Usamos el precio promocional si existe, si no, el precio normal
+                        $precioFinal = $producto->precio_promocional ?? $producto->precio;
+                        $precioOriginalNum = ($oferta) ? $producto->precio : null;
+                        $badge = null;
+
+                        if ($oferta) {
+                            if ($oferta->tipo === 'porcentaje') {
+                                $badge = $oferta->valor . '% OFF';
+                            } else {
+                                $badge = '$' . number_format($oferta->valor, 2) . ' OFF';
+                            }
+                        }
+                    @endphp
+
                     <div class="product-card">
                         <div class="card-image-wrapper">
                             <img src="{{ $producto->imagen_url ?? 'https://via.placeholder.com/250' }}" alt="{{ $producto->nombre }}">
+                            @if($oferta)
+                                <span class="discount-badge-card">{{ $badge }}</span>
+                            @endif
                         </div>
                         <div class="card-content">
                             <h3>{{ $producto->nombre }}</h3>
-                            <p class="price">${{ number_format($producto->precio, 2) }}</p>
-                            <button class="buy-button" onclick='openModal(
-                                {{ json_encode($producto->nombre) }},
-                                {{ json_encode(number_format($producto->precio_promocional ?? $producto->precio, 2)) }},
-                                {{ json_encode($producto->descripcion) }},
-                                {{ json_encode($producto->imagen_url ?? 'https://via.placeholder.com/250') }},
-                                {{ json_encode($producto->categoria->nombre) }},
-                                {{ $producto->promocionActiva ? 'true' : 'false' }},
-                                {{ $producto->promocionActiva ? $producto->promocionActiva->descuento : 'null' }},
-                                {{ $producto->promocionActiva ? json_encode(number_format($producto->precio, 2)) : 'null' }}
-                            )'>
+                            
+                            {{-- Lógica de precio para mostrar el precio original tachado --}}
+                            <p class="price">
+                                ${{ number_format($precioFinal, 2) }}
+                                @if($oferta)
+                                    <span class="original-price-card">${{ number_format($precioOriginalNum, 2) }}</span>
+                                @endif
+                            </p>
+                            
+                            {{-- 
+                              ===== ONCLICK CORREGIDO =====
+                              Llama a la función 'openModal' de main.js con todos los 9 argumentos.
+                              Ahora SÍ pasa el id_producto real.
+                            --}}
+                            <button class="buy-button" onclick="openModal(
+                                {{ $producto->id_producto }}, {{-- 1. ID de Producto REAL --}}
+                                {{ json_encode($producto->nombre) }}, {{-- 2. Nombre --}}
+                                '{{ number_format($precioFinal, 2) }}', {{-- 3. Precio Final --}}
+                                {{ json_encode($producto->descripcion ?? 'Sin descripción.') }}, {{-- 4. Descripción --}}
+                                '{{ $producto->imagen_url ?? 'https://via.placeholder.com/250' }}', {{-- 5. Imagen --}}
+                                '{{ $producto->categoria->nombre ?? 'Sin categoría' }}', {{-- 6. Categoría --}}
+                                {{ $oferta ? 'true' : 'false' }}, {{-- 7. PromocionActiva (booleano) --}}
+                                {{ $badge ? json_encode($badge) : 'null' }}, {{-- 8. Badge (texto del descuento) --}}
+                                {{ $precioOriginalNum ? "'".number_format($precioOriginalNum, 2)."'" : 'null' }} {{-- 9. Precio Original --}}
+                            )">
                                 Ver Detalles
                             </button>
                         </div>
@@ -109,39 +144,7 @@
     </div>
 </div>
 
-<dialog id="productModal" class="modal">
-    <div class="modal-content">
-        <div class="modal-image">
-            <img id="modalProductImage" src="" alt="">
-        </div>
-        <div class="modal-details">
-            <h2 id="modalProductName"></h2>
-            <div class="price-section">
-                <span id="modalProductPrice" class="price"></span>
-                <span id="modalProductDiscount" class="discount-badge" style="display: none"></span>
-                <span id="modalProductOriginalPrice" class="original-price" style="display: none"></span>
-            </div>
-            <div class="category">
-                <span>Categoría:</span>
-                <span id="modalProductCategory"></span>
-            </div>
-            <div class="description-section">
-                <h4>Descripción:</h4>
-                <p id="modalProductDescription" class="description"></p>
-            </div>
-            
-            <div class="modal-actions">
-                <a href="{{ route('login.form') }}" class="add-to-cart primary-button" style="display: inline-block; text-align: center; text-decoration: none;">
-                    <i class="fas fa-sign-in-alt"></i> Inicia sesión para comprar
-                </a>
-                <p style="margin-top: 10px; color: #666; font-size: 14px;">
-                    ¿No tienes cuenta? <a href="{{ route('registro.form') }}" style="color: #A77BFF; font-weight: bold;">Regístrate aquí</a>
-                </p>
-            </div>
-        </div>
-        <button class="close-modal" onclick="closeModal()">×</button>
-    </div>
-</dialog>
+{{-- ¡ELIMINADO! El <dialog id="productModal"> duplicado ya no está aquí --}}
 
 @endsection
 
@@ -161,101 +164,79 @@
 
             // Salir si no hay slides
             if (slides.length === 0) return;
-
-            const slideWidth = slides[0].getBoundingClientRect().width;
-
-            // Crear los puntos de navegación
-            slides.forEach((_, index) => {
-                const dot = document.createElement('span');
-                dot.classList.add('dot');
-                if (index === 0) dot.classList.add('active');
-                dot.addEventListener('click', () => {
-                    goToSlide(index);
-                    resetAutoSlide(); // Reinicia el timer si se hace clic manual
-                });
-                dotsContainer.appendChild(dot);
+            
+            // Clonar slides para el efecto infinito
+            slides.forEach(slide => {
+                carouselTrack.appendChild(slide.cloneNode(true));
             });
-            const dots = Array.from(dotsContainer.children);
 
             // Función para mover a un slide específico
-            function goToSlide(index) {
-                // Asegurarse de que el ancho es correcto (por si cambia el tamaño de la ventana)
+            function goToSlide(index, smooth = true) {
+                const slides = Array.from(carouselTrack.children);
+                // Prevenir error si los slides aún no están cargados
+                if (slides.length === 0 || !slides[0]) return;
                 const currentSlideWidth = slides[0].getBoundingClientRect().width;
+                if (!smooth) carouselTrack.style.transition = 'none';
                 carouselTrack.style.transform = `translateX(-${index * currentSlideWidth}px)`;
+                if (!smooth) {
+                    carouselTrack.offsetHeight; 
+                    carouselTrack.style.transition = 'transform 0.8s ease-in-out';
+                }
                 
-                // Actualizar el punto activo
+                let activeDotIndex = index % (slides.length / 2); // Ajustado para clones
                 dots.forEach(dot => dot.classList.remove('active'));
-                dots[index].classList.add('active');
-                
-                slideIndex = index;
+                if (dots[activeDotIndex]) {
+                    dots[activeDotIndex].classList.add('active');
+                }
             }
 
             // Función para el siguiente slide
             function autoSlide() {
-                slideIndex = (slideIndex + 1) % slides.length;
+                const slides = Array.from(carouselTrack.children);
+                const totalSlides = slides.length / 2; // Número de slides originales
+                
+                slideIndex++;
                 goToSlide(slideIndex);
+
+                // Resetear al inicio sin animación si llega al final de los clones
+                if (slideIndex >= totalSlides) {
+                    setTimeout(() => {
+                        slideIndex = 0;
+                        goToSlide(slideIndex, false);
+                    }, 800); // 800ms = duración de la transición en el CSS
+                }
+            }
+            
+            // Crear los puntos de navegación
+            const dots = [];
+            const originalSlidesCount = slides.length;
+            for(let i = 0; i < originalSlidesCount; i++) {
+                const dot = document.createElement('span');
+                dot.classList.add('dot');
+                if (i === 0) dot.classList.add('active');
+                dot.addEventListener('click', () => {
+                    slideIndex = i;
+                    goToSlide(slideIndex);
+                    resetAutoSlide(); // Reinicia el timer si se hace clic manual
+                });
+                dotsContainer.appendChild(dot);
+                dots.push(dot);
             }
 
             // Iniciar el auto-deslizamiento
-            function startAutoSlide() {
-                intervalId = setInterval(autoSlide, 5000); // Cambia cada 5 segundos
-            }
+            let intervalId = setInterval(autoSlide, 5000); // Cambia cada 5 segundos
 
             // Reiniciar el auto-deslizamiento
             function resetAutoSlide() {
                 clearInterval(intervalId);
-                startAutoSlide();
+                intervalId = setInterval(autoSlide, 5000);
             }
 
             // Ajustar el carrusel si la ventana cambia de tamaño
             window.addEventListener('resize', () => {
-                goToSlide(slideIndex);
+                goToSlide(slideIndex, false); // Sin animación al reajustar
             });
-
-            // Iniciar todo
-            startAutoSlide();
         }
     });
-</script>
-
-<script>
-    function openModal(nombre, precio, descripcion, imagen, categoria, promocionActiva = false, descuento = null, precioOriginal = null) {
-        console.log('Abriendo modal con:', {nombre, precio, descripcion, imagen, categoria, promocionActiva, descuento, precioOriginal});
-        
-        const modal = document.getElementById('productModal');
-        
-        // Asignar valores
-        document.getElementById('modalProductName').textContent = nombre;
-        document.getElementById('modalProductPrice').textContent = '$' + precio;
-        document.getElementById('modalProductDescription').textContent = descripcion;
-        document.getElementById('modalProductImage').src = imagen;
-        document.getElementById('modalProductImage').alt = nombre;
-        document.getElementById('modalProductCategory').textContent = categoria;
-        
-        console.log('Nombre asignado:', document.getElementById('modalProductName').textContent);
-        console.log('Precio asignado:', document.getElementById('modalProductPrice').textContent);
-        console.log('Descripción asignada:', document.getElementById('modalProductDescription').textContent);
-        console.log('Categoría asignada:', document.getElementById('modalProductCategory').textContent);
-        
-        // Manejar promoción si existe
-        const discountBadge = document.getElementById('modalProductDiscount');
-        const originalPrice = document.getElementById('modalProductOriginalPrice');
-        
-        if (promocionActiva && descuento && precioOriginal) {
-            discountBadge.style.display = 'inline';
-            originalPrice.style.display = 'inline';
-            discountBadge.textContent = `-${descuento}%`;
-            originalPrice.textContent = `$${precioOriginal}`;
-        } else {
-            discountBadge.style.display = 'none';
-            originalPrice.style.display = 'none';
-        }
-        
-        modal.showModal();
-    }
-
-    function closeModal() {
-        document.getElementById('productModal').close();
-    }
 </script>
 @endpush

@@ -13,21 +13,25 @@ class TiendaController extends Controller
         // Obtener productos y categorías para ambos tipos de usuarios
         $query = Producto::query();
         
-        if ($request->has('busqueda')) {
+        // CORREGIDO: Usar 'filled' para asegurarse de que el campo tiene un valor
+        if ($request->filled('busqueda')) {
             $query->where('nombre', 'like', '%'.$request->busqueda.'%');
         }
         
-        if ($request->has('categoria')) {
+        // CORREGIDO: Usar 'filled'
+        if ($request->filled('categoria')) {
             $query->whereHas('categoria', function($q) use ($request) {
                 $q->where('nombre', $request->categoria);
             });
         }
         
-        if ($request->has('precio_min')) {
+        // CORREGIDO: Esto soluciona tu error 'Illegal operator'
+        if ($request->filled('precio_min')) {
             $query->where('precio', '>=', $request->precio_min);
         }
         
-        if ($request->has('precio_max')) {
+        // CORREGIDO: Esto soluciona tu error 'Illegal operator'
+        if ($request->filled('precio_max')) {
             $query->where('precio', '<=', $request->precio_max);
         }
         
