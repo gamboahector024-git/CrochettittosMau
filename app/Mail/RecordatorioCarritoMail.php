@@ -6,7 +6,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class RecordatorioCarrito extends Mailable
+class RecordatorioCarritoMail extends Mailable
 {
     use Queueable, SerializesModels;
 

@@ -3,15 +3,15 @@
 namespace App\Console\Commands;
 
 use App\Models\Carrito;
-use App\Mail\RecordatorioCarrito;
+use App\Mail\RecordatorioCarritoMail;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Carbon;
 
-class SendAbandonedCartReminders extends Command
+class RecordatorioCarrito extends Command
 {
-    protected $signature = 'cart:remind-abandoned';
+    protected $signature = 'recordatorio:carrito';
 
     protected $description = 'Send reminder emails to users who left items in the cart after 2 hours of inactivity';
 
@@ -55,7 +55,7 @@ class SendAbandonedCartReminders extends Command
                         return $detalle->producto;
                     });
 
-                    Mail::to($carrito->usuario->email)->queue(new RecordatorioCarrito($carrito->usuario, $productos));
+                    Mail::to($carrito->usuario->email)->queue(new RecordatorioCarritoMail($carrito->usuario, $productos));
 
                     $carrito->last_reminder_sent_at = now();
                     $carrito->save();

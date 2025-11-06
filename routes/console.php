@@ -9,4 +9,4 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 // Scheduler (Laravel 12 style): ejecutar recordatorios de carritos abandonados
-Schedule::command('cart:remind-abandoned')->everyFifteenMinutes();
+Schedule::command('recordatorio:carrito')->everyMinute();
