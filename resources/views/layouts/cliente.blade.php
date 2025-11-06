@@ -92,7 +92,7 @@
         </div>
     </div>
 
-    <script src="{{ asset('js/main.js') }}"></script>
+    <script src="{{ asset('js/main.js') }}?v=13"></script>
     
     @stack('scripts')
 </body>

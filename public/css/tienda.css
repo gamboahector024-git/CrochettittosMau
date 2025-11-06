@@ -15,8 +15,8 @@
   --color-powdered-lilac-grey: #F3EEF1; /* Fondo muy claro */
 
   /* Fondos */
-  --bg-main: linear-gradient(135deg, var(--color-powdered-lilac-grey), #EAE6F9); /* Base + un toque lavanda */
-  --bg-card: #FFFFFF; /* Mantenemos blanco puro para las tarjetas de producto */
+  --bg-main: linear-gradient(135deg, var(--color-powdered-lilac-grey), #EAE6F9); 
+  --bg-card: #FFFFFF;
   
   /* Glassmorphism */
   --bg-glass: rgba(255, 255, 255, 0.4);
@@ -118,6 +118,11 @@ body {
 .nav-auth .welcome-user {
     color: var(--text-main);
     font-weight: 600;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+.nav-auth .welcome-user:hover {
+    color: var(--accent-dark-contrast);
 }
 .nav-button {
     text-decoration: none;
@@ -159,27 +164,26 @@ main {
   padding: 3rem 8%;
 }
 
-/* ====== 6. Mensaje de Bienvenida (Estilo Rosa) ====== */
+/* ====== 6. Mensaje de Bienvenida (Fondo Verde, Texto Rosa) ====== */
 .welcome-message {
   text-align: center;
-  background: var(--accent-highlight-green); /* ¡NUEVO: Fondo Verde Suave! */
-  border: 1px solid rgba(255, 255, 255, 0.8); /* Borde blanco sutil para contraste */
+  background: var(--accent-highlight-green); /* ¡Fondo Verde Suave! */
+  border: 1px solid rgba(255, 255, 255, 0.8);
   padding: 3rem 2rem;
   border-radius: 16px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), 0 0 15px rgba(255, 255, 255, 0.3); /* Sombra glassmorphism */
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   margin-bottom: 4rem;
-  /* backdrop-filter: var(--glass-blur); -- Lo quitamos porque ya no es glass */
 }
 .welcome-message h2 {
   font-family: var(--font-heading);
   font-size: 2.4rem;
-  color: var(--accent-dark-contrast); /* Título Rosa Fuerte (se mantiene) */
+  color: var(--accent-dark-contrast); /* Título Rosa Fuerte */
   margin-bottom: 1rem;
   overflow: hidden;
   white-space: nowrap;
 }
 .welcome-message p {
-  color: var(--accent-dark-contrast); /* ¡NUEVO: Párrafo en Rosa Fuerte! */
+  color: var(--accent-dark-contrast); /* Párrafo en Rosa Fuerte! */
   font-size: 1.1rem;
   max-width: 750px;
   margin: 0 auto;
@@ -258,6 +262,13 @@ main {
   font-size: 1.4rem;
   margin: 0;
 }
+.card-content .price .original-price-card { /* Precio original en la tarjeta */
+    text-decoration: line-through;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin-left: 8px;
+}
+
 
 .buy-button {
   background: var(--accent-light-contrast); /* Rosa Suave */
@@ -319,7 +330,6 @@ main {
 }
 .search-container button:hover {
   background: #C75E7E; /* Un tono más oscuro de Rosa Fuerte */
-  color: white;
 }
 
 .shop-layout {
@@ -450,6 +460,7 @@ main {
     background-color: var(--accent-secondary-pastel); /* Rosa Fuerte */
     transform: scale(1.2);
 }
+/* ============================================== */
 
 
 /* ====== 10. Footer ====== */
@@ -466,7 +477,7 @@ main {
   box-shadow: var(--glass-shadow);
 }
 
-/* ====== 11. Modal ====== */
+/* ====== 11. Modal (Estilo Unificado) ====== */
 .modal {
   display: none;
   position: fixed;
@@ -477,9 +488,11 @@ main {
   backdrop-filter: blur(5px);
   justify-content: center;
   align-items: center;
+  padding: 20px;
+  box-sizing: border-box;
 }
 
-/* Soporte para dialog nativo */
+/* Soporte para <dialog> nativo */
 dialog.modal {
   border: none;
   padding: 0;
@@ -487,30 +500,34 @@ dialog.modal {
   width: 90%;
   background: transparent;
   overflow: visible;
+  /* El display: none; de arriba se ignora por el navegador */
 }
-
+dialog.modal[open] {
+    display: flex; /* Asegura que flexbox se aplique */
+}
 dialog.modal::backdrop {
-  background-color: rgba(0, 0, 0, 0.75);
+  background-color: rgba(0, 0, 0, 0.7);
   backdrop-filter: blur(8px);
 }
 
 .modal-content {
-  background: var(--bg-card);
+  background: var(--bg-card); /* Blanco Sólido */
   color: var(--text-main);
-  border: var(--glass-border);
-  padding: 0;
+  border: none; /* Quitamos el borde glassmorphism */
+  padding: 0; /* El padding se maneja adentro */
   border-radius: 20px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
   width: 100%;
   position: relative;
   display: grid;
-  grid-template-columns: 45% 55%;
+  grid-template-columns: 45% 55%; /* Imagen a la izq, texto a la der */
   gap: 0;
-  overflow: hidden;
+  overflow: hidden; /* Clave para el diseño */
   min-height: 500px;
+  max-width: 900px; /* Ancho máximo del modal */
 }
 
-.close-modal {
+.close-modal, .close-button {
   color: var(--text-muted);
   position: absolute;
   top: 15px;
@@ -531,7 +548,7 @@ dialog.modal::backdrop {
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
-.close-modal:hover {
+.close-modal:hover, .close-button:hover {
   background: var(--accent-dark-contrast);
   color: white;
   transform: rotate(90deg);
@@ -542,19 +559,18 @@ dialog.modal::backdrop {
   height: 100%;
   min-height: 500px;
   overflow: hidden;
-  background: linear-gradient(135deg, var(--color-powdered-lilac-grey), #f8f8f8);
+  background: var(--bg-main); /* Fondo de la imagen */
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.modal-image img {
+.modal-image img, #modalImage, #modalProductImage {
   width: 100%;
   height: 100%;
   object-fit: cover;
   transition: transform 0.3s ease;
 }
-
 .modal-image:hover img {
   transform: scale(1.05);
 }
@@ -568,7 +584,7 @@ dialog.modal::backdrop {
   max-height: 600px;
 }
 
-.modal-details h2 {
+.modal-details h2, #modalName {
   font-family: var(--font-heading);
   color: var(--accent-dark-contrast);
   font-size: 2rem;
@@ -576,7 +592,7 @@ dialog.modal::backdrop {
   line-height: 1.2;
 }
 
-.modal-details .price-section {
+.modal-details .price-section, .modal-price-row {
   display: flex;
   align-items: center;
   gap: 0.75rem;
@@ -585,14 +601,14 @@ dialog.modal::backdrop {
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
 
-.modal-details .price {
+.modal-details .price, #modalPrice {
   color: var(--accent-dark-contrast);
   font-size: 2rem;
   font-weight: 700;
   margin: 0;
 }
 
-.discount-badge {
+.discount-badge, #modalDiscountBadge {
   background: var(--accent-secondary-pastel);
   color: white;
   padding: 0.4rem 0.85rem;
@@ -602,13 +618,13 @@ dialog.modal::backdrop {
   box-shadow: 0 2px 8px rgba(213, 105, 137, 0.3);
 }
 
-.modal-details .original-price {
+.modal-details .original-price, #modalOriginalPrice {
   color: var(--text-muted);
   font-size: 1.2rem;
   text-decoration: line-through;
 }
 
-.category {
+.category, .modal-category {
   display: flex;
   gap: 0.75rem;
   font-size: 1rem;
@@ -616,14 +632,12 @@ dialog.modal::backdrop {
   padding: 0.75rem 0;
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
-
-.category span:first-child {
+.category span:first-child, .modal-category {
   color: var(--text-muted);
   font-weight: 600;
   font-size: 0.95rem;
 }
-
-.category span:last-child {
+.category span:last-child, #modalCategory {
   color: var(--text-dark);
   background: var(--accent-highlight-green);
   padding: 0.35rem 1rem;
@@ -639,7 +653,6 @@ dialog.modal::backdrop {
   padding: 0.75rem 0;
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
-
 .description-section h4 {
   color: var(--text-muted);
   font-weight: 600;
@@ -648,8 +661,7 @@ dialog.modal::backdrop {
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
-
-.description {
+.description, #modalDescription {
   color: var(--text-main);
   font-size: 1rem;
   line-height: 1.7;
@@ -658,25 +670,22 @@ dialog.modal::backdrop {
   min-height: 60px;
 }
 
-.modal-actions {
+.modal-actions, .modal-form {
   display: flex;
   flex-direction: column;
   gap: 1rem;
   margin-top: auto;
 }
-
-.quantity-selector {
+.quantity-selector, .quantity-selector-modal {
   display: flex;
   align-items: center;
   gap: 1rem;
 }
-
-.quantity-selector label {
+.quantity-selector label, .quantity-selector-modal label {
   font-weight: 600;
   color: var(--text-dark);
 }
-
-.quantity-input {
+.quantity-input, .quantity-input-modal {
   width: 80px;
   padding: 0.5rem;
   border: 2px solid var(--accent-light-contrast);
@@ -685,14 +694,13 @@ dialog.modal::backdrop {
   color: var(--text-main);
   font-weight: 600;
 }
-
-.quantity-input:focus {
+.quantity-input:focus, .quantity-input-modal:focus {
   outline: none;
   border-color: var(--accent-dark-contrast);
   box-shadow: 0 0 0 3px rgba(213, 105, 137, 0.1);
 }
 
-.primary-button, .secondary-button, .tertiary-button {
+.primary-button, .secondary-button, .tertiary-button, .add-to-cart-button {
   padding: 0.85rem 1.5rem;
   border: none;
   border-radius: 10px;
@@ -704,49 +712,48 @@ dialog.modal::backdrop {
   justify-content: center;
   gap: 0.5rem;
   font-size: 1rem;
+  text-decoration: none;
 }
-
-.primary-button {
+.primary-button, .add-to-cart-button {
   background: var(--accent-dark-contrast);
   color: white;
   box-shadow: 0 4px 10px rgba(213, 105, 137, 0.4);
 }
-
-.primary-button:hover:not(:disabled) {
+.primary-button:hover:not(:disabled), .add-to-cart-button:hover:not(:disabled) {
   background: #C75E7E;
   transform: translateY(-2px);
   box-shadow: 0 6px 15px rgba(213, 105, 137, 0.6);
 }
-
 .secondary-button {
   background: var(--accent-highlight-green);
   color: var(--text-dark);
   box-shadow: 0 4px 10px rgba(194, 220, 128, 0.4);
 }
-
 .secondary-button:hover:not(:disabled) {
   background: #B0D070;
   transform: translateY(-2px);
   box-shadow: 0 6px 15px rgba(194, 220, 128, 0.6);
 }
-
 .tertiary-button {
   background: var(--accent-light-contrast);
   color: var(--text-dark);
   box-shadow: 0 4px 10px rgba(234, 156, 175, 0.4);
 }
-
 .tertiary-button:hover {
   background: #F0B4C6;
   transform: translateY(-2px);
   box-shadow: 0 6px 15px rgba(234, 156, 175, 0.6);
 }
-
 button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
+#loginModal .modal-content {
+  display: block; /* Anula el grid para el modal de login */
+  min-height: 0;
+  padding: 2.5rem;
+}
 #loginModal h3 {
     font-family: var(--font-heading);
     color: var(--accent-dark-contrast); /* Rosa Fuerte */
@@ -757,7 +764,6 @@ button:disabled {
     color: var(--text-main);
     margin-bottom: 1.5rem;
 }
-/* Botones de Modal */
 #loginModal a {
     display: inline-block;
     margin: 5px;
@@ -807,21 +813,27 @@ button:disabled {
   
   .modal-content {
     grid-template-columns: 1fr;
+    min-height: 0;
+    max-height: 90vh; /* Límite de altura en móvil */
+    overflow-y: auto; /* Scroll en el modal si es necesario */
   }
   
   .modal-image {
     min-height: 300px;
+    height: 300px; /* Altura fija para la imagen en móvil */
   }
   
   .modal-details {
     padding: 1.5rem;
+    max-height: none;
+    overflow-y: visible;
   }
   
-  .modal-details h2 {
+  .modal-details h2, #modalName {
     font-size: 1.5rem;
   }
   
-  .modal-details .price {
+  .modal-details .price, #modalPrice {
     font-size: 1.5rem;
   }
 }
@@ -991,25 +1003,12 @@ button:disabled {
     font-weight: 600;
 }
 
-.quantity-input {
-    width: 70px;
-    padding: 0.5rem;
-    border: 1px solid var(--color-petal-glaze);
-    border-radius: 6px;
-    font-size: 1rem;
-    color: var(--text-main);
-}
-
-.quantity-input:focus {
-    outline: none;
-    border-color: var(--color-dusty-orchid);
-    box-shadow: 0 0 0 3px rgba(213, 105, 137, 0.1);
-}
+/* .quantity-input (ya definido en el modal) */
 
 .update-btn {
     padding: 0.5rem 1rem;
     background: var(--color-sorbet-stem);
-    color: white;
+    color: var(--text-dark); /* Texto oscuro para contraste */
     border: none;
     border-radius: 6px;
     cursor: pointer;
@@ -1090,7 +1089,7 @@ button:disabled {
     width: 100%;
     padding: 1rem;
     background: var(--color-sorbet-stem);
-    color: white;
+    color: var(--text-dark); /* Texto oscuro */
     border: none;
     border-radius: 8px;
     font-size: 1rem;
@@ -1116,7 +1115,7 @@ button:disabled {
     width: 100%;
     padding: 1rem;
     background: var(--color-petal-glaze);
-    color: white;
+    color: var(--text-dark); /* Texto oscuro */
     border: none;
     border-radius: 8px;
     text-decoration: none;
@@ -1128,6 +1127,7 @@ button:disabled {
 
 .continue-shopping-btn:hover {
     background: var(--color-dusty-orchid);
+    color: white;
     transform: translateY(-2px);
 }
 
@@ -1157,7 +1157,7 @@ button:disabled {
     display: inline-block;
     padding: 1rem 2rem;
     background: var(--color-petal-glaze);
-    color: white;
+    color: var(--text-dark); /* Texto oscuro */
     text-decoration: none;
     border-radius: 8px;
     font-weight: 700;
@@ -1166,6 +1166,7 @@ button:disabled {
 
 .continue-shopping:hover {
     background: var(--color-dusty-orchid);
+    color: white;
     transform: translateY(-2px);
 }
 
@@ -1203,6 +1204,12 @@ button:disabled {
     .item-image {
         width: 100%;
         height: 200px;
+    }
+    
+    .item-quantity,
+    .item-subtotal,
+    .remove-form {
+        grid-column: 1; /* Vuelve a una columna */
     }
 
     .quantity-form {
