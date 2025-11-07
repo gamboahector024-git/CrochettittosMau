@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\UpdatePeticionRequest;
 use App\Http\Requests\BulkStatusPeticionRequest;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Log;
 
 class PeticionController extends Controller
 {
@@ -109,16 +110,27 @@ class PeticionController extends Controller
 
     public function bulkStatus(BulkStatusPeticionRequest $request)
     {
-        $request->validate([
+        Log::info('Solicitud recibida en bulkStatus', ['request_data' => $request->all()]);
+        
+        $validated = $request->validate([
             'ids' => 'required|array',
             'ids.*' => 'exists:peticiones,id_peticion',
             'estado' => 'required|in:en revisión,aceptada,rechazada'
         ]);
 
-        Peticion::whereIn('id_peticion', $request->ids)
-            ->update(['estado' => $request->estado]);
+        if (empty($validated['ids'])) {
+            Session::flash('error', 'No se seleccionaron peticiones para actualizar.');
+            return back();
+        }
 
-        Session::flash('success', 'Estado actualizado para las peticiones seleccionadas');
+        $updated = Peticion::whereIn('id_peticion', $validated['ids'])
+            ->update(['estado' => $validated['estado']]);
+
+        if ($updated > 0) {
+            Session::flash('success', 'Estado actualizado para ' . $updated . ' peticiones seleccionadas.');
+        } else {
+            Session::flash('error', 'No se pudo actualizar el estado de las peticiones seleccionadas.');
+        }
         return back();
     }
 
@@ -151,11 +163,16 @@ class PeticionController extends Controller
             'ids.*' => 'exists:peticiones,id_peticion'
         ]);
 
+        if (empty($validated['ids'])) {
+            Session::flash('error', 'No se seleccionaron peticiones para eliminar.');
+            return back();
+        }
+
         $deleted = Peticion::whereIn('id_peticion', $validated['ids'])->delete();
         \Log::info('bulkDelete peticiones', ['ids' => $validated['ids'], 'deleted' => $deleted]);
 
         if ($deleted > 0) {
-            Session::flash('success', $deleted.' peticiones eliminadas');
+            Session::flash('success', $deleted . ' peticiones eliminadas.');
         } else {
             Session::flash('error', 'No se eliminó ninguna petición.');
         }

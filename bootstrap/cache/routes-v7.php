@@ -13,7 +13,7 @@ app('router')->setCompiledRoutes(
         array (
           0 => 
           array (
-            '_route' => 'generated::U5hjSsIgLYIz50nE',
+            '_route' => 'generated::YuvMCPkgD8xomOBH',
           ),
           1 => NULL,
           2 => 
@@ -53,7 +53,7 @@ app('router')->setCompiledRoutes(
         array (
           0 => 
           array (
-            '_route' => 'generated::RFJDqgtVJrM2VCSc',
+            '_route' => 'generated::2vCUpUJjWPDzyPS1',
           ),
           1 => NULL,
           2 => 
@@ -1303,7 +1303,7 @@ app('router')->setCompiledRoutes(
   ),
   'attributes' => 
   array (
-    'generated::U5hjSsIgLYIz50nE' => 
+    'generated::YuvMCPkgD8xomOBH' => 
     array (
       'methods' => 
       array (
@@ -1331,8 +1331,8 @@ app('router')->setCompiledRoutes(
                     return response(\\Illuminate\\Support\\Facades\\View::file(\'C:\\\\LaravelProjects\\\\Crochettittos\\\\tiendaOnline1\\\\vendor\\\\laravel\\\\framework\\\\src\\\\Illuminate\\\\Foundation\\\\Configuration\'.\'/../resources/health-up.blade.php\', [
                         \'exception\' => $exception,
                     ]), status: $exception ? 500 : 200);
-                }";s:5:"scope";s:54:"Illuminate\\Foundation\\Configuration\\ApplicationBuilder";s:4:"this";N;s:4:"self";s:32:"00000000000007fd0000000000000000";}}',
-        'as' => 'generated::U5hjSsIgLYIz50nE',
+                }";s:5:"scope";s:54:"Illuminate\\Foundation\\Configuration\\ApplicationBuilder";s:4:"this";N;s:4:"self";s:32:"00000000000005d80000000000000000";}}',
+        'as' => 'generated::YuvMCPkgD8xomOBH',
       ),
       'fallback' => false,
       'defaults' => 
@@ -1387,7 +1387,7 @@ app('router')->setCompiledRoutes(
       'waitSeconds' => NULL,
       'withTrashed' => false,
     ),
-    'generated::RFJDqgtVJrM2VCSc' => 
+    'generated::2vCUpUJjWPDzyPS1' => 
     array (
       'methods' => 
       array (
@@ -1410,7 +1410,7 @@ app('router')->setCompiledRoutes(
         'where' => 
         array (
         ),
-        'as' => 'generated::RFJDqgtVJrM2VCSc',
+        'as' => 'generated::2vCUpUJjWPDzyPS1',
       ),
       'fallback' => false,
       'defaults' => 
@@ -3773,7 +3773,7 @@ app('router')->setCompiledRoutes(
                         $config,
                         $isProduction
                     ))($request, $path);
-                }";s:5:"scope";s:47:"Illuminate\\Filesystem\\FilesystemServiceProvider";s:4:"this";N;s:4:"self";s:32:"00000000000008000000000000000000";}}',
+                }";s:5:"scope";s:47:"Illuminate\\Filesystem\\FilesystemServiceProvider";s:4:"this";N;s:4:"self";s:32:"00000000000005db0000000000000000";}}',
         'as' => 'storage.local',
       ),
       'fallback' => false,

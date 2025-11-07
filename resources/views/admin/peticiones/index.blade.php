@@ -58,7 +58,7 @@
     </div>
 
     <div class="card">
-        <form method="POST">
+        <form method="POST" id="bulk-action-form">
             @csrf
             <div class="actions-header" style="padding: 20px 20px 0 20px;">
                 <div class="form-group" style="margin-bottom: 0;">
