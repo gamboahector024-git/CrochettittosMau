@@ -73,7 +73,8 @@
                                     <button type="submit">Eliminar</button>
                                 </form>
                             @else
-                                <a href="{{ route('admin.promociones.create', ['id_producto' => $producto->id_producto]) }}">Crear oferta</a>
+                                {{-- Cambio aquí: antes decía "Crear oferta" --}}
+                                <a href="{{ route('admin.promociones.create', ['id_producto' => $producto->id_producto]) }}">Editar oferta</a>
                             @endif
                         </td>
                     </tr>

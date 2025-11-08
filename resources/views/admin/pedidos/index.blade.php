@@ -77,7 +77,7 @@
                         <td data-label="Rastreo">{{ $pedido->codigo_rastreo ?? '—' }}</td>
                         <td data-label="Acciones">
                             <div class="action-links">
-                                <a class="btn btn-primary" href="{{ route('admin.pedidos.show', $pedido) }}">Ver</a>
+                                {{-- Se eliminó el botón "Ver" --}}
                                 <a class="btn btn-secondary" href="{{ route('admin.pedidos.edit', $pedido) }}">Editar</a>
                             </div>
                         </td>
