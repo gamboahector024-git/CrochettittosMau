@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
-use App\Http\Controllers\AdminController;
+use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\{
     ProductoController,
     UsuarioController,
@@ -11,9 +11,11 @@ use App\Http\Controllers\Admin\{
     PeticionController,
     PromocionController
 };
-use App\Http\Controllers\CarritoController;
-use App\Http\Controllers\TiendaController;
-use App\Http\Controllers\PerfilController;
+use App\Http\Controllers\Cliente\{
+    CarritoController,
+    TiendaController,
+    PerfilController
+};
 
 /*
 |--------------------------------------------------------------------------
@@ -44,6 +46,8 @@ Route::middleware(['web', 'track-user-activity'])->group(function () {
         Route::put('/actualizar/{detalle}', [CarritoController::class, 'update'])->name('update');
         Route::delete('/eliminar/{detalle}', [CarritoController::class, 'destroy'])->name('destroy');
         Route::delete('/vaciar', [CarritoController::class, 'clear'])->name('clear');
+        Route::get('/checkout', [CarritoController::class, 'checkout'])->name('checkout');
+        Route::post('/procesar', [CarritoController::class, 'procesarPedido'])->name('procesar');
     });
 
     /*
@@ -53,9 +57,18 @@ Route::middleware(['web', 'track-user-activity'])->group(function () {
     */
     Route::middleware('auth')->prefix('perfil')->name('perfil.')->group(function () {
         Route::get('/', [PerfilController::class, 'index'])->name('index');
-        Route::get('/lista-deseos', [PerfilController::class, 'listaDeseos'])->name('lista-deseos');
-        Route::post('/lista-deseos/agregar/{producto}', [PerfilController::class, 'agregarListaDeseos'])->name('lista-deseos.agregar');
-        Route::delete('/lista-deseos/eliminar/{producto}', [PerfilController::class, 'eliminarListaDeseos'])->name('lista-deseos.eliminar');
+        Route::get('/editar', [PerfilController::class, 'edit'])->name('edit'); // Esta es la ruta que falta
+        Route::put('/actualizar', [PerfilController::class, 'update'])->name('update');
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | Pedidos del cliente
+    |--------------------------------------------------------------------------
+    */
+    Route::middleware('auth')->prefix('mis-pedidos')->name('cliente.pedidos.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Cliente\PedidoController::class, 'index'])->name('index');
+        Route::get('/{pedido}', [\App\Http\Controllers\Cliente\PedidoController::class, 'show'])->name('show');
     });
 
     /*
@@ -93,8 +106,9 @@ Route::middleware(['web', 'track-user-activity'])->group(function () {
         Route::post('peticiones/{peticion}/completar', [PeticionController::class, 'completar'])->name('peticiones.completar');
         
         // Promociones
-        Route::resource('promociones', PromocionController::class);
-        Route::post('promociones/{promocion}/toggle-status', [PromocionController::class, 'toggleStatus'])->name('promociones.toggle-status');
         Route::delete('promociones/bulk-delete', [PromocionController::class, 'bulkDelete'])->name('promociones.bulk-delete');
+        Route::resource('promociones', PromocionController::class)
+            ->parameters(['promociones' => 'promocion']);
+        Route::post('promociones/{promocion}/toggle-status', [PromocionController::class, 'toggleStatus'])->name('promociones.toggle-status');
     });
 });

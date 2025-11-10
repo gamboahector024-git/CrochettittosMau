@@ -34,7 +34,7 @@ class Producto extends Model
 
     public function pedidos(): BelongsToMany
     {
-        return $this->belongsToMany(Pedido::class, 'detalles_pedido', 'id_producto', 'id_pedido')
+        return $this->belongsToMany(Pedido::class, 'pedido_detalles', 'id_producto', 'id_pedido')
             ->withPivot(['cantidad', 'precio_unitario']);
     }
 
@@ -49,6 +49,19 @@ class Producto extends Model
             ->where('activa', true)
             ->whereDate('fecha_inicio', '<=', now())
             ->whereDate('fecha_fin', '>=', now())
+            ->latest('id_promocion');
+    }
+
+    public function ultimaPromocion(): HasOne
+    {
+        return $this->hasOne(Promocion::class, 'id_producto', 'id_producto')
+            ->latest('id_promocion');
+    }
+
+    public function promocionActivaFlag(): HasOne
+    {
+        return $this->hasOne(Promocion::class, 'id_producto', 'id_producto')
+            ->where('activa', true)
             ->latest('id_promocion');
     }
 }

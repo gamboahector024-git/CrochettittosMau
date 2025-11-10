@@ -28,9 +28,17 @@
                         <h3>{{ $detalle->producto->nombre }}</h3>
                         <p class="price">
                             @php
-                                $precioUnitario = $detalle->producto->promocionActiva
-                                    ? $detalle->producto->precio * (1 - $detalle->producto->promocionActiva->descuento/100)
-                                    : $detalle->producto->precio;
+                                $oferta = $detalle->producto->promocionActiva;
+                                $precioOriginal = $detalle->producto->precio;
+                                if ($oferta) {
+                                    if ($oferta->tipo === 'porcentaje') {
+                                        $precioUnitario = max($precioOriginal * (1 - ($oferta->valor/100)), 0);
+                                    } else { // fijo
+                                        $precioUnitario = max($precioOriginal - $oferta->valor, 0);
+                                    }
+                                } else {
+                                    $precioUnitario = $precioOriginal;
+                                }
                             @endphp
                             ${{ number_format($precioUnitario, 2) }}
                         </p>
@@ -61,7 +69,14 @@
                     <div class="summary-row">
                         <span>Subtotal:</span>
                         <span>${{ number_format($carrito->detalles->sum(function($item) {
-                            return $item->cantidad * ($item->producto->precio * (1 - ($item->producto->promocionActiva ? $item->producto->promocionActiva->descuento/100 : 0)));
+                            $oferta = $item->producto->promocionActiva;
+                            $base = $item->producto->precio;
+                            if ($oferta) {
+                                $unit = $oferta->tipo === 'porcentaje' ? max($base * (1 - ($oferta->valor/100)), 0) : max($base - $oferta->valor, 0);
+                            } else {
+                                $unit = $base;
+                            }
+                            return $item->cantidad * $unit;
                         }), 2) }}</span>
                     </div>
                     <div class="summary-row">
@@ -71,10 +86,18 @@
                     <div class="summary-row total">
                         <span>Total:</span>
                         <span>${{ number_format($carrito->detalles->sum(function($item) {
-                            return $item->cantidad * ($item->producto->precio * (1 - ($item->producto->promocionActiva ? $item->producto->promocionActiva->descuento/100 : 0)));
+                            $oferta = $item->producto->promocionActiva;
+                            $base = $item->producto->precio;
+                            if ($oferta) {
+                                $unit = $oferta->tipo === 'porcentaje' ? max($base * (1 - ($oferta->valor/100)), 0) : max($base - $oferta->valor, 0);
+                            } else {
+                                $unit = $base;
+                            }
+                            return $item->cantidad * $unit;
                         }), 2) }}</span>
                     </div>
-                    <button class="checkout-button" disabled>
+                    <button class="checkout-button" onclick="procederAlPago()" 
+                        {{ $carrito->detalles->isEmpty() ? 'disabled' : '' }}>
                         <i class="fas fa-credit-card"></i> Proceder al pago
                     </button>
                     <a href="{{ route('tienda') }}" class="continue-shopping-btn">
@@ -94,3 +117,24 @@
     @endif
 </div>
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Manejar clic en botón de pago
+    const checkoutBtn = document.querySelector('.checkout-button:not([disabled])');
+    if (checkoutBtn) {
+        checkoutBtn.addEventListener('click', function() {
+            window.location.href = "{{ route('carrito.checkout') }}";
+        });
+    }
+
+    // Estilos para botón deshabilitado
+    const disabledBtns = document.querySelectorAll('.checkout-button[disabled]');
+    disabledBtns.forEach(btn => {
+        btn.style.cursor = 'not-allowed';
+        btn.style.opacity = '0.6';
+    });
+});
+</script>
+@endpush

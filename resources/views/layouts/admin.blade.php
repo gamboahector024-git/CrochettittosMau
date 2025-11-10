@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>@yield('title', 'Panel de Administrador')</title>
 
-    <link rel="stylesheet" href="{{ asset('css/admin_style.css') }}?v=12">
+    <link rel="stylesheet" href="{{ asset('css/admin.css') }}?v=12">
 
     @yield('styles')
 </head>

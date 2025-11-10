@@ -90,13 +90,17 @@ class PeticionController extends Controller
         $peticion->estado = 'completada';
         $peticion->save();
 
-        $direccion = optional($peticion->usuario)->direccion ?: 'Sin dirección especificada';
+        $usuario = $peticion->usuario;
         \App\Models\Pedido::create([
             'id_usuario' => $peticion->id_usuario,
             'id_peticion' => $peticion->id_peticion,
             'total' => 0,
             'estado' => 'pendiente',
-            'direccion_envio' => $direccion,
+            'calle' => $usuario->calle ?? 'N/A',
+            'colonia' => $usuario->colonia ?? 'N/A',
+            'municipio_ciudad' => $usuario->municipio_ciudad ?? 'N/A',
+            'codigo_postal' => $usuario->codigo_postal ?? 'N/A',
+            'estado_direccion' => $usuario->estado_direccion ?? 'N/A',
             'metodo_pago' => null,
             'empresa_envio' => null,
             'codigo_rastreo' => null,

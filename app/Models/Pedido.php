@@ -16,7 +16,11 @@ class Pedido extends Model
         'id_peticion',
         'total',
         'estado', 
-        'direccion_envio',
+        'calle',
+        'colonia',
+        'municipio_ciudad',
+        'codigo_postal',
+        'estado_direccion',
         'metodo_pago',
         'empresa_envio',
         'codigo_rastreo',
@@ -25,8 +29,9 @@ class Pedido extends Model
     ];
 
     protected $casts = [
+        'fecha_pedido' => 'datetime',
         'fecha_envio' => 'datetime',
-        'fecha_entrega_estimada' => 'date',
+        'fecha_entrega_estimada' => 'date'
     ];
 
     // Relación con Usuario
@@ -38,13 +43,13 @@ class Pedido extends Model
     // Relación con DetallesPedido
     public function detalles(): HasMany 
     {
-        return $this->hasMany(DetallePedido::class, 'id_pedido', 'id_pedido');
+        return $this->hasMany(PedidoDetalle::class, 'id_pedido', 'id_pedido');
     }
 
     // Relación con Productos (a través de DetallePedido)
     public function productos()
     {
-        return $this->belongsToMany(Producto::class, 'detalles_pedido', 'id_pedido', 'id_producto')
+        return $this->belongsToMany(Producto::class, 'pedido_detalles', 'id_pedido', 'id_producto')
             ->withPivot(['cantidad', 'precio_unitario']);
     }
 

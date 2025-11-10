@@ -58,7 +58,7 @@
     </div>
 
     <div class="card">
-        <form method="POST" id="bulk-action-form">
+        <form method="POST" action="{{ route('admin.peticiones.bulk-status') }}" id="bulk-action-form">
             @csrf
             <div class="actions-header" style="padding: 20px 20px 0 20px;">
                 <div class="form-group" style="margin-bottom: 0;">
@@ -108,11 +108,7 @@
                             <td data-label="Acciones">
                                 <div class="action-links">
                                     <a href="{{ route('admin.peticiones.show', $peticion->id_peticion) }}" class="btn btn-primary">Ver</a>
-                                    <form action="{{ route('admin.peticiones.destroy', $peticion->id_peticion) }}" method="POST" style="display:inline-block;" onsubmit="return confirm('¿Eliminar esta petición?');">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-danger">Eliminar</button>
-                                    </form>
+                                    <button type="button" class="btn btn-danger" onclick="submitRowDelete('{{ route('admin.peticiones.destroy', $peticion->id_peticion) }}')">Eliminar</button>
                                 </div>
                             </td>
                         </tr>
@@ -128,5 +124,25 @@
 @endsection
 
 @section('scripts')
-<script src="{{ asset('js/admin/peticiones.js') }}"></script>
+<script>
+function submitRowDelete(url) {
+    if (!confirm('¿Eliminar esta petición?')) return;
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = url;
+    const token = document.createElement('input');
+    token.type = 'hidden';
+    token.name = '_token';
+    token.value = '{{ csrf_token() }}';
+    const method = document.createElement('input');
+    method.type = 'hidden';
+    method.name = '_method';
+    method.value = 'DELETE';
+    form.appendChild(token);
+    form.appendChild(method);
+    document.body.appendChild(form);
+    form.submit();
+}
+</script>
+<script src="{{ asset('js/admin/peticiones.js') }}?v=1"></script>
 @endsection

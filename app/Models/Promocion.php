@@ -24,6 +24,12 @@ class Promocion extends Model
         'activa',
     ];
 
+    protected $casts = [
+        'activa' => 'boolean',
+        'fecha_inicio' => 'date',
+        'fecha_fin' => 'date',
+    ];
+
     public function getRouteKeyName(): string
     {
         return 'id_promocion';

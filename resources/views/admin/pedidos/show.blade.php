@@ -23,14 +23,10 @@
             <div class="info-item">
                 <strong>Fecha:</strong> {{ $pedido->fecha_pedido }}
             </div>
-            <div class="info-item info-item-full">
-                <strong>Dirección de envío:</strong>
-                <p>{{ $pedido->direccion_envio }}</p>
-            </div>
             
             @if($pedido->peticion || $pedido->id_peticion)
             <div class="info-item info-item-full">
-                <div class="alert alert-secondary" style="display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin:0;">
+                <div class="alert alert-secondary" style="display:flex; align-items-center; gap:12px; flex-wrap:wrap; margin:0;">
                     @if($pedido->peticion)
                         <div>
                             <strong>Petición origen:</strong>
@@ -51,6 +47,16 @@
         <form action="{{ route('admin.pedidos.update', $pedido) }}" method="POST" class="status-update-form">
             @csrf
             @method('PUT')
+            
+            <div class="info-item info-item-full">
+                <strong>Dirección de envío:</strong>
+                <address>
+                    {{ $pedido->calle }}<br>
+                    {{ $pedido->colonia }}<br>
+                    {{ $pedido->municipio_ciudad }}, {{ $pedido->codigo_postal }}<br>
+                    {{ $pedido->estado_direccion }}
+                </address>
+            </div>
             
             <div class="form-group">
                 <label for="total"><strong>Total:</strong></label>

@@ -76,66 +76,11 @@
             </form>
         </aside>
 
-        <!-- ===== GRID DE PRODUCTOS (CON ONCLICK CORREGIDO) ===== -->
+        <!-- ===== GRID DE PRODUCTOS (CON COMPONENTES) ===== -->
         <main class="products-grid">
             @if($productos->count())
                 @foreach($productos as $producto)
-                    
-                    {{-- 1. Pre-calculamos los valores de la oferta --}}
-                    @php
-                        $oferta = $producto->promocionActiva;
-                        // Usamos el precio promocional si existe, si no, el precio normal
-                        $precioFinal = $producto->precio_promocional ?? $producto->precio;
-                        $precioOriginalNum = ($oferta) ? $producto->precio : null;
-                        $badge = null;
-
-                        if ($oferta) {
-                            if ($oferta->tipo === 'porcentaje') {
-                                $badge = $oferta->valor . '% OFF';
-                            } else {
-                                $badge = '$' . number_format($oferta->valor, 2) . ' OFF';
-                            }
-                        }
-                    @endphp
-
-                    <div class="product-card">
-                        <div class="card-image-wrapper">
-                            <img src="{{ $producto->imagen_url ?? 'https://via.placeholder.com/250' }}" alt="{{ $producto->nombre }}">
-                            @if($oferta)
-                                <span class="discount-badge-card">{{ $badge }}</span>
-                            @endif
-                        </div>
-                        <div class="card-content">
-                            <h3>{{ $producto->nombre }}</h3>
-                            
-                            {{-- Lógica de precio para mostrar el precio original tachado --}}
-                            <p class="price">
-                                ${{ number_format($precioFinal, 2) }}
-                                @if($oferta)
-                                    <span class="original-price-card">${{ number_format($precioOriginalNum, 2) }}</span>
-                                @endif
-                            </p>
-                            
-                            {{-- 
-                              ===== ONCLICK CORREGIDO =====
-                              Llama a la función 'openModal' de main.js con todos los 9 argumentos.
-                              Ahora SÍ pasa el id_producto real.
-                            --}}
-                            <button class="buy-button" onclick="openModal(
-                                {{ $producto->id_producto }}, {{-- 1. ID de Producto REAL --}}
-                                {{ json_encode($producto->nombre) }}, {{-- 2. Nombre --}}
-                                '{{ number_format($precioFinal, 2) }}', {{-- 3. Precio Final --}}
-                                {{ json_encode($producto->descripcion ?? 'Sin descripción.') }}, {{-- 4. Descripción --}}
-                                '{{ $producto->imagen_url ?? 'https://via.placeholder.com/250' }}', {{-- 5. Imagen --}}
-                                '{{ $producto->categoria->nombre ?? 'Sin categoría' }}', {{-- 6. Categoría --}}
-                                {{ $oferta ? 'true' : 'false' }}, {{-- 7. PromocionActiva (booleano) --}}
-                                {{ $badge ? json_encode($badge) : 'null' }}, {{-- 8. Badge (texto del descuento) --}}
-                                {{ $precioOriginalNum ? "'".number_format($precioOriginalNum, 2)."'" : 'null' }} {{-- 9. Precio Original --}}
-                            )">
-                                Ver Detalles
-                            </button>
-                        </div>
-                    </div>
+                    <x-product-card :producto="$producto" />
                 @endforeach
             @else
                 <p class="no-products">No se encontraron productos con los filtros seleccionados.</p>
@@ -150,93 +95,5 @@
 
 {{-- JAVASCRIPT EXCLUSIVO PARA ESTA PÁGINA (EL CARRUSEL) --}}
 @push('scripts')
-<script>
-    // Espera a que el DOM esté cargado
-    document.addEventListener('DOMContentLoaded', () => {
-        const carouselTrack = document.querySelector('.carousel-track');
-        
-        // Asegurarse de que el carrusel existe en esta página
-        if (carouselTrack) {
-            const slides = Array.from(carouselTrack.children);
-            const dotsContainer = document.querySelector('.carousel-dots');
-            let slideIndex = 0;
-            let intervalId;
-
-            // Salir si no hay slides
-            if (slides.length === 0) return;
-            
-            // Clonar slides para el efecto infinito
-            slides.forEach(slide => {
-                carouselTrack.appendChild(slide.cloneNode(true));
-            });
-
-            // Función para mover a un slide específico
-            function goToSlide(index, smooth = true) {
-                const slides = Array.from(carouselTrack.children);
-                // Prevenir error si los slides aún no están cargados
-                if (slides.length === 0 || !slides[0]) return;
-                const currentSlideWidth = slides[0].getBoundingClientRect().width;
-                if (!smooth) carouselTrack.style.transition = 'none';
-                carouselTrack.style.transform = `translateX(-${index * currentSlideWidth}px)`;
-                if (!smooth) {
-                    carouselTrack.offsetHeight; 
-                    carouselTrack.style.transition = 'transform 0.8s ease-in-out';
-                }
-                
-                let activeDotIndex = index % (slides.length / 2); // Ajustado para clones
-                dots.forEach(dot => dot.classList.remove('active'));
-                if (dots[activeDotIndex]) {
-                    dots[activeDotIndex].classList.add('active');
-                }
-            }
-
-            // Función para el siguiente slide
-            function autoSlide() {
-                const slides = Array.from(carouselTrack.children);
-                const totalSlides = slides.length / 2; // Número de slides originales
-                
-                slideIndex++;
-                goToSlide(slideIndex);
-
-                // Resetear al inicio sin animación si llega al final de los clones
-                if (slideIndex >= totalSlides) {
-                    setTimeout(() => {
-                        slideIndex = 0;
-                        goToSlide(slideIndex, false);
-                    }, 800); // 800ms = duración de la transición en el CSS
-                }
-            }
-            
-            // Crear los puntos de navegación
-            const dots = [];
-            const originalSlidesCount = slides.length;
-            for(let i = 0; i < originalSlidesCount; i++) {
-                const dot = document.createElement('span');
-                dot.classList.add('dot');
-                if (i === 0) dot.classList.add('active');
-                dot.addEventListener('click', () => {
-                    slideIndex = i;
-                    goToSlide(slideIndex);
-                    resetAutoSlide(); // Reinicia el timer si se hace clic manual
-                });
-                dotsContainer.appendChild(dot);
-                dots.push(dot);
-            }
-
-            // Iniciar el auto-deslizamiento
-            let intervalId = setInterval(autoSlide, 5000); // Cambia cada 5 segundos
-
-            // Reiniciar el auto-deslizamiento
-            function resetAutoSlide() {
-                clearInterval(intervalId);
-                intervalId = setInterval(autoSlide, 5000);
-            }
-
-            // Ajustar el carrusel si la ventana cambia de tamaño
-            window.addEventListener('resize', () => {
-                goToSlide(slideIndex, false); // Sin animación al reajustar
-            });
-        }
-    });
-</script>
+<script src="{{ asset('js/carousel.js') }}?v=1"></script>
 @endpush

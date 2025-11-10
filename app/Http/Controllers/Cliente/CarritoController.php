@@ -1,9 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Cliente;
+
+use App\Http\Controllers\Controller;
 
 use App\Models\Carrito;
 use App\Models\Producto;
+use App\Models\Pedido;
+use App\Models\PedidoDetalle;
 use App\Models\CarritoDetalle;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -175,5 +179,87 @@ class CarritoController extends Controller
         $carrito->touch();
         
         return response()->json(['message' => 'Carrito vaciado']);
+    }
+
+    public function checkout()
+    {
+        $user = auth()->user();
+        
+        // Obtener o crear el carrito si no existe
+        $carrito = Carrito::firstOrCreate(['id_usuario' => $user->id_usuario]);
+        
+        // Cargar relaciones necesarias
+        $carrito->load(['detalles.producto']);
+
+        if ($carrito->detalles->isEmpty()) {
+            return redirect()->route('carrito.index')
+                ->with('error', 'No hay productos en tu carrito');
+        }
+
+        $total = $carrito->detalles->sum(function($detalle) {
+            return $detalle->cantidad * $detalle->producto->precio;
+        });
+
+        return view('cliente.carrito.checkout', [
+            'items' => $carrito->detalles,
+            'total' => $total,
+            'usuario' => $user
+        ]);
+    }
+
+    // En app/Http/Controllers/CarritoController.php
+    public function procesarPedido(Request $request)
+    {
+        $request->validate([
+            'calle' => 'required|string|max:255',
+            'colonia' => 'required|string|max:255',
+            'municipio_ciudad' => 'required|string|max:255',
+            'codigo_postal' => 'required|string|max:10',
+            'estado' => 'required|string|max:100',
+            'metodo_pago' => 'required|string|max:50'
+        ]);
+
+        $user = auth()->user();
+        $carrito = Carrito::firstOrCreate(['id_usuario' => $user->id_usuario]);
+
+        if ($carrito->detalles->isEmpty()) {
+            return redirect()->back()
+                ->with('error', 'No hay productos en tu carrito');
+        }
+
+        // Calcular total
+        $total = $carrito->detalles->sum(function($detalle) {
+            return $detalle->cantidad * $detalle->producto->precio;
+        });
+
+        // Crear el pedido
+        $pedido = Pedido::create([
+            'id_usuario' => $user->id_usuario,
+            'total' => $total,
+            'estado' => 'pendiente',
+            'calle' => $request->calle,
+            'colonia' => $request->colonia,
+            'municipio_ciudad' => $request->municipio_ciudad,
+            'codigo_postal' => $request->codigo_postal,
+            'estado_direccion' => $request->estado,
+            'metodo_pago' => $request->metodo_pago,
+            'fecha_pedido' => now() // Asegura que sea DateTime
+        ]);
+
+        // Crear detalles del pedido
+        foreach ($carrito->detalles as $detalle) {
+            PedidoDetalle::create([
+                'id_pedido' => $pedido->id_pedido,
+                'id_producto' => $detalle->id_producto,
+                'cantidad' => $detalle->cantidad,
+                'precio_unitario' => $detalle->producto->precio
+            ]);
+        }
+
+        // Vaciar el carrito
+        $carrito->detalles()->delete();
+
+        return redirect()->route('cliente.pedidos.index')
+            ->with('success', '¡Pedido realizado con éxito!');
     }
 }

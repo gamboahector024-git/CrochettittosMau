@@ -5,7 +5,7 @@
 {{-- 
   Hemos eliminado las secciones @section('header') y @section('styles') 
   porque el nuevo 'layouts/admin.blade.php' ya no las usa y 
-  'admin_style.css' ya contiene todos los estilos necesarios.
+  'admin.css' ya contiene todos los estilos necesarios.
 --}}
 
 @section('content')

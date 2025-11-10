@@ -12,37 +12,29 @@
     <header class="site-header">
         <nav class="navbar">
             <h1><a href="{{ url('/') }}">Crochettittos</a></h1>
-            <ul class="nav-links">
-                <li><a href="#llaveros">Llaveros</a></li>
-                <li><a href="#flores">Flores</a></li>
-                <li><a href="#personalizados">Personalizados</a></li>
-                <li><a href="#novedades">Novedades</a></li>
-                <li><a href="#colecciones">Colecciones</a></li>
-            </ul>
-
+            
             <div class="nav-auth">
                 @auth
                     {{-- Si el usuario HA iniciado sesión --}}
-
                     <a href="{{ route('perfil.index') }}" class="welcome-user">
-                        Hola, {{ Auth::user()->nombre }}
+                        <i class="fas fa-user"></i> Mi Cuenta
                     </a>
-
+                    <a href="{{ route('cliente.pedidos.index') }}" class="nav-button nav-button-pastel-secondary">
+                        <i class="fas fa-box"></i> Mis Pedidos
+                    </a>
                     <a href="{{ route('carrito.index') }}" class="nav-button nav-button-pastel-primary">
                         <i class="fas fa-shopping-cart"></i> Carrito
                     </a>
-
                     <a href="{{ route('logout') }}" class="nav-button nav-button-pastel-secondary">Cerrar Sesión</a>
 
                 @else
                     {{-- Si el usuario NO ha iniciado sesión (es invitado) --}}
-
                     <a href="{{ route('login.form') }}" class="nav-button nav-button-pastel-secondary">Iniciar Sesión</a>
                     <a href="{{ route('registro.form') }}" class="nav-button nav-button-pastel-primary">Registrarse</a>
                 
                 @endauth
             </div>
-            </nav>
+        </nav>
     </header>
 
     <main>

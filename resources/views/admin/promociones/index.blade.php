@@ -2,97 +2,124 @@
 
 @section('content')
 <div class="container">
-    <h1>Promociones por producto</h1>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1>Promociones</h1>
+        <div>
+            <button type="button" class="btn btn-danger" id="bulk-delete-btn" style="display: none;">
+                Eliminar Seleccionadas
+            </button>
+        </div>
+    </div>
 
-    <div class="mb-3" style="display:flex; gap:12px; align-items:center;">
-        <a href="{{ route('admin.promociones.create') }}" class="btn btn-primary">+ Nueva oferta</a>
+    <!-- Filtros simples -->
+    <div class="mb-3">
+        <select class="form-select" id="filtro-promociones" onchange="filtrarPromociones()" style="max-width: 200px;">
+            <option value="todos" {{ $filtro === 'todos' ? 'selected' : '' }}>Todos</option>
+            <option value="con_promocion" {{ $filtro === 'con_promocion' ? 'selected' : '' }}>Con promoción</option>
+            <option value="sin_promocion" {{ $filtro === 'sin_promocion' ? 'selected' : '' }}>Sin promoción</option>
+        </select>
     </div>
 
     <div class="table-responsive">
         <table class="table">
             <thead>
                 <tr>
-                    <th>Imagen</th>
+                    <th><input type="checkbox" id="select-all"></th>
                     <th>Producto</th>
-                    <th>Stock</th>
                     <th>Precio</th>
-                    <th>Oferta</th>
-                    <th>Vigencia</th>
+                    <th>Promoción</th>
                     <th>Estado</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
                 @forelse($productos as $producto)
-                    @php($oferta = $producto->promocionActiva)
+                    @php($activa = $producto->promocionActiva)
+                    @php($ultima = $producto->ultimaPromocion)
                     <tr>
-                        <td style="width:100px; text-align:center;">
-                            @if($producto->imagen_url)
-                                <img src="/{{ $producto->imagen_url }}" alt="{{ $producto->nombre }}" style="max-width:90px; max-height:90px; object-fit:cover;">
-                            @else
-                                —
-                            @endif
-                        </td>
-                        <td>{{ $producto->nombre }}</td>
-                        <td>{{ $producto->stock }}</td>
-                        <td>$ {{ number_format($producto->precio, 2) }}</td>
                         <td>
-                            @if($oferta)
-                                {{ $oferta->titulo }}<br>
-                                <small>
-                                    {{ $oferta->tipo === 'porcentaje' ? ($oferta->valor.'%') : ('$'.$oferta->valor) }}
-                                </small>
-                            @else
-                                —
+                            @if($ultima)
+                                <input type="checkbox" name="promocion_ids[]" value="{{ $ultima->id_promocion }}" class="promocion-checkbox">
                             @endif
                         </td>
                         <td>
-                            @if($oferta)
-                                {{ $oferta->fecha_inicio }} — {{ $oferta->fecha_fin }}
+                            <strong>{{ $producto->nombre }}</strong>
+                            <br><small class="text-muted">Stock: {{ $producto->stock }}</small>
+                        </td>
+                        <td>${{ number_format($producto->precio, 2) }}</td>
+                        <td>
+                            @if($ultima)
+                                <strong>{{ $ultima->titulo }}</strong>
+                                <br><small>{{ $ultima->tipo === 'porcentaje' ? $ultima->valor.'%' : '$'.$ultima->valor }} descuento</small>
+                                <br><small class="text-muted">{{ optional($ultima->fecha_inicio)->format('d/m/Y') }} - {{ optional($ultima->fecha_fin)->format('d/m/Y') }}</small>
                             @else
-                                —
+                                <span class="text-muted">Sin promoción</span>
                             @endif
                         </td>
                         <td>
-                            @if($oferta)
-                                {{ $oferta->activa ? 'Activa' : 'Inactiva' }}
+                            @php($now = now())
+                            @if($activa)
+                                <span class="badge bg-success">Activa</span>
+                            @elseif($ultima)
+                                @if(($ultima->fecha_inicio && $now->lt($ultima->fecha_inicio)) || ($ultima->fecha_fin && $now->gt($ultima->fecha_fin)))
+                                    <span class="badge bg-warning text-dark">Fuera de vigencia</span>
+                                @elseif(!$ultima->activa)
+                                    <span class="badge bg-secondary">Inactiva</span>
+                                @else
+                                    <span class="badge bg-light text-dark">Sin promoción</span>
+                                @endif
                             @else
-                                —
+                                <span class="badge bg-light text-dark">Sin promoción</span>
                             @endif
                         </td>
                         <td>
-                            @if($oferta)
-                                <a href="{{ route('admin.promociones.edit', $oferta) }}">Editar oferta</a>
-                                <form action="{{ route('admin.promociones.toggle-status', $oferta) }}" method="POST" style="display:inline;">
+                            @if($ultima)
+                                <a href="{{ route('admin.promociones.edit', $ultima) }}" class="btn btn-sm btn-primary">Editar</a>
+                                
+                                <form action="{{ route('admin.promociones.toggle-status', $ultima) }}" method="POST" style="display:inline;">
                                     @csrf
-                                    <button type="submit">{{ $oferta->activa ? 'Desactivar' : 'Activar' }}</button>
+                                    <button type="submit" class="btn btn-sm btn-warning">
+                                        {{ $ultima->activa ? 'Desactivar' : 'Activar' }}
+                                    </button>
                                 </form>
-                                <form action="{{ route('admin.promociones.destroy', $oferta) }}" method="POST" style="display:inline;" onsubmit="return confirm('¿Eliminar esta oferta?');">
+                                
+                                <form action="{{ route('admin.promociones.destroy', $ultima) }}" method="POST" style="display:inline;" onsubmit="return confirm('¿Eliminar promoción {{ $ultima->titulo }}?');">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit">Eliminar</button>
+                                    <input type="hidden" name="filtro" value="{{ $filtro }}">
+                                    <button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
                                 </form>
+
+                                @php($vigenteAhora = $ultima->fecha_inicio && $ultima->fecha_fin && $now->between($ultima->fecha_inicio->copy()->startOfDay(), $ultima->fecha_fin->copy()->endOfDay()))
+                                @if(!$activa && !$vigenteAhora)
+                                    <a href="{{ route('admin.promociones.create', ['id_producto' => $producto->id_producto]) }}" class="btn btn-sm btn-success">Crear</a>
+                                @endif
                             @else
-                                {{-- Cambio aquí: antes decía "Crear oferta" --}}
-                                <a href="{{ route('admin.promociones.create', ['id_producto' => $producto->id_producto]) }}">Editar oferta</a>
+                                <a href="{{ route('admin.promociones.create', ['id_producto' => $producto->id_producto]) }}" class="btn btn-sm btn-success">Crear</a>
                             @endif
                         </td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="8">No hay productos.</td>
+                        <td colspan="6" class="text-center">No hay productos.</td>
                     </tr>
                 @endforelse
             </tbody>
         </table>
     </div>
 
-    <div class="mt-3">
-        {{ $productos->links() }}
-    </div>
+    {{ $productos->links() }}
+
+    <!-- Formulario para bulk delete -->
+    <form id="bulk-delete-form" action="{{ route('admin.promociones.bulk-delete') }}" method="POST" style="display: none;">
+        @csrf
+        @method('DELETE')
+        <input type="hidden" name="ids" id="bulk-delete-ids">
+        <input type="hidden" name="filtro" value="{{ $filtro }}">
+    </form>
 </div>
 @endsection
 
 @section('scripts')
-<script src="{{ asset('js/admin/promociones.js') }}"></script>
+<script src="{{ asset('js/admin/promociones.js') }}?v=1"></script>
 @endsection

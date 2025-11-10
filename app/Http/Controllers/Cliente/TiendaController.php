@@ -1,6 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Cliente;
+
+use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 use App\Models\Producto;
@@ -11,7 +13,7 @@ class TiendaController extends Controller
     public function index(Request $request)
     {
         // Obtener productos y categorías para ambos tipos de usuarios
-        $query = Producto::query();
+        $query = Producto::with(['promocionActiva', 'categoria']);
         
         // CORREGIDO: Usar 'filled' para asegurarse de que el campo tiene un valor
         if ($request->filled('busqueda')) {

@@ -5,10 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class DetallePedido extends Model
+class PedidoDetalle extends Model
 {
     protected $primaryKey = 'id_detalle';
-    protected $table = 'detalles_pedido';
+    protected $table = 'pedido_detalles';
     
     protected $fillable = [
         'id_pedido',
@@ -24,6 +24,6 @@ class DetallePedido extends Model
 
     public function producto(): BelongsTo
     {
-        return $this->belongsTo(Producto::class, 'id_producto');
+        return $this->belongsTo(Producto::class, 'id_producto', 'id_producto');
     }
 }

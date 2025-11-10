@@ -23,7 +23,11 @@ return new class extends Migration
                 'entregado', 
                 'cancelado'
             ])->default('pendiente');
-            $table->text('direccion_envio');
+            $table->string('calle', 255);
+            $table->string('colonia', 255);
+            $table->string('municipio_ciudad', 255);
+            $table->string('codigo_postal', 10);
+            $table->string('estado_direccion', 100);
             // Nuevos campos integrados (antes en envios)
             $table->string('metodo_pago', 50)->nullable();
             $table->string('empresa_envio', 100)->nullable();

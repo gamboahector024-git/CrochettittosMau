@@ -81,33 +81,6 @@ body {
 .navbar h1 a:hover {
   color: var(--accent-light-contrast); /* Rosa Suave */
 }
-.nav-links {
-  display: flex;
-  gap: 2rem;
-  list-style: none;
-}
-.nav-links a {
-  color: var(--text-muted);
-  text-decoration: none;
-  font-weight: 600;
-  position: relative;
-}
-.nav-links a::after {
-  content: '';
-  position: absolute;
-  width: 0%;
-  height: 2px;
-  left: 0;
-  bottom: -5px;
-  background: var(--accent-dark-contrast); /* Rosa Fuerte */
-  transition: width 0.3s ease;
-}
-.nav-links a:hover {
-  color: var(--accent-dark-contrast);
-}
-.nav-links a:hover::after {
-  width: 100%;
-}
 
 /* ESTILOS PARA BOTONES DE REGISTRO/INICIO DE SESIÓN */
 .nav-auth {
@@ -463,7 +436,50 @@ main {
 /* ============================================== */
 
 
-/* ====== 10. Footer ====== */
+/* ====== 10. Secciones de Categorías ====== */
+.category-section {
+  margin-bottom: 4rem;
+  scroll-margin-top: 100px; /* Espacio para el header fijo */
+}
+
+.category-title {
+  font-family: var(--font-heading);
+  color: var(--accent-dark-contrast);
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  text-align: center;
+  position: relative;
+  padding-bottom: 1rem;
+}
+
+.category-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 3px;
+  background: var(--accent-primary-pastel);
+  border-radius: 2px;
+}
+
+/* Navegación suave */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Resaltar sección activa al hacer scroll */
+.category-section:target {
+  animation: highlightSection 1s ease-in-out;
+}
+
+@keyframes highlightSection {
+  0% { background-color: rgba(234, 156, 175, 0.1); }
+  100% { background-color: transparent; }
+}
+
+/* ====== 11. Footer ====== */
 .site-footer {
   text-align: center;
   padding: 2rem 8%;
