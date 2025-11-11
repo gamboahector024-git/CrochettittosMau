@@ -118,6 +118,9 @@ class ProductoController extends Controller
      */
     public function destroy(Producto $producto)
     {
+        // Eliminar detalles de pedidos asociados (permite borrar productos con pedidos)
+        $producto->pedidos()->detach();
+
         if ($producto->imagen_url) {
             $relative = str_starts_with($producto->imagen_url, 'storage/') ? substr($producto->imagen_url, 8) : $producto->imagen_url;
             Storage::disk('public')->delete($relative);
@@ -137,12 +140,30 @@ class ProductoController extends Controller
     {
         $request->validate([
             'ids' => 'required|array',
-            'ids.*' => 'exists:productos,id_producto' // Validar con PK real
+            'ids.*' => 'exists:productos,id_producto'
         ]);
 
-        Producto::destroy($request->ids);
+        $productosEliminados = [];
 
-        Session::flash('success', 'Productos seleccionados eliminados correctamente.');
+        foreach ($request->ids as $id) {
+            $producto = Producto::find($id);
+            if ($producto) {
+                // Eliminar detalles de pedidos asociados
+                $producto->pedidos()->detach();
+                
+                if ($producto->imagen_url) {
+                    $relative = str_starts_with($producto->imagen_url, 'storage/') ? substr($producto->imagen_url, 8) : $producto->imagen_url;
+                    Storage::disk('public')->delete($relative);
+                }
+                $producto->delete();
+                $productosEliminados[] = $producto->nombre;
+            }
+        }
+
+        if (!empty($productosEliminados)) {
+            Session::flash('success', 'Productos eliminados correctamente: ' . implode(', ', $productosEliminados));
+        }
+
         return back();
     }
 }
