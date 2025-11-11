@@ -9,7 +9,8 @@ use App\Http\Controllers\Admin\{
     PedidoController,
     CategoriaController,
     PeticionController,
-    PromocionController
+    PromocionController,
+    CarruselController
 };
 use App\Http\Controllers\Cliente\{
     CarritoController,
@@ -61,6 +62,17 @@ Route::middleware(['web', 'track-user-activity'])->group(function () {
         Route::put('/actualizar', [PerfilController::class, 'update'])->name('update');
     });
 
+    // Peticiones personalizadas (usuarios autenticados)
+    Route::middleware('auth')->group(function () {
+        // Ruta para que un usuario cree una petición personalizada
+        Route::post('/peticiones', [\App\Http\Controllers\Cliente\PeticionController::class, 'store'])->name('peticiones.store');
+    });
+
+    // Rutas para que el cliente vea sus peticiones
+    Route::middleware('auth')->prefix('mis-peticiones')->name('cliente.peticiones.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Cliente\PeticionController::class, 'index'])->name('index');
+        Route::get('/{peticion}', [\App\Http\Controllers\Cliente\PeticionController::class, 'show'])->name('show');
+    });
     /*
     |--------------------------------------------------------------------------
     | Pedidos del cliente
@@ -110,5 +122,8 @@ Route::middleware(['web', 'track-user-activity'])->group(function () {
         Route::resource('promociones', PromocionController::class)
             ->parameters(['promociones' => 'promocion']);
         Route::post('promociones/{promocion}/toggle-status', [PromocionController::class, 'toggleStatus'])->name('promociones.toggle-status');
+        
+        // Carrusel
+        Route::resource('carrusel', CarruselController::class)->except(['show']);
     });
 });

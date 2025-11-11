@@ -13,6 +13,15 @@
         <h1>Panel de Estadísticas</h1>
     </div>
 
+    <style>
+        /* Estilos mínimos para las tarjetas de productos con bajo stock */
+        .low-stock-grid{display:flex;flex-wrap:wrap;gap:12px;margin-top:8px}
+        .low-stock-card{background:#fff;border:1px solid #e6e6e6;padding:10px;border-radius:6px;min-width:160px;flex:1 1 180px;box-shadow:0 1px 3px rgba(0,0,0,0.04)}
+        .low-stock-card .card-title{font-weight:600;margin-bottom:6px}
+        .low-stock-card .card-body{color:#555}
+        @media (max-width:600px){.low-stock-card{flex:1 1 100%}}
+    </style>
+
     <div class="stats-grid">
         
         <div class="stat-card blue"> {{-- La clase "blue" viene de tu CSS y añade el borde --}}
@@ -60,17 +69,26 @@
             <div class="label">Últimas 24 horas</div>
         </div>
 
-        <div class="stat-card red"> {{-- Assuming a red class for alert styling, add to CSS if needed --}}
+        <div class="stat-card red"> {{-- Productos por agotarse en tarjetas individuales --}}
             <div class="stat-card-header">
                 <i class="fas fa-exclamation-triangle"></i>
                 <h3>Productos por agotarse</h3>
             </div>
             <div class="value">
                 @if($lowStockProducts->isNotEmpty())
-                    @foreach($lowStockProducts as $product)
-                        {{ $product->nombre }} (Stock: {{ $product->stock }})
-                        @if(!$loop->last), @endif
-                    @endforeach
+                    <div class="low-stock-grid">
+                        @foreach($lowStockProducts as $product)
+                            <div class="low-stock-card">
+                                <div class="card-title">{{ $product->nombre }}</div>
+                                <div class="card-body">Stock: <strong>{{ $product->stock }}</strong></div>
+                                <div style="margin-top:8px;">
+                                    @if(isset($product->id_producto))
+                                        <a href="{{ route('admin.productos.edit', $product->id_producto) }}" class="btn btn-sm btn-primary">Editar</a>
+                                    @endif
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
                 @else
                     Ningún producto con bajo stock
                 @endif

@@ -39,6 +39,10 @@
                 Promociones
             </a>
 
+            <a href="{{ route('admin.carrusel.index') }}" class="{{ request()->routeIs('admin.carrusel.*') ? 'active' : '' }}">
+                Gestionar Carrusel
+            </a>
+
             <a href="{{ url('/') }}">Ver Tienda</a>
             <a href="{{ url('/logout') }}">Cerrar Sesión</a>
             {{-- La etiqueta </li> que estaba aquí fue eliminada --}}
