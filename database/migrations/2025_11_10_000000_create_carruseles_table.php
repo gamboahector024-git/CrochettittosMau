@@ -13,11 +13,8 @@ return new class extends Migration
     {
         Schema::create('carruseles', function (Blueprint $table) {
             $table->id();
-            $table->string('titulo')->nullable();
-            $table->text('descripcion')->nullable();
-            $table->string('imagen'); // Ruta de la imagen
+            $table->string('imagen');
             $table->integer('orden')->default(0);
-            $table->boolean('activo')->default(true);
             $table->timestamps();
         });
     }
