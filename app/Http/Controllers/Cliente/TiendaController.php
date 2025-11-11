@@ -7,11 +7,15 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Producto;
 use App\Models\Categoria;
+use App\Models\Carrusel;
 
 class TiendaController extends Controller
 {
     public function index(Request $request)
     {
+        // Obtener imágenes del carrusel
+        $carruseles = Carrusel::orderBy('orden')->get();
+        
         // Obtener productos y categorías para ambos tipos de usuarios
         $query = Producto::with(['promocionActiva', 'categoria']);
         
@@ -42,10 +46,10 @@ class TiendaController extends Controller
         
         if (auth()->check()) {
             // Usuario autenticado - vista completa con funcionalidades
-            return view('cliente.tienda', compact('productos', 'categorias'));
+            return view('cliente.tienda', compact('productos', 'categorias', 'carruseles'));
         } else {
             // Visitante - mismo catálogo pero funcionalidades limitadas
-            return view('visita.tienda', compact('productos', 'categorias'));
+            return view('visita.tienda', compact('productos', 'categorias', 'carruseles'));
         }
     }
 }

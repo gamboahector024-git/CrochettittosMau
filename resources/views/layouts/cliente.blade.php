@@ -22,6 +22,12 @@
                     <a href="{{ route('cliente.pedidos.index') }}" class="nav-button nav-button-pastel-secondary">
                         <i class="fas fa-box"></i> Mis Pedidos
                     </a>
+                    <a href="{{ route('cliente.peticiones.index') }}" class="nav-button nav-button-pastel-secondary">
+                        <i class="fas fa-inbox"></i> Mis Peticiones
+                    </a>
+                    <a href="#" id="newPeticionButton" class="nav-button nav-button-pastel-primary">
+                        <i class="fas fa-envelope-open-text"></i> Nueva Petición
+                    </a>
                     <a href="{{ route('carrito.index') }}" class="nav-button nav-button-pastel-primary">
                         <i class="fas fa-shopping-cart"></i> Carrito
                     </a>
@@ -38,6 +44,18 @@
     </header>
 
     <main>
+        {{-- Mensajes flash simples para success/error --}}
+        @if(session('success'))
+            <div class="flash-message flash-success" role="alert" style="margin:10px;padding:10px;border:1px solid #c6f6d5;background:#e6ffed;color:#1a7f37;">
+                {{ session('success') }}
+            </div>
+        @endif
+        @if(session('error'))
+            <div class="flash-message flash-error" role="alert" style="margin:10px;padding:10px;border:1px solid #fed7d7;background:#fff5f5;color:#9b2c2c;">
+                {{ session('error') }}
+            </div>
+        @endif
+
         @yield('content')
     </main>
 
@@ -84,8 +102,65 @@
         </div>
     </div>
 
+    {{-- Modal para crear Petición personalizada --}}
+    <div id="peticionModal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <span class="close-button" id="closePeticionModal">&times;</span>
+            <h3>Enviar Petición Personalizada</h3>
+
+            <form action="{{ route('peticiones.store') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <div class="form-group">
+                    <label for="titulo">Título</label>
+                    <input id="titulo" name="titulo" type="text" class="form-control" required maxlength="255">
+                </div>
+                <div class="form-group">
+                    <label for="descripcion">Descripción</label>
+                    <textarea id="descripcion" name="descripcion" rows="4" class="form-control" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="imagen_referencia">Imagen de referencia (opcional)</label>
+                    <input id="imagen_referencia" name="imagen_referencia" type="file" accept="image/*" class="form-control">
+                </div>
+
+                <div style="margin-top:12px;">
+                    <button type="submit" class="nav-button nav-button-pastel-primary">Enviar Petición</button>
+                    <button type="button" class="nav-button nav-button-pastel-secondary" id="cancelPeticion">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script src="{{ asset('js/main.js') }}?v=13"></script>
     
+    <script>
+        // JS mínimo para abrir/cerrar modal de peticiones
+        document.addEventListener('DOMContentLoaded', function () {
+            var btn = document.getElementById('newPeticionButton');
+            var modal = document.getElementById('peticionModal');
+            var close = document.getElementById('closePeticionModal');
+            var cancel = document.getElementById('cancelPeticion');
+
+            if (btn && modal) {
+                btn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    modal.style.display = 'block';
+                });
+            }
+            if (close) {
+                close.addEventListener('click', function () { modal.style.display = 'none'; });
+            }
+            if (cancel) {
+                cancel.addEventListener('click', function () { modal.style.display = 'none'; });
+            }
+
+            // Cerrar modal al click fuera del contenido
+            window.addEventListener('click', function (e) {
+                if (e.target === modal) modal.style.display = 'none';
+            });
+        });
+    </script>
+
     @stack('scripts')
 </body>
 </html>

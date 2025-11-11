@@ -115,7 +115,7 @@
                 @if(!empty($pedido->peticion->imagen_referencia))
                     <div class="info-item">
                         <strong>Imagen de referencia:</strong><br>
-                        <img src="{{ asset('storage/'.$pedido->peticion->imagen_referencia) }}" alt="Referencia" class="form-image-preview">
+                        <img src="{{ asset($pedido->peticion->imagen_referencia) }}" alt="Referencia" class="form-image-preview">
                     </div>
                 @endif
             </div>

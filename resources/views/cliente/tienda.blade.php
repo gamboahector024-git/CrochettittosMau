@@ -16,18 +16,15 @@
     <section class="image-carousel">
         <div class="carousel-track">
             
-            <div class="carousel-slide">
-                {{-- <img src="{{ asset('img/image_a2e101.jpg') }}" alt="Amigurumi Especial"> --}}
-                <img src="https://via.placeholder.com/1200x400/A77BFF/FFFFFF?text=Tu+Imagen+Principal+Aqu%C3%BA" alt="Imagen de Bienvenida 1">
-            </div>
-            
-            <div class="carousel-slide">
-                <img src="https://via.placeholder.com/1200x400/5B8CFF/FFFFFF?text=Novedades" alt="Novedades">
-            </div>
-            
-            <div class="carousel-slide">
-                <img src="https://via.placeholder.com/1200x400/AEE6ED/FFFFFF?text=Hecho+a+Mano" alt="Hecho a Mano">
-            </div>
+            @forelse($carruseles as $carrusel)
+                <div class="carousel-slide">
+                    <img src="{{ asset($carrusel->imagen) }}" alt="Imagen del carrusel">
+                </div>
+            @empty
+                <div class="carousel-slide">
+                    <img src="https://via.placeholder.com/1200x400/A77BFF/FFFFFF?text=Tu+Imagen+Principal+Aqu%C3%AD" alt="Imagen de Bienvenida 1">
+                </div>
+            @endforelse
 
         </div>
         <div class="carousel-dots"></div>
