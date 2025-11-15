@@ -1244,3 +1244,384 @@ button:disabled {
         width: 100%;
     }
 }
+/* ====== 13. Estilos de Formulario Adicionales ====== */
+
+.form-group {
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+/* Estilo para inputs y textareas */
+.form-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--accent-light-contrast); /* Rosa Suave */
+  background: rgba(255, 255, 255, 0.2);
+  color: var(--text-main);
+  border-radius: 8px;
+  font-size: 1rem;
+  font-family: var(--font-body);
+  transition: all 0.3s ease;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--accent-dark-contrast); /* Rosa Fuerte */
+  box-shadow: 0 0 0 3px rgba(213, 105, 137, 0.1);
+}
+
+/* Estilo para input de archivo */
+.form-input-file {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+}
+.form-input-file::file-selector-button {
+  /* Reusamos el estilo de botón terciario */
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  background: var(--accent-light-contrast);
+  color: var(--text-dark);
+  transition: all 0.3s ease;
+  margin-right: 1rem;
+}
+.form-input-file::file-selector-button:hover {
+  background: #F0B4C6;
+}
+
+/* ====== 14. Estilos de Página de Perfil ====== */
+
+.profile-container {
+  /* Usamos el efecto Glassmorphism de tu CSS */
+  background: var(--bg-glass);
+  border: var(--glass-border);
+  backdrop-filter: var(--glass-blur);
+  border-radius: 16px;
+  padding: 2.5rem;
+  box-shadow: var(--glass-shadow);
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.profile-title {
+  /* Reusamos el estilo de los títulos de categoría */
+  font-family: var(--font-heading);
+  color: var(--accent-dark-contrast);
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  text-align: center;
+  position: relative;
+  padding-bottom: 1rem;
+}
+
+.profile-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 3px;
+  background: var(--accent-primary-pastel);
+  border-radius: 2px;
+}
+
+.profile-section {
+  margin-top: 2rem;
+}
+
+.profile-section h3 {
+  /* Reusamos el estilo de los títulos de filtros */
+  color: var(--accent-dark-contrast); /* Rosa Fuerte */
+  font-weight: 600;
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid var(--accent-light-contrast); /* Rosa Suave */
+  padding-bottom: 0.5rem;
+}
+
+.profile-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  color: var(--text-main);
+  font-size: 1.05rem;
+}
+
+.profile-info p strong {
+  color: var(--text-dark);
+  font-weight: 600;
+  min-width: 100px;
+  display: inline-block;
+}
+
+/* Ajuste para que el botón "Editar Perfil" no ocupe todo el ancho */
+.profile-section .tertiary-button {
+  display: inline-block;
+  width: auto;
+}
+
+/* ====== 15. Estilos de Lista de Pedidos (Perfil) ====== */
+
+.profile-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.orders-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.order-card {
+  background: var(--bg-card);
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(213, 105, 137, 0.1);
+  overflow: hidden;
+}
+
+.order-header {
+  display: flex;
+  flex-wrap: wrap; /* Para que se ajuste en móviles */
+  gap: 1rem;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  background: var(--color-powdered-lilac-grey);
+  border-bottom: 1px solid var(--accent-light-contrast);
+  color: var(--text-main);
+  font-weight: 600;
+}
+
+.order-id {
+  color: var(--accent-dark-contrast);
+  font-weight: 700;
+  font-size: 1.1rem;
+  margin-right: auto; /* Empuja todo lo demás a la derecha */
+}
+
+.order-date {
+  color: var(--text-muted);
+}
+
+.order-total {
+  font-size: 1.1rem;
+  color: var(--accent-dark-contrast);
+}
+
+.order-status {
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-dark);
+}
+
+/* Colores para los estados del pedido */
+.status-pendiente { background-color: #ffe69c; } /* Amarillo pastel */
+.status-pagado { background-color: var(--accent-highlight-green); } /* Verde pastel */
+.status-enviado { background-color: #a7d8ff; } /* Azul pastel */
+.status-entregado { background-color: #c9f0d0; } /* Verde más claro */
+.status-cancelado { background-color: #ffc2c2; } /* Rojo pastel */
+
+
+.order-products {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.order-product {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.order-product img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid var(--accent-light-contrast);
+}
+
+.order-product span {
+  color: var(--text-main);
+  font-weight: 500;
+}
+
+/* ====== 16. Estilos de Lista de Peticiones (Perfil) ====== */
+
+.petitions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem; /* Espacio antes de los botones */
+}
+
+.peticion-card {
+  background: var(--bg-card);
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(213, 105, 137, 0.1);
+  overflow: hidden;
+}
+
+.peticion-header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  background: var(--color-powdered-lilac-grey);
+  border-bottom: 1px solid var(--accent-light-contrast);
+  color: var(--text-main);
+  font-weight: 600;
+}
+
+.peticion-id {
+  color: var(--accent-dark-contrast);
+  font-weight: 700;
+  font-size: 1.1rem;
+  margin-right: auto;
+}
+
+.peticion-date {
+  color: var(--text-muted);
+}
+
+.peticion-status {
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-dark);
+}
+
+/* Los estados de petición pueden reusar los colores 
+  de los estados de pedido (ej. .status-pendiente, .status-aprobado)
+  Asegúrate de añadir 'aprobado' si lo usas:
+*/
+.status-aprobado { background-color: var(--accent-highlight-green); }
+.status-rechazado { background-color: #ffc2c2; }
+
+
+.peticion-body {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  color: var(--text-main);
+}
+
+.peticion-body strong {
+  color: var(--text-dark);
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.peticion-body p {
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+/* Contenedor para los botones al final de la sección de perfil */
+.profile-actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap; /* Para que se apilen en móvil */
+  margin-top: 1.5rem;
+  border-top: 1px solid var(--accent-light-contrast);
+  padding-top: 1.5rem;
+}
+
+/* Hacemos que los botones no ocupen todo el ancho por defecto */
+.profile-actions .tertiary-button,
+.profile-actions .primary-button {
+  display: inline-block;
+  width: auto;
+}
+/* ====== 17. Estilos de Formulario de Edición (Perfil) ====== */
+
+/* Un grid para organizar el formulario en columnas */
+.form-grid {
+  display: grid;
+  /* Crea 2 columnas de tamaño flexible, pero ninguna más pequeña 
+    que 250px. Si no caben, se ponen en 1 columna.
+  */
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+/* Para campos que deben ocupar todo el ancho del grid (ej. Dirección) */
+.form-grid .form-group.full-width {
+  grid-column: 1 / -1; /* Ocupa desde la primera a la última línea */
+}
+
+/* Subtítulo para secciones dentro del formulario (ej. "Cambiar Contraseña") */
+.form-subtitle {
+  /* Reusamos el estilo de los títulos de filtros */
+  color: var(--accent-dark-contrast); /* Rosa Fuerte */
+  font-weight: 600;
+  font-size: 1.3rem;
+  margin-top: 2.5rem; /* Espacio extra arriba */
+  margin-bottom: 0.5rem; /* Menos espacio abajo */
+  border-bottom: 1px solid var(--accent-light-contrast); /* Rosa Suave */
+  padding-bottom: 0.5rem;
+}
+
+/* Texto de ayuda/pista para el usuario */
+.form-hint {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  margin-bottom: 1.5rem;
+  line-height: 1.5;
+}
+
+/* Contenedor para los botones del formulario */
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap; /* Para que se apilen en móvil */
+  margin-top: 2.5rem;
+  border-top: 1px solid var(--accent-light-contrast);
+  padding-top: 1.5rem;
+  justify-content: flex-start; /* Alinea botones a la izquierda */
+}
+
+/* Asegura que los botones dentro del form-actions
+  no ocupen todo el ancho por defecto.
+*/
+.form-actions .primary-button,
+.form-actions .tertiary-button {
+  display: inline-block;
+  width: auto; 
+}
+
+/* Estilo para el input deshabilitado (para el email) */
+.form-input:disabled {
+    background: var(--color-powdered-lilac-grey);
+    color: var(--text-muted);
+    cursor: not-allowed;
+    border-color: rgba(0,0,0,0.05);
+}
+
+/* En móviles, forzamos 1 columna para el grid si no lo hace solo */
+@media (max-width: 500px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+}

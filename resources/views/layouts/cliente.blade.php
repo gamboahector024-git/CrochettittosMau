@@ -64,6 +64,10 @@
         <p>&copy; {{ date('Y') }} Crochettitos. Todos los derechos reservados.</p>
     </footer>
 
+    {{-- ======================================================== --}}
+    {{-- ========= MODALES (PRODUCTO, LOGIN, PETICIÓN) ========= --}}
+    {{-- ======================================================== --}}
+
     <div id="productModal" class="modal">
         <div class="modal-content">
             <span class="close-button">&times;</span>
@@ -103,63 +107,96 @@
         </div>
     </div>
 
-    {{-- Modal para crear Petición personalizada --}}
+    {{-- Modal para crear Petición personalizada (CÓDIGO CORREGIDO) --}}
     <div id="peticionModal" class="modal" style="display:none;">
-        <div class="modal-content">
-            <span class="close-button" id="closePeticionModal">&times;</span>
-            <h3>Enviar Petición Personalizada</h3>
+      
+        <div class="modal-content" style="display: block; max-width: 600px;">
+            <button class="close-modal" id="closePeticionModal">&times;</button>
+            
+            <div class="modal-details" style="padding: 2.5rem;">
 
-            <form action="{{ route('peticiones.store') }}" method="POST" enctype="multipart/form-data">
-                @csrf
-                <div class="form-group">
-                    <label for="titulo">Título</label>
-                    <input id="titulo" name="titulo" type="text" class="form-control" required maxlength="255">
-                </div>
-                <div class="form-group">
-                    <label for="descripcion">Descripción</label>
-                    <textarea id="descripcion" name="descripcion" rows="4" class="form-control" required></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="imagen_referencia">Imagen de referencia (opcional)</label>
-                    <input id="imagen_referencia" name="imagen_referencia" type="file" accept="image/*" class="form-control">
-                </div>
+                <h2 id="modalName">Enviar Petición Personalizada</h2>
 
-                <div style="margin-top:12px;">
-                    <button type="submit" class="nav-button nav-button-pastel-primary">Enviar Petición</button>
-                    <button type="button" class="nav-button nav-button-pastel-secondary" id="cancelPeticion">Cancelar</button>
-                </div>
-            </form>
+                <form action="{{ route('peticiones.store') }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    
+                    <div class="form-group">
+                        <label for="titulo">Título</label>
+                        <input id="titulo" name="titulo" type="text" class="form-input" required maxlength="255">
+                    </div>
+                    <div class="form-group">
+                        <label for="descripcion">Descripción</label>
+                        <textarea id="descripcion" name="descripcion" rows="4" class="form-input" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="imagen_referencia">Imagen de referencia (opcional)</label>
+                        <input id="imagen_referencia" name="imagen_referencia" type="file" accept="image/*" class="form-input-file">
+                    </div>
+
+                    <div class="modal-actions" style="flex-direction: row; gap: 1rem; margin-top: 1.5rem;">
+                        <button type="submit" class="primary-button" style="flex: 1;">Enviar Petición</button>
+                        <button type="button" class="tertiary-button" id="cancelPeticion" style="flex: 1;">Cancelar</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 
     <script src="{{ asset('js/main.js') }}?v=13"></script>
     
+    {{-- JS CORREGIDO para modal de peticiones --}}
     <script>
-        // JS mínimo para abrir/cerrar modal de peticiones
-        document.addEventListener('DOMContentLoaded', function () {
-            var btn = document.getElementById('newPeticionButton');
-            var modal = document.getElementById('peticionModal');
-            var close = document.getElementById('closePeticionModal');
-            var cancel = document.getElementById('cancelPeticion');
+    document.addEventListener('DOMContentLoaded', function () {
+        
+        // Asignamos TODOS los botones con ese ID (el del header y el del perfil)
+        var btns = document.querySelectorAll('#newPeticionButton'); 
+        var modal = document.getElementById('peticionModal');
+        var close = document.getElementById('closePeticionModal');
+        var cancel = document.getElementById('cancelPeticion');
 
-            if (btn && modal) {
-                btn.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    modal.style.display = 'block';
-                });
+        function openModal(e) {
+            e.preventDefault();
+            if(modal) {
+                // Usamos 'flex' para que el CSS pueda centrar el modal
+                modal.style.display = 'flex'; 
             }
-            if (close) {
-                close.addEventListener('click', function () { modal.style.display = 'none'; });
-            }
-            if (cancel) {
-                cancel.addEventListener('click', function () { modal.style.display = 'none'; });
-            }
+        }
 
-            // Cerrar modal al click fuera del contenido
-            window.addEventListener('click', function (e) {
-                if (e.target === modal) modal.style.display = 'none';
+        function closeModal() {
+            if(modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        // Asignamos el evento a CADA botón encontrado
+        if (btns.length > 0 && modal) {
+            btns.forEach(function(btn) {
+                btn.addEventListener('click', openModal);
             });
+        }
+        
+        if (close) {
+            close.addEventListener('click', closeModal);
+        }
+        if (cancel) {
+            cancel.addEventListener('click', closeModal);
+        }
+
+        // Cerrar modal al click fuera del contenido
+        window.addEventListener('click', function (e) {
+            if (e.target === modal) {
+                closeModal();
+            }
+            
+            // Cierre para los otros modales (si usan la misma lógica)
+            var loginModal = document.getElementById('loginModal');
+            if (e.target === loginModal) {
+                loginModal.style.display = 'none';
+            }
+            
+            // (Añade aquí tu lógica para cerrar el productModal)
         });
+    });
     </script>
 
     @stack('scripts')

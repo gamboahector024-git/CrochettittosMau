@@ -1,89 +1,91 @@
 @extends('layouts.cliente')
 
-@section('title', 'Editar Perfil - Crochettitos')
+@section('title', 'Editar Perfil - Crochettittos')
 
 @section('content')
-<div class="profile-edit-container">
-    <div class="edit-header">
-        <h1><i class="fas fa-user-edit"></i> Editar Perfil</h1>
+<div class="container">
+    {{-- 1. Usamos el mismo contenedor de "Mi Perfil" para la consistencia --}}
+    <div class="profile-container">
+
+        {{-- 2. Usamos el mismo estilo de título --}}
+        <h2 class="profile-title">Editar Perfil</h2>
+
+        {{-- 
+          Asegúrate de que esta ruta 'perfil.update' exista en 'routes/web.php'
+          y que sea de tipo PATCH o PUT.
+        --}}
+        <form action="{{ route('perfil.update') }}" method="POST">
+            @csrf
+            @method('PATCH') {{-- O 'PUT' --}}
+
+            {{-- 3. Usamos un grid para organizar el formulario --}}
+            <div class="form-grid">
+                
+                {{-- CAMPO: NOMBRE --}}
+                <div class="form-group">
+                    <label for="nombre">Nombre</label>
+                    <input type="text" id="nombre" name="nombre" class="form-input" 
+                           value="{{ old('nombre', $usuario->nombre) }}" required>
+                </div>
+
+                {{-- CAMPO: APELLIDO (lo vi en tu captura) --}}
+                <div class="form-group">
+                    <label for="apellido">Apellido</label>
+                    <input type="text" id="apellido" name="apellido" class="form-input" 
+                           value="{{ old('apellido', $usuario->apellido) ?? '' }}">
+                </div>
+
+                {{-- CAMPO: TELÉFONO --}}
+                <div class="form-group">
+                    <label for="telefono">Teléfono</label>
+                    <input type="tel" id="telefono" name="telefono" class="form-input" 
+                           value="{{ old('telefono', $usuario->telefono) ?? '' }}">
+                </div>
+
+                {{-- CAMPO: EMAIL (deshabilitado) --}}
+                <div class="form-group">
+                    <label for="email">Email (no se puede cambiar)</label>
+                    <input type="email" id="email" name="email" class="form-input" 
+                           value="{{ $usuario->email }}" disabled>
+                </div>
+
+                {{-- CAMPO: DIRECCIÓN (ocupa todo el ancho) --}}
+                <div class="form-group full-width">
+                    <label for="direccion">Dirección</label>
+                    <textarea id="direccion" name="direccion" class="form-input" 
+                              rows="3">{{ old('direccion', $usuario->direccion) ?? '' }}</textarea>
+                </div>
+            </div>
+
+            {{-- 4. Sección para cambiar contraseña --}}
+            <h3 class="form-subtitle">Cambiar Contraseña</h3>
+            <p class="form-hint">
+                Deja estos campos en blanco si no deseas cambiar tu contraseña.
+            </p>
+
+            <div class="form-grid">
+                {{-- CAMPO: NUEVA CONTRASEÑA --}}
+                <div class="form-group">
+                    <label for="password">Nueva Contraseña</label>
+                    <input type="password" id="password" name="password" class="form-input" 
+                           autocomplete="new-password">
+                </div>
+
+                {{-- CAMPO: CONFIRMAR CONTRASEÑA --}}
+                <div class="form-group">
+                    <label for="password_confirmation">Confirmar Contraseña</label>
+                    <input type="password" id="password_confirmation" name="password_confirmation" 
+                           class="form-input">
+                </div>
+            </div>
+
+            {{-- 5. Botones de acción --}}
+            <div class="form-actions">
+                <button type="submit" class="primary-button">Guardar Cambios</button>
+                <a href="{{ route('perfil.index') }}" class="tertiary-button">Cancelar</a>
+            </div>
+
+        </form>
     </div>
-
-    <form action="{{ route('perfil.update') }}" method="POST" class="edit-form">
-        @csrf
-        @method('PUT')
-        
-        <!-- Nombre -->
-        <div class="form-group">
-            <label for="nombre"><i class="fas fa-signature"></i> Nombre:</label>
-            <input type="text" id="nombre" name="nombre" 
-                   value="{{ old('nombre', $usuario->nombre) }}" 
-                   required
-                   class="@error('nombre') is-invalid @enderror">
-            @error('nombre')
-                <div class="error-message">{{ $message }}</div>
-            @enderror
-        </div>
-
-        <!-- Teléfono -->
-        <div class="form-group">
-            <label for="telefono"><i class="fas fa-phone"></i> Teléfono:</label>
-            <input type="text" id="telefono" name="telefono" 
-                   value="{{ old('telefono', $usuario->telefono) }}"
-                   class="@error('telefono') is-invalid @enderror">
-            @error('telefono')
-                <div class="error-message">{{ $message }}</div>
-            @enderror
-        </div>
-
-        <!-- Dirección -->
-        <div class="form-group">
-            <label for="direccion"><i class="fas fa-map-marker-alt"></i> Dirección:</label>
-            <textarea id="direccion" name="direccion"
-                      class="@error('direccion') is-invalid @enderror">{{ old('direccion', $usuario->direccion) }}</textarea>
-            @error('direccion')
-                <div class="error-message">{{ $message }}</div>
-            @enderror
-        </div>
-
-        <!-- Campos adicionales -->
-        <div class="form-group">
-            <label for="apellido"><i class="fas fa-user-tag"></i> Apellido:</label>
-            <input type="text" id="apellido" name="apellido" 
-                value="{{ old('apellido', $usuario->apellido) }}"
-                class="@error('apellido') is-invalid @enderror">
-            @error('apellido')<div class="error-message">{{ $message }}</div>@enderror
-        </div>
-
-        <div class="form-group">
-            <label for="email"><i class="fas fa-envelope"></i> Email:</label>
-            <input type="email" id="email" name="email" 
-                value="{{ old('email', $usuario->email) }}"
-                required
-                class="@error('email') is-invalid @enderror">
-            @error('email')<div class="error-message">{{ $message }}</div>@enderror
-        </div>
-
-        <div class="form-group">
-            <label for="password"><i class="fas fa-lock"></i> Nueva Contraseña:</label>
-            <input type="password" id="password" name="password"
-                class="@error('password') is-invalid @enderror">
-            @error('password')<div class="error-message">{{ $message }}</div>@enderror
-        </div>
-
-        <div class="form-group">
-            <label for="password_confirmation"><i class="fas fa-lock"></i> Confirmar Contraseña:</label>
-            <input type="password" id="password_confirmation" name="password_confirmation">
-        </div>
-
-        <!-- Botones -->
-        <div class="form-actions">
-            <button type="submit" class="btn-save">
-                <i class="fas fa-save"></i> Guardar Cambios
-            </button>
-            <a href="{{ route('perfil.index') }}" class="btn-cancel">
-                <i class="fas fa-times"></i> Cancelar
-            </a>
-        </div>
-    </form>
 </div>
 @endsection
