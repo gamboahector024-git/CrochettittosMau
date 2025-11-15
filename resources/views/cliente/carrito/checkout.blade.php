@@ -48,7 +48,62 @@
                                 <option value="transferencia">Transferencia Bancaria</option>
                             </select>
                         </div>
-                        <button type="submit" class="btn btn-primary">Confirmar Pedido</button>
+                        <button type="button" class="btn btn-primary">Confirmar Pedido</button>
+                        
+                        <button id="btnPayPal" type="button">Pagar con PayPal</button>
+                        <script>
+                        document.getElementById('btnPayPal').addEventListener('click', async () => {
+                            const tokenMeta = document.querySelector('meta[name="csrf-token"]');
+                            const csrf = tokenMeta ? tokenMeta.getAttribute('content') : '';
+
+                            const calle = document.getElementById('calle')?.value?.trim();
+                            const colonia = document.getElementById('colonia')?.value?.trim();
+                            const municipio_ciudad = document.getElementById('municipio_ciudad')?.value?.trim();
+                            const codigo_postal = document.getElementById('codigo_postal')?.value?.trim();
+                            const estado = document.getElementById('estado')?.value?.trim();
+
+                            if (!calle || !colonia || !municipio_ciudad || !codigo_postal || !estado) {
+                                alert('Por favor completa la dirección antes de pagar con PayPal.');
+                                return;
+                            }
+
+                            try {
+                                const res = await fetch('/paypal/create-payment', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'Accept': 'application/json',
+                                        'X-CSRF-TOKEN': csrf,
+                                        'X-Requested-With': 'XMLHttpRequest'
+                                    },
+                                    body: JSON.stringify({
+                                        calle,
+                                        colonia,
+                                        municipio_ciudad,
+                                        codigo_postal,
+                                        estado
+                                    })
+                                });
+
+                                const data = await res.json();
+                                if (!res.ok || data.error) {
+                                    const message = (data && data.message) ? data.message : 'Error al crear la orden de PayPal';
+                                    alert(message);
+                                    return;
+                                }
+
+                                const approve = (data.links || []).find(l => l.rel === 'approve');
+                                if (approve && approve.href) {
+                                    window.location.href = approve.href;
+                                } else {
+                                    alert('No se encontró el enlace de aprobación de PayPal.');
+                                }
+                            } catch (err) {
+                                alert('Error de red creando la orden de PayPal.');
+                            }
+                        });
+                        </script>
+
                     </form>
                 </div>
             </div>

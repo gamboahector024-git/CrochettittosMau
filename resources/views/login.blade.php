@@ -12,10 +12,6 @@
     <header class="site-header">
         <nav class="navbar">
             <h1><a href="{{ url('/') }}">Crochettittos</a></h1>
-            
-            <div class="nav-links">
-                {{-- Aquí estaban "Llaveros" y "Flores" --}}
-            </div>
 
             <div class="nav-auth">
                 <a href="{{ route('registro.form') }}" class="nav-button nav-button-pastel-primary">Registrarse</a>
