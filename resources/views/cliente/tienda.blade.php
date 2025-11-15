@@ -18,7 +18,7 @@
             
             <div class="carousel-slide">
                 {{-- <img src="{{ asset('img/image_a2e101.jpg') }}" alt="Amigurumi Especial"> --}}
-                <img src="https://via.placeholder.com/1200x400/A77BFF/FFFFFF?text=Tu+Imagen+Principal+Aqu%C3%BA" alt="Imagen de Bienvenida 1">
+                <img src="Captura de pantalla 2025-11-11 011338" alt="Imagen de Bienvenida 1">
             </div>
             
             <div class="carousel-slide">
