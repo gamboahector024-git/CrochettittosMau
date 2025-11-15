@@ -40,13 +40,6 @@
     <div class="search-container">
         <form action="{{ route('tienda') }}" method="GET">
             <input type="text" name="busqueda" placeholder="Buscar productos..." value="{{ request('busqueda') }}">
-            <select name="orden" onchange="this.form.submit()">
-                <option value="">Ordenar por</option>
-                <option value="precio_asc" {{ request('orden') == 'precio_asc' ? 'selected' : '' }}>Precio: Menor a Mayor</option>
-                <option value="precio_desc" {{ request('orden') == 'precio_desc' ? 'selected' : '' }}>Precio: Mayor a Menor</option>
-                <option value="nombre_asc" {{ request('orden') == 'nombre_asc' ? 'selected' : '' }}>Nombre: A-Z</option>
-                <option value="nombre_desc" {{ request('orden') == 'nombre_desc' ? 'selected' : '' }}>Nombre: Z-A</option>
-            </select>
             <button type="submit">Buscar</button>
         </form>
     </div>
@@ -75,6 +68,14 @@
                         <input type="number" name="precio_max" placeholder="Máximo" value="{{ request('precio_max') }}">
                     </div>
                 </div>
+
+                <select name="orden" onchange="this.form.submit()">
+                    <option value="">Ordenar por</option>
+                    <option value="precio_asc" {{ request('orden') == 'precio_asc' ? 'selected' : '' }}>Precio: Menor a Mayor</option>
+                    <option value="precio_desc" {{ request('orden') == 'precio_desc' ? 'selected' : '' }}>Precio: Mayor a Menor</option>
+                    <option value="nombre_asc" {{ request('orden') == 'nombre_asc' ? 'selected' : '' }}>Nombre: A-Z</option>
+                    <option value="nombre_desc" {{ request('orden') == 'nombre_desc' ? 'selected' : '' }}>Nombre: Z-A</option>
+                </select>
 
                 <button type="submit" class="apply-filters">Aplicar Filtros</button>
             </form>
