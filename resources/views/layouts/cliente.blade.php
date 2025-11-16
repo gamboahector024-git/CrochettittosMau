@@ -6,7 +6,8 @@
     <title>@yield('title', 'Crochettittos')</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     
-    <link rel="stylesheet" href="{{ asset('css/tienda.css') }}?v=14">
+    <link rel="stylesheet" href="{{ asset('css/tienda.css') }}?v=15">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
@@ -18,7 +19,7 @@
                 @auth
                     {{-- Si el usuario HA iniciado sesión --}}
                     <a href="{{ route('perfil.index') }}" class="welcome-user">
-                        <i class="fas fa-user"></i> Mi Cuenta
+                        <i class="fas fa-user"></i> {{ Auth::user()->nombre }}
                     </a>
                     <a href="{{ route('cliente.pedidos.index') }}" class="nav-button nav-button-pastel-secondary">
                         <i class="fas fa-box"></i> Mis Pedidos
@@ -31,13 +32,29 @@
                     </a>
                     <a href="{{ route('carrito.index') }}" class="nav-button nav-button-pastel-primary">
                         <i class="fas fa-shopping-cart"></i> Carrito
+                        @php
+                            $carritoCount = 0;
+                            if (Auth::check()) {
+                                $carrito = \App\Models\Carrito::where('id_usuario', Auth::user()->id_usuario)->first();
+                                $carritoCount = $carrito ? $carrito->detalles->sum('cantidad') : 0;
+                            }
+                        @endphp
+                        @if($carritoCount > 0)
+                            <span class="cart-counter">{{ $carritoCount }}</span>
+                        @endif
                     </a>
-                    <a href="{{ route('logout') }}" class="nav-button nav-button-pastel-secondary">Cerrar Sesión</a>
+                    <a href="{{ route('logout') }}" class="nav-button nav-button-pastel-secondary">
+                        <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                    </a>
 
                 @else
                     {{-- Si el usuario NO ha iniciado sesión (es invitado) --}}
-                    <a href="{{ route('login.form') }}" class="nav-button nav-button-pastel-secondary">Iniciar Sesión</a>
-                    <a href="{{ route('registro.form') }}" class="nav-button nav-button-pastel-primary">Registrarse</a>
+                    <a href="{{ route('login.form') }}" class="nav-button nav-button-pastel-secondary">
+                        <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+                    </a>
+                    <a href="{{ route('registro.form') }}" class="nav-button nav-button-pastel-primary">
+                        <i class="fas fa-user-plus"></i> Registrarse
+                    </a>
                 
                 @endauth
             </div>
@@ -45,22 +62,19 @@
     </header>
 
     <main>
-        {{-- ========================================================== --}}
-        {{-- ESTE ES EL ÚNICO LUGAR DONDE DEBE ESTAR EL MENSAJE --}}
-        {{-- ========================================================== --}}
+        {{-- Contenedor para mensajes flash --}}
         <div class="flash-container">
             @if(session('success'))
                 <div class="flash-message flash-success" role="alert">
-                    {{ session('success') }}
+                    <i class="fas fa-check-circle"></i> {{ session('success') }}
                 </div>
             @endif
             @if(session('error'))
                 <div class="flash-message flash-error" role="alert">
-                    {{ session('error') }}
+                    <i class="fas fa-exclamation-circle"></i> {{ session('error') }}
                 </div>
             @endif
         </div>
-        {{-- ======================================================== --}}
 
         @yield('content')
     </main>
@@ -69,8 +83,9 @@
         <p>&copy; {{ date('Y') }} Crochettitos. Todos los derechos reservados.</p>
     </footer>
 
-    {{-- MODALES (PRODUCTO, LOGIN, PETICIÓN) --}}
+    {{-- MODALES --}}
     
+    {{-- Modal de Producto --}}
     <div id="productModal" class="modal">
         <div class="modal-content">
             <span class="close-button">&times;</span>
@@ -102,22 +117,28 @@
                 <form action="{{ route('carrito.store') }}" method="POST" class="modal-form">
                     @csrf
                     <input type="hidden" name="id_producto" id="modalProductId">
-                    <button type="submit" class="add-to-cart-button">Agregar al Carrito</button>
+                    <button type="submit" class="add-to-cart-button">
+                        <i class="fas fa-shopping-cart"></i> Agregar al Carrito
+                    </button>
                 </form>
             </div>
         </div>
     </div>
 
+    {{-- Modal de Login --}}
     <div id="loginModal" class="modal">
         <div class="modal-content">
             <span class="close-button" onclick="document.getElementById('loginModal').style.display='none'">&times;</span>
             <h3>Inicia Sesión</h3>
             <p>Para ver los detalles del producto y realizar compras, necesitas iniciar sesión.</p>
-            <a href="{{ route('login.form') }}" class="nav-button nav-button-pastel-secondary">Iniciar Sesión</a>
-            <a href="{{ route('registro.form') }}" class="nav-button nav-button-pastel-primary">Registrarse</a>
+            <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 1.5rem;">
+                <a href="{{ route('login.form') }}" class="nav-button nav-button-pastel-secondary">Iniciar Sesión</a>
+                <a href="{{ route('registro.form') }}" class="nav-button nav-button-pastel-primary">Registrarse</a>
+            </div>
         </div>
     </div>
 
+    {{-- Modal de Petición --}}
     <div id="peticionModal" class="modal" style="display:none;">
         <div class="modal-content" style="display: block; max-width: 600px;">
             <button class="close-modal" id="closePeticionModal">&times;</button>
@@ -146,7 +167,7 @@
         </div>
     </div>
 
-    <script src="{{ asset('js/main.js') }}?v=14"></script>
+    <script src="{{ asset('js/main.js') }}?v=15"></script>
     
     <script>
     document.addEventListener('DOMContentLoaded', function () {
