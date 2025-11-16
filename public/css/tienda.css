@@ -1625,3 +1625,952 @@ button:disabled {
     grid-template-columns: 1fr;
   }
 }
+/* ====== 13. Estilos de Formulario Adicionales ====== */
+
+.form-group {
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+/* Estilo para inputs y textareas */
+.form-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--accent-light-contrast); /* Rosa Suave */
+  background: rgba(255, 255, 255, 0.2);
+  color: var(--text-main);
+  border-radius: 8px;
+  font-size: 1rem;
+  font-family: var(--font-body);
+  transition: all 0.3s ease;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--accent-dark-contrast); /* Rosa Fuerte */
+  box-shadow: 0 0 0 3px rgba(213, 105, 137, 0.1);
+}
+
+/* Estilo para input de archivo */
+.form-input-file {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+}
+.form-input-file::file-selector-button {
+  /* Reusamos el estilo de botón terciario */
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  background: var(--accent-light-contrast);
+  color: var(--text-dark);
+  transition: all 0.3s ease;
+  margin-right: 1rem;
+}
+.form-input-file::file-selector-button:hover {
+  background: #F0B4C6;
+}
+
+/* ====== 14. Estilos de Página de Perfil ====== */
+
+.profile-container {
+  /* Usamos el efecto Glassmorphism de tu CSS */
+  background: var(--bg-glass);
+  border: var(--glass-border);
+  backdrop-filter: var(--glass-blur);
+  border-radius: 16px;
+  padding: 2.5rem;
+  box-shadow: var(--glass-shadow);
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.profile-title {
+  /* Reusamos el estilo de los títulos de categoría */
+  font-family: var(--font-heading);
+  color: var(--accent-dark-contrast);
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  text-align: center;
+  position: relative;
+  padding-bottom: 1rem;
+}
+
+.profile-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 3px;
+  background: var(--accent-primary-pastel);
+  border-radius: 2px;
+}
+
+.profile-section {
+  margin-top: 2rem;
+}
+
+.profile-section h3 {
+  /* Reusamos el estilo de los títulos de filtros */
+  color: var(--accent-dark-contrast); /* Rosa Fuerte */
+  font-weight: 600;
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid var(--accent-light-contrast); /* Rosa Suave */
+  padding-bottom: 0.5rem;
+}
+
+.profile-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  color: var(--text-main);
+  font-size: 1.05rem;
+}
+
+.profile-info p strong {
+  color: var(--text-dark);
+  font-weight: 600;
+  min-width: 100px;
+  display: inline-block;
+}
+
+/* Ajuste para que el botón "Editar Perfil" no ocupe todo el ancho */
+.profile-section .tertiary-button {
+  display: inline-block;
+  width: auto;
+}
+
+/* ====== 15. Estilos de Lista de Pedidos (Perfil) ====== */
+
+.profile-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.orders-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.order-card {
+  background: var(--bg-card);
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(213, 105, 137, 0.1);
+  overflow: hidden;
+}
+
+.order-header {
+  display: flex;
+  flex-wrap: wrap; /* Para que se ajuste en móviles */
+  gap: 1rem;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  background: var(--color-powdered-lilac-grey);
+  border-bottom: 1px solid var(--accent-light-contrast);
+  color: var(--text-main);
+  font-weight: 600;
+}
+
+.order-id {
+  color: var(--accent-dark-contrast);
+  font-weight: 700;
+  font-size: 1.1rem;
+  margin-right: auto; /* Empuja todo lo demás a la derecha */
+}
+
+.order-date {
+  color: var(--text-muted);
+}
+
+.order-total {
+  font-size: 1.1rem;
+  color: var(--accent-dark-contrast);
+}
+
+.order-status {
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-dark);
+}
+
+/* Colores para los estados del pedido */
+.status-pendiente { background-color: #ffe69c; } /* Amarillo pastel */
+.status-pagado { background-color: var(--accent-highlight-green); } /* Verde pastel */
+.status-enviado { background-color: #a7d8ff; } /* Azul pastel */
+.status-entregado { background-color: #c9f0d0; } /* Verde más claro */
+.status-cancelado { background-color: #ffc2c2; } /* Rojo pastel */
+
+
+.order-products {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.order-product {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.order-product img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid var(--accent-light-contrast);
+}
+
+.order-product span {
+  color: var(--text-main);
+  font-weight: 500;
+}
+
+/* ====== 16. Estilos de Lista de Peticiones (Perfil) ====== */
+
+.petitions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem; /* Espacio antes de los botones */
+}
+
+.peticion-card {
+  background: var(--bg-card);
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(213, 105, 137, 0.1);
+  overflow: hidden;
+}
+
+.peticion-header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  background: var(--color-powdered-lilac-grey);
+  border-bottom: 1px solid var(--accent-light-contrast);
+  color: var(--text-main);
+  font-weight: 600;
+}
+
+.peticion-id {
+  color: var(--accent-dark-contrast);
+  font-weight: 700;
+  font-size: 1.1rem;
+  margin-right: auto;
+}
+
+.peticion-date {
+  color: var(--text-muted);
+}
+
+.peticion-status {
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-dark);
+}
+
+/* Los estados de petición pueden reusar los colores 
+  de los estados de pedido (ej. .status-pendiente, .status-aprobado)
+  Asegúrate de añadir 'aprobado' si lo usas:
+*/
+.status-aprobado { background-color: var(--accent-highlight-green); }
+.status-rechazado { background-color: #ffc2c2; }
+
+
+.peticion-body {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  color: var(--text-main);
+}
+
+.peticion-body strong {
+  color: var(--text-dark);
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.peticion-body p {
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+/* Contenedor para los botones al final de la sección de perfil */
+.profile-actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap; /* Para que se apilen en móvil */
+  margin-top: 1.5rem;
+  border-top: 1px solid var(--accent-light-contrast);
+  padding-top: 1.5rem;
+}
+
+/* Hacemos que los botones no ocupen todo el ancho por defecto */
+.profile-actions .tertiary-button,
+.profile-actions .primary-button {
+  display: inline-block;
+  width: auto;
+}
+/* ====== 17. Estilos de Formulario de Edición (Perfil) ====== */
+
+/* Un grid para organizar el formulario en columnas */
+.form-grid {
+  display: grid;
+  /* Crea 2 columnas de tamaño flexible, pero ninguna más pequeña 
+    que 250px. Si no caben, se ponen en 1 columna.
+  */
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+/* Para campos que deben ocupar todo el ancho del grid (ej. Dirección) */
+.form-grid .form-group.full-width {
+  grid-column: 1 / -1; /* Ocupa desde la primera a la última línea */
+}
+
+/* Subtítulo para secciones dentro del formulario (ej. "Cambiar Contraseña") */
+.form-subtitle {
+  /* Reusamos el estilo de los títulos de filtros */
+  color: var(--accent-dark-contrast); /* Rosa Fuerte */
+  font-weight: 600;
+  font-size: 1.3rem;
+  margin-top: 2.5rem; /* Espacio extra arriba */
+  margin-bottom: 0.5rem; /* Menos espacio abajo */
+  border-bottom: 1px solid var(--accent-light-contrast); /* Rosa Suave */
+  padding-bottom: 0.5rem;
+}
+
+/* Texto de ayuda/pista para el usuario */
+.form-hint {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  margin-bottom: 1.5rem;
+  line-height: 1.5;
+}
+
+/* Contenedor para los botones del formulario */
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap; /* Para que se apilen en móvil */
+  margin-top: 2.5rem;
+  border-top: 1px solid var(--accent-light-contrast);
+  padding-top: 1.5rem;
+  justify-content: flex-start; /* Alinea botones a la izquierda */
+}
+
+/* Asegura que los botones dentro del form-actions
+  no ocupen todo el ancho por defecto.
+*/
+.form-actions .primary-button,
+.form-actions .tertiary-button {
+  display: inline-block;
+  width: auto; 
+}
+
+/* Estilo para el input deshabilitado (para el email) */
+.form-input:disabled {
+    background: var(--color-powdered-lilac-grey);
+    color: var(--text-muted);
+    cursor: not-allowed;
+    border-color: rgba(0,0,0,0.05);
+}
+
+/* En móviles, forzamos 1 columna para el grid si no lo hace solo */
+@media (max-width: 500px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+/* ====== 20. Estilo para Respuesta de Administrador ====== */
+
+.admin-response {
+  /* Usamos el verde de tu paleta de colores */
+  background: rgba(194, 220, 128, 0.2); 
+  border: 1px solid var(--color-sorbet-stem);
+  border-radius: 12px;
+  padding: 1rem 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.admin-response h4 {
+  color: var(--text-dark);
+  font-weight: 700;
+  font-size: 1.1rem;
+  margin-bottom: 0.75rem;
+}
+
+.admin-response p {
+  color: var(--text-main);
+  line-height: 1.6;
+  /* Respeta los saltos de línea de la respuesta del admin */
+  white-space: pre-wrap; 
+}
+/* ====== 21. Estilos de la Página de Checkout ====== */
+
+/* Un layout de 2 columnas para el checkout 
+  (1 columna en móvil, 2 en desktop)
+*/
+.checkout-layout {
+  display: grid;
+  grid-template-columns: 1fr; /* 1 columna en móvil */
+  gap: 2.5rem;
+}
+
+/* En pantallas más grandes (desktop), 2 columnas */
+@media (min-width: 992px) {
+  .checkout-layout {
+    /* El formulario ocupa 3 partes, el resumen 2 */
+    grid-template-columns: 3fr 2fr; 
+  }
+
+  /* AQUÍ ESTÁ LA MAGIA: 
+    Esto solo se aplica en desktop.
+  */
+  .checkout-summary-panel {
+    position: sticky;
+    top: 120px; /* 100px del header + 20px de espacio */
+    align-self: start; /* Se alinea arriba del todo en su columna */
+  }
+}
+
+
+/* El contenedor del resumen */
+.checkout-summary {
+  background: var(--color-powdered-lilac-grey);
+  border: 1px solid var(--accent-light-contrast);
+  border-radius: 12px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Cada item en el resumen */
+.summary-item {
+  display: flex;
+  justify-content: space-between;
+  color: var(--text-main);
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.summary-item span:first-child {
+  font-weight: 500;
+}
+.summary-item span:last-child {
+  font-weight: 600;
+}
+
+/* El total al final del resumen */
+.summary-total {
+  display: flex;
+  justify-content: space-between;
+  font-size: 1.3rem;
+  color: var(--accent-dark-contrast);
+  padding-top: 1rem;
+  border-top: 2px solid var(--accent-primary-pastel);
+}
+
+/* Botón especial de PayPal (Azul) */
+.paypal-button {
+  padding: 0.85rem 1.5rem;
+  border: none;
+  border-radius: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+  text-decoration: none;
+  background-color: #00457C; 
+  color: white;
+  box-shadow: 0 4px 10px rgba(0, 69, 124, 0.3);
+}
+
+.paypal-button:hover:not(:disabled) {
+  background-color: #003057;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(0, 69, 124, 0.4);
+}
+
+/* Botones en el resumen ocupan todo el ancho */
+.checkout-summary-panel .form-actions {
+    flex-direction: column;
+}
+.checkout-summary-panel .form-actions .secondary-button,
+.checkout-summary-panel .form-actions .paypal-button {
+    width: 100%;
+}
+/* ====== 22. Estilos para <select> en Formularios ====== */
+
+select.form-input {
+  /* Le da la apariencia de un input normal */
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  
+  /* Añade una flecha personalizada */
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23D56989' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 0.75rem center;
+  background-repeat: no-repeat;
+  background-size: 1.25em 1.25em;
+  padding-right: 2.5rem; /* Espacio para la flecha */
+}
+/* ====== ESTILOS PARA PÁGINAS DE PERFIL Y LISTAS ====== */
+
+/* El Contenedor "Glass" (Sección 14) */
+.profile-container {
+  background: var(--bg-glass);
+  border: var(--glass-border);
+  backdrop-filter: var(--glass-blur);
+  border-radius: 16px;
+  padding: 2.5rem;
+  box-shadow: var(--glass-shadow);
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* El Título Estilizado (Sección 14) */
+.profile-title {
+  font-family: var(--font-heading);
+  color: var(--accent-dark-contrast);
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  text-align: center;
+  position: relative;
+  padding-bottom: 1rem;
+}
+.profile-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 3px;
+  background: var(--accent-primary-pastel);
+  border-radius: 2px;
+}
+
+/* La Lista de Tarjetas (Sección 15) */
+.orders-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* La Tarjeta de Pedido (Sección 15) */
+.order-card {
+  background: var(--bg-card);
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(213, 105, 137, 0.1);
+  overflow: hidden;
+}
+.order-header {
+  display: flex;
+  flex-wrap: wrap; 
+  gap: 1rem;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  background: var(--color-powdered-lilac-grey);
+  border-bottom: 1px solid var(--accent-light-contrast);
+  color: var(--text-main);
+  font-weight: 600;
+}
+.order-id {
+  color: var(--accent-dark-contrast);
+  font-weight: 700;
+  font-size: 1.1rem;
+  margin-right: auto; 
+}
+.order-date {
+  color: var(--text-muted);
+}
+.order-total {
+  font-size: 1.1rem;
+  color: var(--accent-dark-contrast);
+}
+
+/* Los Tags de Estado (Sección 15) */
+.order-status {
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-dark);
+}
+.status-pendiente { background-color: #ffe69c; } 
+.status-pagado { background-color: var(--accent-highlight-green); } 
+.status-enviado { background-color: #a7d8ff; } 
+.status-entregado { background-color: #c9f0d0; } 
+.status-cancelado { background-color: #ffc2c2; } 
+
+/* El cuerpo de la tarjeta (Sección 23) */
+.order-body {
+  padding: 1.5rem;
+  background-color: var(--bg-card); 
+}
+.order-body .tertiary-button {
+    width: auto;
+    display: inline-block;
+    align-self: flex-start;
+}
+
+/* La Paginación Estilizada (Sección 19) */
+.pagination-links nav {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: center;
+}
+.pagination-links .pagination {
+    display: flex;
+    list-style: none;
+    padding: 0;
+}
+.pagination-links .page-item {
+    margin: 0 0.25rem;
+}
+.pagination-links .page-link,
+.pagination-links .page-item.disabled .page-link,
+.pagination-links .page-item.active .page-link {
+    display: block;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--text-main);
+    background: var(--bg-card);
+    border: 1px solid var(--accent-light-contrast);
+    transition: all 0.3s ease;
+}
+.pagination-links .page-item.active .page-link {
+    background: var(--accent-dark-contrast);
+    color: white;
+    border-color: var(--accent-dark-contrast);
+}
+.pagination-links .page-item.disabled .page-link {
+    background: var(--color-powdered-lilac-grey);
+    color: var(--text-muted);
+}
+.pagination-links .page-item:not(.active) .page-link:hover {
+    background: var(--accent-light-contrast);
+}
+/* ====== 24. Estilos para Detalle de Pedido (Show) - v2 ====== */
+
+/* Cabecera de la página (Título y enlace "Volver") */
+.order-detail-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid var(--accent-light-contrast);
+  padding-bottom: 1.5rem;
+}
+
+/* En desktop, pone el título y el enlace en la misma línea */
+@media (min-width: 768px) {
+  .order-detail-header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+}
+
+.tertiary-button-link {
+  display: inline-block;
+  color: var(--accent-dark-contrast);
+  font-weight: 600;
+  text-decoration: none;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  width: fit-content; /* Solo el ancho necesario */
+}
+.tertiary-button-link:hover {
+  background-color: var(--color-powdered-lilac-grey);
+}
+
+
+/* Layout principal de 2 columnas (1 en móvil) */
+.order-detail-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+}
+
+/* En desktop, 2 columnas (principal + sidebar) */
+@media (min-width: 992px) {
+  .order-detail-layout {
+    grid-template-columns: 2fr 1fr;
+    gap: 2.5rem;
+  }
+  
+  /* El sidebar se vuelve "pegajoso" */
+  .order-sidebar {
+    position: sticky;
+    top: 120px; /* 100px header + 20px espacio */
+    align-self: start;
+  }
+}
+
+/* Contenedor de la tabla (para scroll horizontal en móvil) */
+.order-items-table-container {
+    overflow-x: auto;
+}
+
+/* La tabla de productos */
+.order-items-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.order-items-table thead {
+  background-color: var(--color-powdered-lilac-grey);
+  border-bottom: 2px solid var(--accent-primary-pastel);
+}
+.order-items-table th {
+  padding: 1rem;
+  text-align: left;
+  color: var(--accent-dark-contrast);
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+.order-items-table tbody tr {
+  border-bottom: 1px solid var(--accent-light-contrast);
+}
+.order-items-table tbody tr:last-child {
+  border-bottom: none;
+}
+.order-items-table td {
+  padding: 1rem;
+  color: var(--text-main);
+  vertical-align: middle;
+}
+.order-items-table .text-right {
+  text-align: right;
+  font-weight: 600;
+}
+.order-items-table .text-center {
+  text-align: center;
+}
+
+/* Caja de Resumen en el Sidebar (Fecha, Estado, Total) */
+.order-summary-box {
+  background: var(--color-powdered-lilac-grey);
+  border: 1px solid var(--accent-light-contrast);
+  border-radius: 12px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+}
+.summary-box-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.summary-box-item span:first-child {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+.summary-box-item strong {
+  color: var(--text-dark);
+  font-size: 1rem;
+  font-weight: 600;
+}
+.summary-box-item .order-status {
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+/* El total */
+.summary-box-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.3rem;
+  color: var(--accent-dark-contrast);
+  padding-top: 1rem;
+  border-top: 2px solid var(--accent-primary-pastel);
+}
+/* ====== 25. Estilos para Modal de Producto (Estilo Petición) ====== */
+
+/* Layout de 2 columnas para el modal de producto */
+.product-modal-grid {
+  display: grid;
+  grid-template-columns: 1fr; /* 1 columna en móvil */
+  gap: 2rem;
+  margin-top: 1.5rem;
+}
+/* En desktop, 2 columnas */
+@media (min-width: 768px) {
+  .product-modal-grid {
+    grid-template-columns: 1fr 1fr; 
+  }
+}
+
+.product-modal-image-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.product-modal-image-container img {
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  aspect-ratio: 1 / 1; /* Mantiene la imagen cuadrada */
+  object-fit: cover;
+}
+
+/* Contenedor de precio (con soporte para ofertas) */
+.product-modal-price-container {
+  text-align: center;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: baseline;
+  gap: 0.5rem 1rem;
+}
+/* Re-aplicamos estilos a los IDs por si acaso */
+#modalPrice {
+  font-family: var(--font-heading);
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--accent-dark-contrast);
+  line-height: 1;
+}
+#modalOriginalPrice {
+  font-size: 1.25rem;
+  color: var(--text-muted);
+  text-decoration: line-through;
+  line-height: 1;
+}
+#modalDiscountBadge {
+  font-size: 1rem;
+  padding: 0.4rem 0.85rem;
+  /* (El resto de estilos de .discount-badge ya existen) */
+}
+
+
+/* Estilo para la descripción (que no es un input) */
+.product-modal-description {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  /* Hacemos que parezca un input deshabilitado */
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid var(--accent-light-contrast);
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  min-height: 100px;
+}
+
+/* Estilo para el tag de categoría */
+.product-modal-category-tag {
+  display: inline-block;
+  background: var(--accent-highlight-green);
+  color: var(--text-dark);
+  padding: 0.35rem 1rem;
+  border-radius: 15px;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+/* ====== CENTRAR MODAL COMPLETO ====== */
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 2000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(5px);
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.modal-content {
+  background: var(--bg-card);
+  color: var(--text-main);
+  border: none;
+  padding: 0;
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  width: 100%;
+  max-width: 900px; /* Ancho máximo */
+  position: relative;
+  display: grid;
+  grid-template-columns: 45% 55%;
+  gap: 0;
+  overflow: hidden;
+  min-height: 500px;
+  /* Centrado horizontal y vertical */
+  margin: 0 auto;
+}
+
+/* Para asegurar que el modal esté centrado en todos los dispositivos */
+@media (max-width: 768px) {
+  .modal-content {
+    grid-template-columns: 1fr;
+    min-height: 0;
+    max-height: 90vh;
+    overflow-y: auto;
+    margin: auto 20px; /* Margen en móviles */
+  }
+  
+  .modal {
+    padding: 10px;
+    align-items: flex-start; /* Empieza desde arriba en móviles */
+    padding-top: 40px; /* Espacio para el header */
+  }
+}
+
+/* Centrar también el modal de login */
+#loginModal .modal-content {
+  display: block;
+  min-height: 0;
+  padding: 2.5rem;
+  max-width: 500px; /* Ancho más pequeño para login */
+  margin: 0 auto;
+}
+
+/* Centrar el modal de peticiones */
+#peticionModal .modal-content {
+  display: block;
+  max-width: 600px;
+  margin: 0 auto;
+}

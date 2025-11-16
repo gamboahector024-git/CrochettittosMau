@@ -1,49 +1,54 @@
 @extends('layouts.cliente')
 
+@section('title', 'Mis Pedidos - Crochettittos')
+
 @section('content')
-<div class="container my-5">
-    <h1 class="mb-4 text-center">Mis Pedidos</h1>
+<div class="container">
+    {{-- 1. Usamos el contenedor "glass" --}}
+    <div class="profile-container">
 
-    @if($pedidos->isEmpty())
-        <div class="alert alert-info text-center" role="alert">
-            Aún no has realizado ningún pedido.
-        </div>
-    @else
-        <div class="table-responsive">
-            <table class="table table-hover align-middle">
-                <thead class="table-light">
-                    <tr>
-                        <th scope="col"># Pedido</th>
-                        <th scope="col">Fecha</th>
-                        <th scope="col">Estado</th>
-                        <th scope="col" class="text-end">Total</th>
-                        <th scope="col" class="text-center">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($pedidos as $pedido)
-                        <tr>
-                            <th scope="row">{{ $pedido->numero_pedido_cliente }}</th>
-                            <td>{{ $pedido->fecha_pedido->format('d/m/Y') }}</td>
-                            <td>
-                                <span class="badge bg-primary">{{ ucfirst($pedido->estado) }}</span>
-                            </td>
-                            <td class="text-end">${{ number_format($pedido->total, 2) }}</td>
-                            <td class="text-center">
-                                <a href="{{ route('cliente.pedidos.show', $pedido) }}" class="btn btn-sm btn-outline-primary">
-                                    Ver Detalles
-                                </a>
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
+        {{-- 2. Usamos el título estilizado --}}
+        <h2 class="profile-title">Mis Pedidos</h2>
 
-        {{-- Paginación --}}
-        <div class="d-flex justify-content-center mt-4">
-            {{ $pedidos->links() }}
-        </div>
-    @endif
+        @if($pedidos->isEmpty())
+            <div class="alert alert-info text-center" role="alert">
+                Aún no has realizado ningún pedido.
+            </div>
+        @else
+            {{-- 3. Reemplazamos tu <table> por la lista de tarjetas --}}
+            <div class="orders-list">
+                
+                @foreach($pedidos as $pedido)
+                    <div class="order-card">
+                        <div class="order-header">
+                            {{-- 4. Usamos tus nuevas variables de la DB --}}
+                            <span class="order-id">Pedido #{{ $pedido->numero_pedido_cliente }}</span> 
+                            <span class="order-date">{{ $pedido->fecha_pedido->format('d/m/Y') }}</span>
+                            
+                            {{-- 5. Usamos el tag de estado con los colores pastel --}}
+                            <span class="order-status status-{{ strtolower($pedido->estado) }}">
+                                {{ ucfirst($pedido->estado) }}
+                            </span>
+
+                            <span class="order-total">${{ number_format($pedido->total, 2) }}</span>
+                        </div>
+                        
+                        <div class="order-body">
+                            {{-- 6. Usamos el botón rosa suave --}}
+                            <a href="{{ route('cliente.pedidos.show', $pedido) }}" class="tertiary-button">
+                                Ver Detalles
+                            </a>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+
+            {{-- 7. Usamos la paginación estilizada --}}
+            <div class="pagination-links">
+                {{ $pedidos->links() }}
+            </div>
+            
+        @endif
+    </div>
 </div>
 @endsection
