@@ -1,19 +1,26 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
 use App\Http\Controllers\LoginController;
-use App\Http\Controllers\AdminController;
+use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\{
     ProductoController,
     UsuarioController,
     PedidoController,
     CategoriaController,
     PeticionController,
-    PromocionController
+    PromocionController,
+    CarruselController
 };
-use App\Http\Controllers\CarritoController;
-use App\Http\Controllers\TiendaController;
-use App\Http\Controllers\PerfilController;
+use App\Http\Controllers\Cliente\{
+    CarritoController,
+    TiendaController,
+    PerfilController,
+    PeticionController as ClientePeticionController,
+    PedidoController as ClientePedidoController
+};
+use App\Http\Controllers\PayPalController;
 
 /*
 |--------------------------------------------------------------------------
@@ -44,7 +51,14 @@ Route::middleware(['web', 'track-user-activity'])->group(function () {
         Route::put('/actualizar/{detalle}', [CarritoController::class, 'update'])->name('update');
         Route::delete('/eliminar/{detalle}', [CarritoController::class, 'destroy'])->name('destroy');
         Route::delete('/vaciar', [CarritoController::class, 'clear'])->name('clear');
+        Route::get('/checkout', [CarritoController::class, 'checkout'])->name('checkout');
+        Route::post('/procesar', [CarritoController::class, 'procesarPedido'])->name('procesar');
     });
+
+    // Webhook de PayPal (sin CSRF y sin auth)
+    Route::post('/paypal/webhook', [PayPalController::class, 'webhook'])
+        ->name('paypal.webhook')
+        ->withoutMiddleware([ValidateCsrfToken::class]);
 
     /*
     |--------------------------------------------------------------------------
@@ -53,9 +67,42 @@ Route::middleware(['web', 'track-user-activity'])->group(function () {
     */
     Route::middleware('auth')->prefix('perfil')->name('perfil.')->group(function () {
         Route::get('/', [PerfilController::class, 'index'])->name('index');
-        Route::get('/lista-deseos', [PerfilController::class, 'listaDeseos'])->name('lista-deseos');
-        Route::post('/lista-deseos/agregar/{producto}', [PerfilController::class, 'agregarListaDeseos'])->name('lista-deseos.agregar');
-        Route::delete('/lista-deseos/eliminar/{producto}', [PerfilController::class, 'eliminarListaDeseos'])->name('lista-deseos.eliminar');
+        Route::get('/editar', [PerfilController::class, 'edit'])->name('edit');
+        Route::put('/actualizar', [PerfilController::class, 'update'])->name('update');
+    });
+
+    // Peticiones personalizadas (usuarios autenticados)
+    Route::middleware('auth')->group(function () {
+        Route::post('/peticiones', [ClientePeticionController::class, 'store'])->name('peticiones.store');
+    });
+
+    // Rutas para que el cliente vea sus peticiones
+    Route::middleware('auth')->prefix('mis-peticiones')->name('cliente.peticiones.')->group(function () {
+        Route::get('/', [ClientePeticionController::class, 'index'])->name('index');
+        Route::get('/{peticion}', [ClientePeticionController::class, 'show'])->name('show');
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | Pedidos del cliente
+    |--------------------------------------------------------------------------
+    */
+    Route::middleware('auth')->prefix('mis-pedidos')->name('cliente.pedidos.')->group(function () {
+        Route::get('/', [ClientePedidoController::class, 'index'])->name('index');
+        Route::get('/{pedido}', [ClientePedidoController::class, 'show'])->name('show');
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | PayPal
+    |--------------------------------------------------------------------------
+    */
+    Route::middleware('auth')->group(function () {
+        Route::post('/paypal/create-payment', [PayPalController::class, 'createPayment']);
+        Route::post('/paypal/capture-payment', [PayPalController::class, 'capturePayment']);
+        // Rutas de retorno/cancelación
+        Route::get('/paypal/return', [PayPalController::class, 'handleReturn']);
+        Route::get('/paypal/cancel', [PayPalController::class, 'handleCancel']);
     });
 
     /*
@@ -93,8 +140,13 @@ Route::middleware(['web', 'track-user-activity'])->group(function () {
         Route::post('peticiones/{peticion}/completar', [PeticionController::class, 'completar'])->name('peticiones.completar');
         
         // Promociones
-        Route::resource('promociones', PromocionController::class);
-        Route::post('promociones/{promocion}/toggle-status', [PromocionController::class, 'toggleStatus'])->name('promociones.toggle-status');
         Route::delete('promociones/bulk-delete', [PromocionController::class, 'bulkDelete'])->name('promociones.bulk-delete');
+        Route::resource('promociones', PromocionController::class)
+            ->parameters(['promociones' => 'promocion']);
+        Route::post('promociones/{promocion}/toggle-status', [PromocionController::class, 'toggleStatus'])->name('promociones.toggle-status');
+        
+        // Carrusel
+        Route::resource('carrusel', CarruselController::class)->except(['show']);
     });
 });
+?>

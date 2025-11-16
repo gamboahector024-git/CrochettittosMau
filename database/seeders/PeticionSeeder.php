@@ -12,19 +12,20 @@ class PeticionSeeder extends Seeder
     {
         // Obtener usuarios creados por UsuarioSeeder
         $usuarios = DB::table('usuarios')->pluck('id_usuario', 'nombre');
-        $mariaId = $usuarios['María'] ?? null;
-        $carlosId = $usuarios['Carlos'] ?? null;
+        $sofiaId = $usuarios['Sofía'] ?? null;
+        $diegoId = $usuarios['Diego'] ?? null;
+        $valeriaId = $usuarios['Valeria'] ?? null;
 
-        if (!$mariaId || !$carlosId) {
+        if (!$sofiaId || !$diegoId || !$valeriaId) {
             return; // No continuar si no existen los usuarios
         }
 
         $rows = [
-            // Peticiones de María
+            // Peticiones de Sofía
             [
-                'id_usuario' => $mariaId,
-                'titulo' => 'Llavero personalizado con iniciales MG',
-                'descripcion' => 'Quiero un llavero tejido en forma de corazón con mis iniciales MG bordadas. Preferencia de colores: rosa y blanco. Tamaño pequeño (8cm).',
+                'id_usuario' => $sofiaId,
+                'titulo' => 'Llavero personalizado con iniciales SG',
+                'descripcion' => 'Quiero un llavero tejido en forma de corazón con mis iniciales SG bordadas. Preferencia de colores: rosa y blanco. Tamaño pequeño (8cm).',
                 'imagen_referencia' => null,
                 'estado' => 'pendiente',
                 'respuesta_admin' => null,
@@ -32,7 +33,7 @@ class PeticionSeeder extends Seeder
                 'updated_at' => now()->subDays(12),
             ],
             [
-                'id_usuario' => $mariaId,
+                'id_usuario' => $sofiaId,
                 'titulo' => 'Muñeco amigurumi gato personalizado',
                 'descripcion' => 'Quiero un muñeco a crochet con forma de gato, tamaño mediano (20cm), con ojos de botón verdes y detalles en rosa. Puede ser similar al que venden en la tienda.',
                 'imagen_referencia' => null,
@@ -41,9 +42,9 @@ class PeticionSeeder extends Seeder
                 'created_at' => now()->subDays(5),
                 'updated_at' => now()->subDays(3),
             ],
-            // Petición de Carlos
+            // Petición de Diego
             [
-                'id_usuario' => $carlosId,
+                'id_usuario' => $diegoId,
                 'titulo' => 'Arreglo floral para aniversario',
                 'descripcion' => 'Necesito un arreglo floral para celebrar aniversario. Colores: rojo, blanco y dorado. Tamaño mediano. Presupuesto máximo: $300.',
                 'imagen_referencia' => null,
@@ -51,6 +52,17 @@ class PeticionSeeder extends Seeder
                 'respuesta_admin' => 'Estamos revisando disponibilidad de materiales y presupuesto. Nos contactaremos en 24 horas con opciones.',
                 'created_at' => now()->subDays(6),
                 'updated_at' => now()->subDays(4),
+            ],
+            // Petición de Valeria
+            [
+                'id_usuario' => $valeriaId,
+                'titulo' => 'Juego de manteles tejidos',
+                'descripcion' => 'Quiero un juego de 6 manteles redondos tejidos a crochet, color beige con detalles en verde. Diámetro de 30cm cada uno.',
+                'imagen_referencia' => null,
+                'estado' => 'pendiente',
+                'respuesta_admin' => null,
+                'created_at' => now()->subDays(2),
+                'updated_at' => now()->subDays(2),
             ],
         ];
 

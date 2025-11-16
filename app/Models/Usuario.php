@@ -33,6 +33,17 @@ class Usuario extends Authenticatable
         return 'id_usuario';
     }
 
+    // En app/Models/Usuario.php
+    public function carrito()
+    {
+        return $this->hasOne(Carrito::class, 'id_usuario', 'id_usuario');
+    }
+
+    public function pedidos(): HasMany
+    {
+        return $this->hasMany(Pedido::class, 'id_usuario', 'id_usuario');
+    }
+
     // Estado activo sin depender de columnas específicas
     public function isActive(): bool
     {

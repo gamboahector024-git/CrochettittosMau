@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>@yield('title', 'Panel de Administrador')</title>
 
-    <link rel="stylesheet" href="{{ asset('css/admin_style.css') }}?v=12">
+    <link rel="stylesheet" href="{{ asset('css/admin.css') }}?v=12">
 
     @yield('styles')
 </head>
@@ -37,6 +37,10 @@
 
             <a href="{{ route('admin.promociones.index') }}" class="{{ request()->routeIs('admin.promociones.*') ? 'active' : '' }}">
                 Promociones
+            </a>
+
+            <a href="{{ route('admin.carrusel.index') }}" class="{{ request()->routeIs('admin.carrusel.*') ? 'active' : '' }}">
+                Gestionar Carrusel
             </a>
 
             <a href="{{ url('/') }}">Ver Tienda</a>

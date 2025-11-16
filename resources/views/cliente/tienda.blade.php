@@ -33,12 +33,7 @@
         <div class="carousel-dots"></div>
     </section>
     
-    @if(session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
-    @if(session('error'))
-        <div class="alert alert-error">{{ session('error') }}</div>
-    @endif
+    {{-- (Bloque de mensajes flash eliminado correctamente) --}}
 
     <div class="search-container">
         <form action="{{ route('tienda') }}" method="GET">
@@ -72,19 +67,42 @@
                     </div>
                 </div>
 
+                {{-- =============================================== --}}
+                {{-- ====== INICIO DE LA CORRECCIÓN ESTÉTICA ====== --}}
+                {{-- =============================================== --}}
+                
+                {{-- 1. Añadimos el .filter-group que faltaba --}}
+                <div class="filter-group">
+                    <h4>Ordenar por</h4>
+                    
+                    {{-- 2. Añadimos la clase 'filter-select' y eliminamos el 'onchange' --}}
+                    <select name="orden" class="filter-select">
+                        {{-- 
+                          Cambiamos la primera opción para que sea más clara
+                          y no tenga un 'value' vacío.
+                        --}}
+                        <option value="recientes" {{ request('orden') == 'recientes' ? 'selected' : '' }}>Más Recientes</option>
+                        <option value="precio_asc" {{ request('orden') == 'precio_asc' ? 'selected' : '' }}>Precio: Menor a Mayor</option>
+                        <option value="precio_desc" {{ request('orden') == 'precio_desc' ? 'selected' : '' }}>Precio: Mayor a Menor</option>
+                        <option value="nombre_asc" {{ request('orden') == 'nombre_asc' ? 'selected' : '' }}>Nombre: A-Z</option>
+                        <option value="nombre_desc" {{ request('orden') == 'nombre_desc' ? 'selected' : '' }}>Nombre: Z-A</option>
+                    </select>
+                </div>
+                
+                {{-- =============================================== --}}
+                {{-- ======== FIN DE LA CORRECCIÓN ESTÉTICA ======== --}}
+                {{-- =============================================== --}}
+
                 <button type="submit" class="apply-filters">Aplicar Filtros</button>
             </form>
         </aside>
 
-        <!-- ===== GRID DE PRODUCTOS (CON ONCLICK CORREGIDO) ===== -->
         <main class="products-grid">
             @if($productos->count())
                 @foreach($productos as $producto)
                     
-                    {{-- 1. Pre-calculamos los valores de la oferta --}}
                     @php
                         $oferta = $producto->promocionActiva;
-                        // Usamos el precio promocional si existe, si no, el precio normal
                         $precioFinal = $producto->precio_promocional ?? $producto->precio;
                         $precioOriginalNum = ($oferta) ? $producto->precio : null;
                         $badge = null;
@@ -108,7 +126,6 @@
                         <div class="card-content">
                             <h3>{{ $producto->nombre }}</h3>
                             
-                            {{-- Lógica de precio para mostrar el precio original tachado --}}
                             <p class="price">
                                 ${{ number_format($precioFinal, 2) }}
                                 @if($oferta)
@@ -116,21 +133,16 @@
                                 @endif
                             </p>
                             
-                            {{-- 
-                              ===== ONCLICK CORREGIDO =====
-                              Llama a la función 'openModal' de main.js con todos los 9 argumentos.
-                              Ahora SÍ pasa el id_producto real.
-                            --}}
                             <button class="buy-button" onclick="openModal(
-                                {{ $producto->id_producto }}, {{-- 1. ID de Producto REAL --}}
-                                {{ json_encode($producto->nombre) }}, {{-- 2. Nombre --}}
-                                '{{ number_format($precioFinal, 2) }}', {{-- 3. Precio Final --}}
-                                {{ json_encode($producto->descripcion ?? 'Sin descripción.') }}, {{-- 4. Descripción --}}
-                                '{{ $producto->imagen_url ?? 'https://via.placeholder.com/250' }}', {{-- 5. Imagen --}}
-                                '{{ $producto->categoria->nombre ?? 'Sin categoría' }}', {{-- 6. Categoría --}}
-                                {{ $oferta ? 'true' : 'false' }}, {{-- 7. PromocionActiva (booleano) --}}
-                                {{ $badge ? json_encode($badge) : 'null' }}, {{-- 8. Badge (texto del descuento) --}}
-                                {{ $precioOriginalNum ? "'".number_format($precioOriginalNum, 2)."'" : 'null' }} {{-- 9. Precio Original --}}
+                                {{ $producto->id_producto }},
+                                {{ json_encode($producto->nombre) }},
+                                '{{ number_format($precioFinal, 2) }}',
+                                {{ json_encode($producto->descripcion ?? 'Sin descripción.') }},
+                                '{{ $producto->imagen_url ?? 'https://via.placeholder.com/250' }}',
+                                '{{ $producto->categoria->nombre ?? 'Sin categoría' }}',
+                                {{ $oferta ? 'true' : 'false' }},
+                                {{ $badge ? json_encode($badge) : 'null' }},
+                                {{ $precioOriginalNum ? "'".number_format($precioOriginalNum, 2)."'" : 'null' }}
                             )">
                                 Ver Detalles
                             </button>
@@ -143,9 +155,6 @@
         </main>
     </div>
 </div>
-
-{{-- ¡ELIMINADO! El <dialog id="productModal"> duplicado ya no está aquí --}}
-
 @endsection
 
 {{-- JAVASCRIPT EXCLUSIVO PARA ESTA PÁGINA (EL CARRUSEL) --}}
@@ -155,25 +164,20 @@
     document.addEventListener('DOMContentLoaded', () => {
         const carouselTrack = document.querySelector('.carousel-track');
         
-        // Asegurarse de que el carrusel existe en esta página
         if (carouselTrack) {
             const slides = Array.from(carouselTrack.children);
             const dotsContainer = document.querySelector('.carousel-dots');
             let slideIndex = 0;
             let intervalId;
 
-            // Salir si no hay slides
             if (slides.length === 0) return;
             
-            // Clonar slides para el efecto infinito
             slides.forEach(slide => {
                 carouselTrack.appendChild(slide.cloneNode(true));
             });
 
-            // Función para mover a un slide específico
             function goToSlide(index, smooth = true) {
                 const slides = Array.from(carouselTrack.children);
-                // Prevenir error si los slides aún no están cargados
                 if (slides.length === 0 || !slides[0]) return;
                 const currentSlideWidth = slides[0].getBoundingClientRect().width;
                 if (!smooth) carouselTrack.style.transition = 'none';
@@ -183,31 +187,28 @@
                     carouselTrack.style.transition = 'transform 0.8s ease-in-out';
                 }
                 
-                let activeDotIndex = index % (slides.length / 2); // Ajustado para clones
+                let activeDotIndex = index % (slides.length / 2);
                 dots.forEach(dot => dot.classList.remove('active'));
                 if (dots[activeDotIndex]) {
                     dots[activeDotIndex].classList.add('active');
                 }
             }
 
-            // Función para el siguiente slide
             function autoSlide() {
                 const slides = Array.from(carouselTrack.children);
-                const totalSlides = slides.length / 2; // Número de slides originales
+                const totalSlides = slides.length / 2;
                 
                 slideIndex++;
                 goToSlide(slideIndex);
 
-                // Resetear al inicio sin animación si llega al final de los clones
                 if (slideIndex >= totalSlides) {
                     setTimeout(() => {
                         slideIndex = 0;
                         goToSlide(slideIndex, false);
-                    }, 800); // 800ms = duración de la transición en el CSS
+                    }, 800); 
                 }
             }
             
-            // Crear los puntos de navegación
             const dots = [];
             const originalSlidesCount = slides.length;
             for(let i = 0; i < originalSlidesCount; i++) {
@@ -217,24 +218,21 @@
                 dot.addEventListener('click', () => {
                     slideIndex = i;
                     goToSlide(slideIndex);
-                    resetAutoSlide(); // Reinicia el timer si se hace clic manual
+                    resetAutoSlide();
                 });
                 dotsContainer.appendChild(dot);
                 dots.push(dot);
             }
 
-            // Iniciar el auto-deslizamiento
-            let intervalId = setInterval(autoSlide, 5000); // Cambia cada 5 segundos
+            let intervalId = setInterval(autoSlide, 5000); 
 
-            // Reiniciar el auto-deslizamiento
             function resetAutoSlide() {
                 clearInterval(intervalId);
                 intervalId = setInterval(autoSlide, 5000);
             }
 
-            // Ajustar el carrusel si la ventana cambia de tamaño
             window.addEventListener('resize', () => {
-                goToSlide(slideIndex, false); // Sin animación al reajustar
+                goToSlide(slideIndex, false);
             });
         }
     });

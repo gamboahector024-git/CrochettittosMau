@@ -32,12 +32,7 @@
         <div class="carousel-dots"></div>
     </section>
     
-    @if(session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
-    @if(session('error'))
-        <div class="alert alert-error">{{ session('error') }}</div>
-    @endif
+    {{-- (Bloque de mensajes flash eliminado correctamente) --}}
 
     <div class="search-container">
         <form action="{{ route('tienda') }}" method="GET">
@@ -71,12 +66,94 @@
                     </div>
                 </div>
 
+                {{-- =============================================== --}}
+                {{-- ====== INICIO DE LA CORRECCIÓN ESTÉTICA ====== --}}
+                {{-- =============================================== --}}
+                
+                {{-- 1. Añadimos el .filter-group que faltaba --}}
+                <div class="filter-group">
+                    <h4>Ordenar por</h4>
+                    
+                    {{-- 2. Añadimos la clase 'filter-select' y eliminamos el 'onchange' --}}
+                    <select name="orden" class="filter-select">
+                        {{-- 
+                          Cambiamos la primera opción para que sea más clara
+                          y no tenga un 'value' vacío.
+                        --}}
+                        <option value="recientes" {{ request('orden') == 'recientes' ? 'selected' : '' }}>Más Recientes</option>
+                        <option value="precio_asc" {{ request('orden') == 'precio_asc' ? 'selected' : '' }}>Precio: Menor a Mayor</option>
+                        <option value="precio_desc" {{ request('orden') == 'precio_desc' ? 'selected' : '' }}>Precio: Mayor a Menor</option>
+                        <option value="nombre_asc" {{ request('orden') == 'nombre_asc' ? 'selected' : '' }}>Nombre: A-Z</option>
+                        <option value="nombre_desc" {{ request('orden') == 'nombre_desc' ? 'selected' : '' }}>Nombre: Z-A</option>
+                    </select>
+                </div>
+                
+                {{-- =============================================== --}}
+                {{-- ======== FIN DE LA CORRECCIÓN ESTÉTICA ======== --}}
+                {{-- =============================================== --}}
+
                 <button type="submit" class="apply-filters">Aplicar Filtros</button>
             </form>
         </aside>
+
+        <main class="products-grid">
+            @if($productos->count())
+                @foreach($productos as $producto)
+                    
+                    @php
+                        $oferta = $producto->promocionActiva;
+                        $precioFinal = $producto->precio_promocional ?? $producto->precio;
+                        $precioOriginalNum = ($oferta) ? $producto->precio : null;
+                        $badge = null;
+
+                        if ($oferta) {
+                            if ($oferta->tipo === 'porcentaje') {
+                                $badge = $oferta->valor . '% OFF';
+                            } else {
+                                $badge = '$' . number_format($oferta->valor, 2) . ' OFF';
+                            }
+                        }
+                    @endphp
+
+                    <div class="product-card">
+                        <div class="card-image-wrapper">
+                            <img src="{{ $producto->imagen_url ?? 'https://via.placeholder.com/250' }}" alt="{{ $producto->nombre }}">
+                            @if($oferta)
+                                <span class="discount-badge-card">{{ $badge }}</span>
+                            @endif
+                        </div>
+                        <div class="card-content">
+                            <h3>{{ $producto->nombre }}</h3>
+                            
+                            <p class="price">
+                                ${{ number_format($precioFinal, 2) }}
+                                @if($oferta)
+                                    <span class="original-price-card">${{ number_format($precioOriginalNum, 2) }}</span>
+                                @endif
+                            </p>
+                            
+                            <button class="buy-button" onclick="openModal(
+                                {{ $producto->id_producto }},
+                                {{ json_encode($producto->nombre) }},
+                                '{{ number_format($precioFinal, 2) }}',
+                                {{ json_encode($producto->descripcion ?? 'Sin descripción.') }},
+                                '{{ $producto->imagen_url ?? 'https://via.placeholder.com/250' }}',
+                                '{{ $producto->categoria->nombre ?? 'Sin categoría' }}',
+                                {{ $oferta ? 'true' : 'false' }},
+                                {{ $badge ? json_encode($badge) : 'null' }},
+                                {{ $precioOriginalNum ? "'".number_format($precioOriginalNum, 2)."'" : 'null' }}
+                            )">
+                                Ver Detalles
+                            </button>
+                        </div>
+                    </div>
+                @endforeach
+            @else
+                <p class="no-products">No se encontraron productos con los filtros seleccionados.</p>
+            @endif
+        </main>
     </div>
 </div>
-
 @endsection
 
 @push('scripts')
@@ -125,7 +202,7 @@
                     setTimeout(() => {
                         slideIndex = 0;
                         goToSlide(slideIndex, false);
-                    }, 800);
+                    }, 800); 
                 }
             }
             
@@ -144,7 +221,7 @@
                 dots.push(dot);
             }
 
-            let intervalId = setInterval(autoSlide, 5000);
+            let intervalId = setInterval(autoSlide, 5000); 
 
             function resetAutoSlide() {
                 clearInterval(intervalId);

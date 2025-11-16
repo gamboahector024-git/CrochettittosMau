@@ -42,7 +42,7 @@
         @endforeach
 
         <p style="text-align: center;">
-            <a href="{{ route('carrito.index') }}" class="btn">Volver al carrito</a>
+            <!-- <a href="{{ route('carrito.index') }}" class="btn">Volver al carrito</a> -->
         </p>
     </div>
 

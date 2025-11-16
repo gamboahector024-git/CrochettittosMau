@@ -5,7 +5,7 @@
 
 @section('content')
 
-    {{-- Usamos la clase .form-container que ya está definida en admin_style.css --}}
+    {{-- Usamos la clase .form-container que ya está definida en admin.css --}}
     <div class="form-container">
 
         @if ($errors->any())

@@ -20,12 +20,16 @@
     @if(session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
+    
+    @if(session('error'))
+        <div class="alert alert-danger">{{ session('error') }}</div>
+    @endif
 
     <div class="form-container">
         <form action="{{ route('admin.promociones.store') }}" method="POST">
             @csrf
             
-            @include('admin.promociones._form', ['isEdit' => false, 'promocion' => null])
+            @include('admin.promociones._form', ['isEdit' => false, 'promocion' => null, 'producto' => $producto])
             
             <div class="form-actions">
                 <button type="submit" class="btn btn-primary">Guardar Promoción</button>

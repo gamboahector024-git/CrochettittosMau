@@ -1,7 +1,7 @@
 @php
     $isEdit = $isEdit ?? false;
     $promocion = $promocion ?? null;
-    $id_producto_preseleccionado = request('id_producto', $isEdit ? $promocion->id_producto : '');
+    $producto = $producto ?? null;
 @endphp
 
 <div class="form-group">
@@ -17,15 +17,17 @@
 </div>
 
 <div class="form-group">
-    <label for="id_producto">Producto</label>
-    <select id="id_producto" name="id_producto" class="form-control" required>
-        <option value="">Selecciona un producto</option>
-        @foreach($productos as $producto)
-            <option value="{{ $producto->id_producto }}" {{ old('id_producto', $id_producto_preseleccionado) == $producto->id_producto ? 'selected' : '' }}>
-                {{ $producto->nombre }}
-            </option>
-        @endforeach
-    </select>
+    <label>Producto</label>
+    <p style="margin: 0 0 6px;">
+        @if($isEdit && $promocion)
+            {{ $promocion->producto->nombre }}
+        @elseif($producto)
+            {{ $producto->nombre }}
+        @else
+            Producto no especificado
+        @endif
+    </p>
+    <input type="hidden" name="id_producto" value="{{ old('id_producto', $isEdit ? $promocion->id_producto : ($producto->id_producto ?? '')) }}">
     @error('id_producto')<div class="form-error">{{ $message }}</div>@enderror
 </div>
 
@@ -50,22 +52,13 @@
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
     <div class="form-group">
         <label for="fecha_inicio">Fecha inicio</label>
-        <input type="date" id="fecha_inicio" name="fecha_inicio" class="form-control" value="{{ old('fecha_inicio', $isEdit ? $promocion->fecha_inicio : '') }}" required>
+        <input type="date" id="fecha_inicio" name="fecha_inicio" class="form-control" value="{{ old('fecha_inicio', $isEdit ? optional($promocion->fecha_inicio)->format('Y-m-d') : '') }}" required>
         @error('fecha_inicio')<div class="form-error">{{ $message }}</div>@enderror
     </div>
     
     <div class="form-group">
         <label for="fecha_fin">Fecha fin</label>
-        <input type="date" id="fecha_fin" name="fecha_fin" class="form-control" value="{{ old('fecha_fin', $isEdit ? $promocion->fecha_fin : '') }}" required>
+        <input type="date" id="fecha_fin" name="fecha_fin" class="form-control" value="{{ old('fecha_fin', $isEdit ? optional($promocion->fecha_fin)->format('Y-m-d') : '') }}" required>
         @error('fecha_fin')<div class="form-error">{{ $message }}</div>@enderror
     </div>
-</div>
-
-<div class="form-group">
-    @php($activa = old('activa', $isEdit ? (int)$promocion->activa : 1))
-    <div class="form-check-minimal">
-        <input class="form-check-input" type="checkbox" id="activa" name="activa" value="1" {{ $activa ? 'checked' : '' }}>
-        <label class="form-check-label" for="activa">Activar promoción al guardar</label>
-    </div>
-    @error('activa')<div class="form-error">{{ $message }}</div>@enderror
 </div>

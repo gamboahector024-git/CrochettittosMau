@@ -8,7 +8,7 @@
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
     @if(session('error'))
-        {{-- ¡Asegúrate de tener un estilo .alert-danger en tu admin_style.css! --}}
+        {{-- ¡Asegúrate de tener un estilo .alert-danger en tu admin.css! --}}
         <div class="alert alert-danger">{{ session('error') }}</div>
     @endif
 

@@ -43,7 +43,7 @@
                 @if($peticion->imagen_referencia)
                     <div class="info-item">
                         <strong>Imagen de referencia:</strong><br>
-                        <img src="{{ asset('storage/'.$peticion->imagen_referencia) }}" alt="Imagen de referencia" class="form-image-preview">
+                        <img src="{{ asset($peticion->imagen_referencia) }}" alt="Imagen de referencia" class="form-image-preview">
                     </div>
                 @endif
             </div>

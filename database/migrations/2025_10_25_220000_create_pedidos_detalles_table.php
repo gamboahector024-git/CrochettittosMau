@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up()
     {
-        Schema::create('detalles_pedido', function (Blueprint $table) {
+        Schema::create('pedido_detalles', function (Blueprint $table) {
             $table->id('id_detalle');
             $table->foreignId('id_pedido')
                   ->constrained('pedidos', 'id_pedido') // Especificar columna referenciada
@@ -27,6 +27,6 @@ return new class extends Migration
 
     public function down()
     {
-        Schema::dropIfExists('detalles_pedido');
+        Schema::dropIfExists('pedido_detalles');
     }
 };
