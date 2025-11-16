@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Cliente;
 
 use App\Http\Controllers\Controller;
-
 use App\Models\Carrito;
 use App\Models\Producto;
 use App\Models\Pedido;
@@ -263,3 +262,4 @@ class CarritoController extends Controller
             ->with('success', '¡Pedido realizado con éxito!');
     }
 }
+?>

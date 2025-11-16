@@ -41,6 +41,28 @@ class TiendaController extends Controller
             $query->where('precio', '<=', $request->precio_max);
         }
         
+        // CORREGIDO: Usar 'filled'
+        if ($request->filled('orden')) {
+            switch ($request->orden) {
+                case 'precio_asc':
+                    $query->orderBy('precio', 'asc');
+                    break;
+                case 'precio_desc':
+                    $query->orderBy('precio', 'desc');
+                    break;
+                case 'nombre_asc':
+                    $query->orderBy('nombre', 'asc');
+                    break;
+                case 'nombre_desc':
+                    $query->orderBy('nombre', 'desc');
+                    break;
+                default:
+                    $query->orderBy('id_producto', 'desc');
+            }
+        } else {
+            $query->orderBy('id_producto', 'desc');
+        }
+        
         $productos = $query->get();
         $categorias = Categoria::all();
         

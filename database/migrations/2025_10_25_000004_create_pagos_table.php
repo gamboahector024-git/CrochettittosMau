@@ -13,7 +13,7 @@ return new class extends Migration
             $table->foreignId('id_pedido')->constrained('pedidos', 'id_pedido')->onDelete('cascade');
             $table->enum('metodo', ['tarjeta', 'paypal', 'transferencia', 'efectivo']);
             $table->decimal('monto', 10, 2);
-            $table->string('referencia', 255)->nullable();
+            $table->string('referencia', 255)->nullable()->unique();
             $table->enum('estado', ['pendiente', 'completado', 'fallido'])->default('pendiente');
             $table->timestamps();
         });

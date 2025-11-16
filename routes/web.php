@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\{
@@ -15,8 +16,11 @@ use App\Http\Controllers\Admin\{
 use App\Http\Controllers\Cliente\{
     CarritoController,
     TiendaController,
-    PerfilController
+    PerfilController,
+    PeticionController as ClientePeticionController,
+    PedidoController as ClientePedidoController
 };
+use App\Http\Controllers\PayPalController;
 
 /*
 |--------------------------------------------------------------------------
@@ -51,6 +55,11 @@ Route::middleware(['web', 'track-user-activity'])->group(function () {
         Route::post('/procesar', [CarritoController::class, 'procesarPedido'])->name('procesar');
     });
 
+    // Webhook de PayPal (sin CSRF y sin auth)
+    Route::post('/paypal/webhook', [PayPalController::class, 'webhook'])
+        ->name('paypal.webhook')
+        ->withoutMiddleware([ValidateCsrfToken::class]);
+
     /*
     |--------------------------------------------------------------------------
     | Perfil de usuario
@@ -58,29 +67,42 @@ Route::middleware(['web', 'track-user-activity'])->group(function () {
     */
     Route::middleware('auth')->prefix('perfil')->name('perfil.')->group(function () {
         Route::get('/', [PerfilController::class, 'index'])->name('index');
-        Route::get('/editar', [PerfilController::class, 'edit'])->name('edit'); // Esta es la ruta que falta
+        Route::get('/editar', [PerfilController::class, 'edit'])->name('edit');
         Route::put('/actualizar', [PerfilController::class, 'update'])->name('update');
     });
 
     // Peticiones personalizadas (usuarios autenticados)
     Route::middleware('auth')->group(function () {
-        // Ruta para que un usuario cree una petición personalizada
-        Route::post('/peticiones', [\App\Http\Controllers\Cliente\PeticionController::class, 'store'])->name('peticiones.store');
+        Route::post('/peticiones', [ClientePeticionController::class, 'store'])->name('peticiones.store');
     });
 
     // Rutas para que el cliente vea sus peticiones
     Route::middleware('auth')->prefix('mis-peticiones')->name('cliente.peticiones.')->group(function () {
-        Route::get('/', [\App\Http\Controllers\Cliente\PeticionController::class, 'index'])->name('index');
-        Route::get('/{peticion}', [\App\Http\Controllers\Cliente\PeticionController::class, 'show'])->name('show');
+        Route::get('/', [ClientePeticionController::class, 'index'])->name('index');
+        Route::get('/{peticion}', [ClientePeticionController::class, 'show'])->name('show');
     });
+
     /*
     |--------------------------------------------------------------------------
     | Pedidos del cliente
     |--------------------------------------------------------------------------
     */
     Route::middleware('auth')->prefix('mis-pedidos')->name('cliente.pedidos.')->group(function () {
-        Route::get('/', [\App\Http\Controllers\Cliente\PedidoController::class, 'index'])->name('index');
-        Route::get('/{pedido}', [\App\Http\Controllers\Cliente\PedidoController::class, 'show'])->name('show');
+        Route::get('/', [ClientePedidoController::class, 'index'])->name('index');
+        Route::get('/{pedido}', [ClientePedidoController::class, 'show'])->name('show');
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | PayPal
+    |--------------------------------------------------------------------------
+    */
+    Route::middleware('auth')->group(function () {
+        Route::post('/paypal/create-payment', [PayPalController::class, 'createPayment']);
+        Route::post('/paypal/capture-payment', [PayPalController::class, 'capturePayment']);
+        // Rutas de retorno/cancelación
+        Route::get('/paypal/return', [PayPalController::class, 'handleReturn']);
+        Route::get('/paypal/cancel', [PayPalController::class, 'handleCancel']);
     });
 
     /*
@@ -127,3 +149,4 @@ Route::middleware(['web', 'track-user-activity'])->group(function () {
         Route::resource('carrusel', CarruselController::class)->except(['show']);
     });
 });
+?>

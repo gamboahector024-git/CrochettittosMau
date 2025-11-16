@@ -17,6 +17,12 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById("modalImage").src = imageUrl;
         document.getElementById("modalCategory").textContent = categoryName ? `Categoría: ${categoryName}` : '';
 
+        // Resetear cantidad a 1
+        const quantityInput = document.getElementById("modalQuantity");
+        if (quantityInput) {
+            quantityInput.value = 1;
+        }
+
         // Lógica para mostrar/ocultar precios y badge de descuento
         const originalPriceEl = document.getElementById("modalOriginalPrice");
         const discountBadgeEl = document.getElementById("modalDiscountBadge");
@@ -81,5 +87,111 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
     });
+
+    // ========== NUEVO CÓDIGO PARA EL CARRITO ==========
+    
+    // Manejar el envío del formulario de agregar al carrito
+    const addToCartForm = document.querySelector('.modal-form');
+    
+    if (addToCartForm) {
+        addToCartForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const productoId = document.getElementById('modalProductId').value;
+            const cantidad = document.getElementById('modalQuantity').value;
+            
+            console.log('Agregando al carrito:', { productoId, cantidad });
+            
+            // Crear FormData
+            const formData = new FormData();
+            formData.append('_token', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
+            formData.append('id_producto', productoId);
+            formData.append('cantidad', cantidad);
+            
+            // Enviar la solicitud
+            fetch(this.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => {
+                if (response.redirected) {
+                    // Si hay redirección, seguirla
+                    window.location.href = response.url;
+                    return;
+                }
+                return response.json().catch(() => null);
+            })
+            .then(data => {
+                if (data && data.redirect) {
+                    window.location.href = data.redirect;
+                }
+            })
+            .catch(error => {
+                console.error('Error al agregar al carrito:', error);
+                // Fallback: enviar el formulario de forma tradicional
+                this.submit();
+            });
+        });
+    }
+    
+    // También manejar clic en botones "Comprar" de las tarjetas
+    const buyButtons = document.querySelectorAll('.buy-button');
+    buyButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            // Solo procesar si no está dentro de un formulario de cantidad
+            if (!this.closest('.quantity-form')) {
+                e.preventDefault();
+                const productId = this.dataset.productId;
+                
+                if (productId) {
+                    // Crear formulario temporal para enviar
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = '{{ route("carrito.store") }}';
+                    
+                    const tokenInput = document.createElement('input');
+                    tokenInput.type = 'hidden';
+                    tokenInput.name = '_token';
+                    tokenInput.value = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                    
+                    const productInput = document.createElement('input');
+                    productInput.type = 'hidden';
+                    productInput.name = 'id_producto';
+                    productInput.value = productId;
+                    
+                    const quantityInput = document.createElement('input');
+                    quantityInput.type = 'hidden';
+                    quantityInput.name = 'cantidad';
+                    quantityInput.value = 1;
+                    
+                    form.appendChild(tokenInput);
+                    form.appendChild(productInput);
+                    form.appendChild(quantityInput);
+                    document.body.appendChild(form);
+                    
+                    form.submit();
+                }
+            }
+        });
+    });
+
+    // Manejar cambio de cantidad en el modal
+    const quantityInput = document.getElementById('modalQuantity');
+    if (quantityInput) {
+        quantityInput.addEventListener('change', function() {
+            // Validar que sea mínimo 1
+            if (this.value < 1) {
+                this.value = 1;
+            }
+        });
+    }
+
+    // Debug para verificar que todo funciona
+    console.log('Carrito system loaded successfully');
+    console.log('Add to cart form found:', !!addToCartForm);
+    console.log('Buy buttons found:', buyButtons.length);
 
 });
