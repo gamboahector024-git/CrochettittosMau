@@ -17,7 +17,8 @@
         <div class="carousel-track">
             
             <div class="carousel-slide">
-                <img src="https://via.placeholder.com/1200x400/A77BFF/FFFFFF?text=Tu+Imagen+Principal+Aqu%C3%AD" alt="Imagen de Bienvenida 1">
+                {{-- <img src="{{ asset('img/image_a2e101.jpg') }}" alt="Amigurumi Especial"> --}}
+                <img src="Captura de pantalla 2025-11-11 011338" alt="Imagen de Bienvenida 1">
             </div>
             
             <div class="carousel-slide">
@@ -67,29 +68,65 @@
                 </div>
 
                 {{-- =============================================== --}}
-                {{-- ====== INICIO DE LA CORRECCIÓN ESTÉTICA ====== --}}
+                {{-- ====== RESTAURACIÓN DEL DISEÑO ORIGINAL ====== --}}
                 {{-- =============================================== --}}
                 
-                {{-- 1. Añadimos el .filter-group que faltaba --}}
                 <div class="filter-group">
                     <h4>Ordenar por</h4>
                     
-                    {{-- 2. Añadimos la clase 'filter-select' y eliminamos el 'onchange' --}}
-                    <select name="orden" class="filter-select">
-                        {{-- 
-                          Cambiamos la primera opción para que sea más clara
-                          y no tenga un 'value' vacío.
-                        --}}
-                        <option value="recientes" {{ request('orden') == 'recientes' ? 'selected' : '' }}>Más Recientes</option>
-                        <option value="precio_asc" {{ request('orden') == 'precio_asc' ? 'selected' : '' }}>Precio: Menor a Mayor</option>
-                        <option value="precio_desc" {{ request('orden') == 'precio_desc' ? 'selected' : '' }}>Precio: Mayor a Menor</option>
-                        <option value="nombre_asc" {{ request('orden') == 'nombre_asc' ? 'selected' : '' }}>Nombre: A-Z</option>
-                        <option value="nombre_desc" {{ request('orden') == 'nombre_desc' ? 'selected' : '' }}>Nombre: Z-A</option>
-                    </select>
+                    {{-- Opción Más Recientes --}}
+                    <label class="filter-option">
+                        <input type="radio" name="orden" value="recientes" 
+                            {{ request('orden') == 'recientes' || !request('orden') ? 'checked' : '' }}>
+                        <span>Más Recientes</span>
+                        @if(request('orden') == 'recientes' || !request('orden'))
+                            <span class="checkmark">✔</span>
+                        @endif
+                    </label>
+                    
+                    {{-- Opción Precio: Menor a Mayor --}}
+                    <label class="filter-option">
+                        <input type="radio" name="orden" value="precio_asc"
+                            {{ request('orden') == 'precio_asc' ? 'checked' : '' }}>
+                        <span>Precio: Menor a Mayor</span>
+                        @if(request('orden') == 'precio_asc')
+                            <span class="checkmark">✔</span>
+                        @endif
+                    </label>
+                    
+                    {{-- Opción Precio: Mayor a Menor --}}
+                    <label class="filter-option">
+                        <input type="radio" name="orden" value="precio_desc"
+                            {{ request('orden') == 'precio_desc' ? 'checked' : '' }}>
+                        <span>Precio: Mayor a Menor</span>
+                        @if(request('orden') == 'precio_desc')
+                            <span class="checkmark">✔</span>
+                        @endif
+                    </label>
+                    
+                    {{-- Opción Nombre: A-Z --}}
+                    <label class="filter-option">
+                        <input type="radio" name="orden" value="nombre_asc"
+                            {{ request('orden') == 'nombre_asc' ? 'checked' : '' }}>
+                        <span>Nombre: A-Z</span>
+                        @if(request('orden') == 'nombre_asc')
+                            <span class="checkmark">✔</span>
+                        @endif
+                    </label>
+                    
+                    {{-- Opción Nombre: Z-A --}}
+                    <label class="filter-option">
+                        <input type="radio" name="orden" value="nombre_desc"
+                            {{ request('orden') == 'nombre_desc' ? 'checked' : '' }}>
+                        <span>Nombre: Z-A</span>
+                        @if(request('orden') == 'nombre_desc')
+                            <span class="checkmark">✔</span>
+                        @endif
+                    </label>
                 </div>
                 
                 {{-- =============================================== --}}
-                {{-- ======== FIN DE LA CORRECCIÓN ESTÉTICA ======== --}}
+                {{-- ========= FIN DE LA RESTAURACIÓN ============= --}}
                 {{-- =============================================== --}}
 
                 <button type="submit" class="apply-filters">Aplicar Filtros</button>
@@ -156,8 +193,10 @@
 </div>
 @endsection
 
+{{-- JAVASCRIPT EXCLUSIVO PARA ESTA PÁGINA (EL CARRUSEL) --}}
 @push('scripts')
 <script>
+    // Espera a que el DOM esté cargado
     document.addEventListener('DOMContentLoaded', () => {
         const carouselTrack = document.querySelector('.carousel-track');
         

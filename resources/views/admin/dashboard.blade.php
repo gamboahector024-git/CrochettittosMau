@@ -3,120 +3,496 @@
 @section('title', 'Estadísticas')
 
 @section('content')
-    {{-- 1. Usamos el H1 directamente. Tu CSS ya lo estiliza. --}}
-    <h1>Panel de Estadísticas</h1>
+    <!-- Encabezado mejorado -->
+    <div class="page-header">
+        <h1>Panel de Estadísticas</h1>
+        <p class="page-subtitle">Resumen general del rendimiento de la tienda</p>
+    </div>
 
-    {{-- 2. Corregimos el nombre de la clase a "dashboard-grid" --}}
+    <!-- Grid de estadísticas principales -->
     <div class="dashboard-grid">
-        
-        {{-- 3. Corregimos la estructura interna de TODAS las tarjetas. --}}
-        {{-- Ya no existe ".stat-card-header". --}}
-
-        {{-- Tarjeta 1: Ventas del mes --}}
-        <div class="stat-card purple"> {{-- 'purple' es el rosa fuerte en tu CSS --}}
+        <!-- Tarjeta 1: Ventas del mes -->
+        <div class="stat-card purple">
             <div class="card-icon">
                 <i class="fas fa-dollar-sign"></i>
             </div>
-            <h3>Ventas del mes</h3>
-            <div class="value">${{ number_format($ventasMes, 2) }}</div>
-            <div class="label">Total generado en ventas</div>
+            <div class="card-content">
+                <h3>Ventas del Mes</h3>
+                <div class="value">${{ number_format($ventasMes, 2) }}</div>
+                <div class="label">Total generado en ventas</div>
+                <div class="trend up">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>12% vs mes anterior</span>
+                </div>
+            </div>
         </div>
 
-        {{-- Tarjeta 2: Productos vendidos --}}
+        <!-- Tarjeta 2: Productos vendidos -->
         <div class="stat-card green">
             <div class="card-icon">
                 <i class="fas fa-box"></i>
             </div>
-            <h3>Productos vendidos</h3>
-            <div class="value">{{ $productosVendidos }}</div>
-            <div class="label">En el mes actual</div>
+            <div class="card-content">
+                <h3>Productos Vendidos</h3>
+                <div class="value">{{ $productosVendidos }}</div>
+                <div class="label">En el mes actual</div>
+                <div class="trend up">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>8% vs mes anterior</span>
+                </div>
+            </div>
         </div>
 
-        {{-- Tarjeta 3: Usuarios activos --}}
-        <div class="stat-card blue"> {{-- 'blue' es el rosa suave en tu CSS --}}
+        <!-- Tarjeta 3: Usuarios activos -->
+        <div class="stat-card blue">
             <div class="card-icon">
                 <i class="fas fa-users"></i>
             </div>
-            <h3>Usuarios activos</h3>
-            <div class="value">{{ $usuariosActivos }}</div>
-            <div class="label">Últimos 30 días</div>
+            <div class="card-content">
+                <h3>Usuarios Activos</h3>
+                <div class="value">{{ $usuariosActivos }}</div>
+                <div class="label">Últimos 30 días</div>
+                <div class="trend up">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>15% vs mes anterior</span>
+                </div>
+            </div>
         </div>
 
-        {{-- Tarjeta 4: Pedidos pendientes --}}
+        <!-- Tarjeta 4: Pedidos pendientes -->
         <div class="stat-card yellow">
             <div class="card-icon">
                 <i class="fas fa-shopping-cart"></i>
             </div>
-            <h3>Pedidos pendientes</h3>
-            <div class="value">{{ $pedidosPendientes }}</div>
-            <div class="label">En proceso de envío</div>
+            <div class="card-content">
+                <h3>Pedidos Pendientes</h3>
+                <div class="value">{{ $pedidosPendientes }}</div>
+                <div class="label">En proceso de envío</div>
+                <div class="trend down">
+                    <i class="fas fa-arrow-down"></i>
+                    <span>5% vs mes anterior</span>
+                </div>
+            </div>
         </div>
 
-        {{-- Tarjeta 5: Visitas --}}
-        <div class="stat-card red"> {{-- 'red' es rosa fuerte en tu CSS --}}
+        <!-- Tarjeta 5: Visitas del sitio -->
+        <div class="stat-card red">
             <div class="card-icon">
                 <i class="fas fa-eye"></i>
             </div>
-            <h3>Visitas del sitio</h3>
-            <div class="value">{{ $visitas }}</div>
-            <div class="label">Últimas 24 horas</div>
-        </div>
-        
-        {{-- 
-          La tarjeta de "Bajo Stock" ha sido movida 
-          afuera de este grid.
-        --}}
-
-    </div> {{-- Fin de .dashboard-grid --}}
-
-
-    {{-- 
-      4. SECCIÓN DE BAJO STOCK (AHORA SEPARADA)
-      Usamos la clase ".card" que es tu contenedor "glass" genérico.
-    --}}
-    <div class="card">
-        {{-- Usamos la cabecera estándar de tu CSS --}}
-        <div class="actions-header" style="margin-bottom: 20px;">
-            {{-- Usamos un <h2> simple para el título de la tarjeta --}}
-            <h2 style="font-size: 1.3rem; font-weight: 500; color: var(--text-light); margin: 0;">
-                <i class="fas fa-exclamation-triangle" style="color: var(--accent); margin-right: 8px;"></i>
-                Productos por Agotarse
-            </h2>
-            <small class="label">Productos con stock menor o igual a 5</small>
-        </div>
-
-        @if($lowStockProducts->isNotEmpty())
-            {{-- 
-              Usamos las clases "low-stock-grid" y "low-stock-card"
-              que moveremos a tu admin.css
-            --}}
-            <div class="low-stock-grid">
-                @foreach($lowStockProducts as $product)
-                    <div class="low-stock-card">
-                        <div class="card-title">{{ $product->nombre }}</div>
-                        <div class="card-body">Stock: <strong>{{ $product->stock }}</strong></div>
-                        <div class="card-actions">
-                            @if(isset($product->id_producto))
-                                {{-- 
-                                  Usamos los estilos de botón de tu CSS.
-                                  Añadimos un estilo en línea para hacerlo más pequeño.
-                                --}}
-                                <a href="{{ route('admin.productos.edit', $product->id_producto) }}" 
-                                   class="btn btn-primary" 
-                                   style="padding: 5px 10px; font-size: 0.8rem;">
-                                    Editar
-                                </a>
-                            @endif
-                        </div>
-                    </div>
-                @endforeach
+            <div class="card-content">
+                <h3>Visitas del Sitio</h3>
+                <div class="value">{{ $visitas }}</div>
+                <div class="label">Últimas 24 horas</div>
+                <div class="trend up">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>22% vs día anterior</span>
+                </div>
             </div>
-        @else
-            {{-- Usamos la clase "empty-row" de tu CSS --}}
-            <p class="empty-row" style="padding: 20px 0;">
-                ¡Felicidades! Ningún producto con bajo stock.
-            </p>
-        @endif
+        </div>
+
+        <!-- Tarjeta 6: Tasa de conversión -->
+        <div class="stat-card purple">
+            <div class="card-icon">
+                <i class="fas fa-chart-line"></i>
+            </div>
+            <div class="card-content">
+                <h3>Tasa de Conversión</h3>
+                <div class="value">{{ number_format(($productosVendidos / max($visitas, 1)) * 100, 1) }}%</div>
+                <div class="label">Ratio visitas a ventas</div>
+                <div class="trend up">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>3% vs mes anterior</span>
+                </div>
+            </div>
+        </div>
     </div>
 
+    <!-- Sección de productos con bajo stock -->
+    <div class="card low-stock-section">
+        <div class="card-header">
+            <div class="header-content">
+                <h2>
+                    <i class="fas fa-exclamation-triangle warning-icon"></i>
+                    Productos por Agotarse
+                </h2>
+                <small class="subtitle">Productos con stock menor o igual a 5 unidades</small>
+            </div>
+            <div class="header-actions">
+                <span class="badge alert-count">{{ $lowStockProducts->count() }}</span>
+            </div>
+        </div>
+
+        <div class="card-body">
+            @if($lowStockProducts->isNotEmpty())
+                <div class="low-stock-grid">
+                    @foreach($lowStockProducts as $product)
+                        <div class="low-stock-card {{ $product->stock <= 2 ? 'critical' : 'warning' }}">
+                            <div class="product-info">
+                                <div class="product-name">{{ $product->nombre }}</div>
+                                <div class="product-category">{{ $product->categoria->nombre ?? 'Sin categoría' }}</div>
+                                <div class="stock-info">
+                                    <span class="stock-level">
+                                        <i class="fas fa-boxes"></i>
+                                        Stock: {{ $product->stock }}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="product-actions">
+                                @if(isset($product->id_producto))
+                                    <a href="{{ route('admin.productos.edit', $product->id_producto) }}" 
+                                       class="btn btn-primary btn-sm">
+                                        <i class="fas fa-edit"></i>
+                                        Editar Stock
+                                    </a>
+                                @endif
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            @else
+                <div class="empty-state">
+                    <i class="fas fa-check-circle success-icon"></i>
+                    <h3>¡Excelente!</h3>
+                    <p>No hay productos con bajo stock en este momento.</p>
+                </div>
+            @endif
+        </div>
+    </div>
+
+    <!-- Sección de actividad reciente -->
+    <div class="card">
+        <div class="card-header">
+            <h2>
+                <i class="fas fa-history"></i>
+                Actividad Reciente
+            </h2>
+        </div>
+        <div class="card-body">
+            <div class="activity-list">
+                <div class="activity-item">
+                    <div class="activity-icon success">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-message">Nuevo pedido recibido #{{ rand(1000, 9999) }}</div>
+                        <div class="activity-time">Hace 5 minutos</div>
+                    </div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-icon info">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-message">Nuevo usuario registrado</div>
+                        <div class="activity-time">Hace 15 minutos</div>
+                    </div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-icon warning">
+                        <i class="fas fa-box"></i>
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-message">Producto agotado: Llavero Snoopy</div>
+                        <div class="activity-time">Hace 1 hora</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection
+
+@section('styles')
+<style>
+    /* Estilos específicos para el dashboard */
+    .page-header {
+        margin-bottom: 2.5rem;
+        text-align: center;
+    }
+
+    .page-header h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--accent);
+        margin-bottom: 0.5rem;
+    }
+
+    .page-subtitle {
+        color: var(--text-muted);
+        font-size: 1.1rem;
+    }
+
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2.5rem;
+    }
+
+    .stat-card {
+        background: var(--bg-card);
+        backdrop-filter: var(--glass-blur);
+        border: 1px solid var(--border);
+        border-radius: var(--border-radius);
+        padding: 1.5rem;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.4s ease;
+        box-shadow: var(--glass-shadow);
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+        border-color: var(--accent);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    .card-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+        background: rgba(213, 105, 137, 0.1);
+        color: var(--accent);
+        flex-shrink: 0;
+    }
+
+    .card-content {
+        flex: 1;
+    }
+
+    .stat-card h3 {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--text-muted);
+        margin-bottom: 0.5rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--accent);
+        line-height: 1;
+        margin-bottom: 0.25rem;
+    }
+
+    .label {
+        color: var(--text-muted);
+        font-size: 0.85rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .trend {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+
+    .trend.up {
+        color: var(--accent-green);
+    }
+
+    .trend.down {
+        color: #ef4444;
+    }
+
+    .low-stock-section .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid var(--border-light);
+    }
+
+    .header-content h2 {
+        font-size: 1.3rem;
+        font-weight: 600;
+        color: var(--text-dark);
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .warning-icon {
+        color: var(--accent);
+    }
+
+    .subtitle {
+        color: var(--text-muted);
+        font-size: 0.9rem;
+    }
+
+    .alert-count {
+        background: var(--accent);
+        color: white;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    .low-stock-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1rem;
+    }
+
+    .low-stock-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: var(--border-radius-sm);
+        padding: 1.25rem;
+        transition: all 0.3s ease;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .low-stock-card.warning {
+        border-left: 4px solid var(--accent-pink-soft);
+    }
+
+    .low-stock-card.critical {
+        border-left: 4px solid #ef4444;
+    }
+
+    .low-stock-card:hover {
+        transform: translateY(-2px);
+        border-color: var(--accent);
+    }
+
+    .product-name {
+        font-weight: 600;
+        color: var(--text-dark);
+        margin-bottom: 0.25rem;
+    }
+
+    .product-category {
+        color: var(--text-muted);
+        font-size: 0.85rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .stock-level {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: var(--text-muted);
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 3rem 2rem;
+        color: var(--text-muted);
+    }
+
+    .empty-state i {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        color: var(--accent-green);
+    }
+
+    .empty-state h3 {
+        margin-bottom: 0.5rem;
+        color: var(--text-dark);
+    }
+
+    .activity-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .activity-item {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: var(--border-radius-sm);
+        transition: all 0.3s ease;
+    }
+
+    .activity-item:hover {
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .activity-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .activity-icon.success {
+        background: rgba(194, 220, 128, 0.2);
+        color: var(--accent-green);
+    }
+
+    .activity-icon.info {
+        background: rgba(234, 156, 175, 0.2);
+        color: var(--accent-pink-soft);
+    }
+
+    .activity-icon.warning {
+        background: rgba(253, 253, 150, 0.2);
+        color: #d97706;
+    }
+
+    .activity-content {
+        flex: 1;
+    }
+
+    .activity-message {
+        font-weight: 500;
+        color: var(--text-dark);
+        margin-bottom: 0.25rem;
+    }
+
+    .activity-time {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+    }
+
+    .btn-sm {
+        padding: 0.5rem 1rem;
+        font-size: 0.8rem;
+    }
+
+    @media (max-width: 768px) {
+        .dashboard-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .low-stock-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .stat-card {
+            flex-direction: column;
+            text-align: center;
+        }
+        
+        .card-icon {
+            align-self: center;
+        }
+    }
+</style>
 @endsection

@@ -646,3 +646,98 @@ table a:hover {
 .low-stock-card .card-actions {
   margin-top: 12px;
 }
+/* ====== SISTEMA DE MODO OSCURO ====== */
+
+/* Variables para modo claro (tus variables actuales) */
+:root {
+    --color-sorbet-stem: #C2DC80;
+    --color-petal-glaze: #EA9CAF;
+    --color-dusty-orchid: #D56989;
+    --color-powdered-lilac-grey: #F3EEF1;
+    
+    --bg-main: linear-gradient(135deg, var(--color-powdered-lilac-grey), #EAE6F9);
+    --bg-card: rgba(255, 255, 255, 0.85);
+    --bg-sidebar: rgba(255, 255, 255, 0.8);
+    
+    --text-main: #5D4A56;
+    --text-dark: #4A3A44;
+    --text-muted: #7A6A74;
+    --text-light: #FFFFFF;
+    
+    --border: rgba(255, 255, 255, 0.6);
+    --border-light: rgba(213, 105, 137, 0.2);
+    
+    --accent: var(--color-dusty-orchid);
+    --accent-green: var(--color-sorbet-stem);
+    --accent-pink-soft: var(--color-petal-glaze);
+    
+    --glass-blur: blur(20px);
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), 0 0 15px rgba(255, 255, 255, 0.3);
+}
+
+/* Variables para modo oscuro */
+[data-theme="dark"] {
+    --bg-main: linear-gradient(135deg, #2D1B2E, #3A2A3B);
+    --bg-card: rgba(45, 27, 46, 0.9);
+    --bg-sidebar: rgba(45, 27, 46, 0.95);
+    
+    --text-main: #E8DEE9;
+    --text-dark: #FFFFFF;
+    --text-muted: #B8AAB9;
+    
+    --border: rgba(255, 255, 255, 0.1);
+    --border-light: rgba(234, 156, 175, 0.3);
+    
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 15px rgba(255, 255, 255, 0.1);
+}
+
+/* Transiciones suaves */
+* {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Estilos del toggle */
+.theme-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+.toggle-form {
+    margin: 0;
+    padding: 0;
+}
+
+.toggle-btn {
+    background: var(--bg-card);
+    backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--border);
+    border-radius: 50px;
+    padding: 10px 15px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: var(--glass-shadow);
+    color: var(--text-main);
+    font-weight: 600;
+    font-family: inherit;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.toggle-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.toggle-icon {
+    font-size: 1.1rem;
+}
+
+.sun-icon { display: none; }
+.moon-icon { display: inline; }
+
+[data-theme="dark"] .sun-icon { display: inline; }
+[data-theme="dark"] .moon-icon { display: none; }

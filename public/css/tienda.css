@@ -1,36 +1,41 @@
 /* ====== css/tienda.css (Diseño "Rose & Green Pastel Glassmorphism") ====== */
 
-/* 1. IMPORTACIONES */
+/* =========================================== */
+/* 1. IMPORTACIONES Y CONFIGURACIÓN INICIAL */
+/* =========================================== */
+
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Playfair+Display:wght@700&display=swap');
 
-/* 2. VARIABLES Y PALETA DE COLORES */
+/* =========================================== */
+/* 2. VARIABLES CSS Y PALETA DE COLORES */
+/* =========================================== */
 :root {
   /* Fuentes */
   --font-heading: 'Playfair Display', serif;
   --font-body: 'Poppins', sans-serif;
 
-  /* Paleta de colores */
+  /* Paleta de colores principal */
   --color-sorbet-stem: #C2DC80;
   --color-petal-glaze: #EA9CAF;
   --color-dusty-orchid: #D56989;
   --color-powdered-lilac-grey: #F3EEF1;
 
-  /* Fondos */
+  /* Fondos y gradientes */
   --bg-main: linear-gradient(135deg, var(--color-powdered-lilac-grey), #EAE6F9);
   --bg-card: #FFFFFF;
   
-  /* Glassmorphism */
+  /* Efectos Glassmorphism */
   --bg-glass: rgba(255, 255, 255, 0.4);
   --glass-border: 1px solid rgba(255, 255, 255, 0.6);
   --glass-blur: blur(15px);
   --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), 0 0 15px rgba(255, 255, 255, 0.3);
 
-  /* Textos */
+  /* Colores de texto */
   --text-main: #5D4A56;
   --text-dark: #4A3A44;
   --text-muted: #7A6A74;
 
-  /* Acentos */
+  /* Colores de acento */
   --accent-primary-pastel: var(--color-petal-glaze);
   --accent-secondary-pastel: var(--color-dusty-orchid);
   --accent-highlight-green: var(--color-sorbet-stem);
@@ -38,7 +43,9 @@
   --accent-light-contrast: var(--color-petal-glaze);
 }
 
-/* 3. RESET Y BASE */
+/* =========================================== */
+/* 3. RESET Y ESTILOS BASE */
+/* =========================================== */
 * {
   margin: 0;
   padding: 0;
@@ -59,9 +66,11 @@ body {
   flex-direction: column;
 }
 
+/* =========================================== */
 /* 4. COMPONENTES REUTILIZABLES */
+/* =========================================== */
 
-/* Botones */
+/* ========== 4.1 BOTONES ========== */
 .nav-button, .primary-button, .secondary-button, .tertiary-button, 
 .add-to-cart-button, .paypal-button, .update-btn, .checkout-button {
   text-decoration: none;
@@ -78,6 +87,7 @@ body {
   font-size: 1rem;
 }
 
+/* Variantes de botones */
 .nav-button-pastel-primary, .primary-button, .add-to-cart-button {
   background: var(--accent-secondary-pastel);
   color: white;
@@ -102,7 +112,7 @@ body {
   box-shadow: 0 4px 10px rgba(0, 69, 124, 0.3);
 }
 
-/* Estados hover */
+/* Estados hover de botones */
 .nav-button-pastel-primary:hover, .primary-button:hover:not(:disabled), 
 .add-to-cart-button:hover:not(:disabled) {
   background: #C75E7E;
@@ -134,7 +144,7 @@ button:disabled {
   cursor: not-allowed;
 }
 
-/* Formularios */
+/* ========== 4.2 FORMULARIOS ========== */
 .form-group {
   margin-bottom: 1.5rem;
   display: flex;
@@ -181,7 +191,7 @@ select.form-input {
   padding-right: 2.5rem;
 }
 
-/* Badges y etiquetas */
+/* ========== 4.3 BADGES Y ETIQUETAS ========== */
 .discount-badge, .discount-badge-card, #modalDiscountBadge {
   background: var(--accent-secondary-pastel);
   color: white;
@@ -207,6 +217,7 @@ select.form-input {
   color: var(--text-dark);
 }
 
+/* Estados de badges */
 .status-pendiente { background-color: #ffe69c; }
 .status-pagado { background-color: var(--accent-highlight-green); }
 .status-enviado { background-color: #a7d8ff; }
@@ -215,11 +226,14 @@ select.form-input {
 .status-aprobado { background-color: var(--accent-highlight-green); }
 .status-rechazado { background-color: #ffc2c2; }
 
-/* 5. LAYOUT PRINCIPAL */
+/* =========================================== */
+/* 5. LAYOUT PRINCIPAL Y ESTRUCTURA */
+/* =========================================== */
 .container {
   padding: 3rem 8%;
 }
 
+/* ========== 5.1 HEADER Y NAVEGACIÓN ========== */
 .site-header {
   backdrop-filter: var(--glass-blur);
   background: var(--bg-glass);
@@ -265,6 +279,7 @@ select.form-input {
   color: var(--accent-dark-contrast);
 }
 
+/* ========== 5.2 FOOTER ========== */
 .site-footer {
   text-align: center;
   padding: 2rem 8%;
@@ -278,9 +293,11 @@ select.form-input {
   box-shadow: var(--glass-shadow);
 }
 
-/* 6. COMPONENTES DE PÁGINA */
+/* =========================================== */
+/* 6. COMPONENTES ESPECÍFICOS DE PÁGINA */
+/* =========================================== */
 
-/* Mensaje de bienvenida */
+/* ========== 6.1 MENSAJE DE BIENVENIDA ========== */
 .welcome-message {
   text-align: center;
   background: var(--accent-highlight-green);
@@ -307,7 +324,7 @@ select.form-input {
   margin: 0 auto;
 }
 
-/* Búsqueda y filtros */
+/* ========== 6.2 BÚSQUEDA Y FILTROS ========== */
 .search-container {
   max-width: 600px;
   margin: 0 auto 4rem auto;
@@ -356,6 +373,7 @@ select.form-input {
   background: #C75E7E;
 }
 
+/* ========== 6.3 LAYOUT DE TIENDA ========== */
 .shop-layout {
   display: flex;
   gap: 2rem;
@@ -431,7 +449,9 @@ select.form-input {
   transform: scale(1.03);
 }
 
-/* 7. PRODUCTOS Y GRID */
+/* =========================================== */
+/* 7. SISTEMA DE PRODUCTOS Y GRID */
+/* =========================================== */
 .product-grid, .products-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -533,7 +553,9 @@ select.form-input {
   flex-grow: 1;
 }
 
-/* 8. CARRUSEL */
+/* =========================================== */
+/* 8. CARRUSEL DE IMÁGENES */
+/* =========================================== */
 .image-carousel {
   position: relative;
   width: 100%;
@@ -589,7 +611,9 @@ select.form-input {
   transform: scale(1.2);
 }
 
-/* 9. CATEGORÍAS */
+/* =========================================== */
+/* 9. SECCIONES DE CATEGORÍAS */
+/* =========================================== */
 .category-section {
   margin-bottom: 4rem;
   scroll-margin-top: 100px;
@@ -626,7 +650,9 @@ select.form-input {
   border-radius: 2px;
 }
 
-/* 10. MODALES */
+/* =========================================== */
+/* 10. SISTEMA DE MODALES */
+/* =========================================== */
 .modal {
   display: none;
   position: fixed;
@@ -835,7 +861,9 @@ dialog.modal::backdrop {
   color: var(--text-dark);
 }
 
-/* 11. CARRITO */
+/* =========================================== */
+/* 11. SISTEMA DE CARRITO DE COMPRAS */
+/* =========================================== */
 .cart-container {
   max-width: 1200px;
   margin: 2rem auto;
@@ -1055,7 +1083,9 @@ dialog.modal::backdrop {
   font-weight: 600;
 }
 
+/* =========================================== */
 /* 12. PERFIL DE USUARIO */
+/* =========================================== */
 .profile-container {
   background: var(--bg-glass);
   border: var(--glass-border);
@@ -1124,7 +1154,9 @@ dialog.modal::backdrop {
   gap: 2rem;
 }
 
-/* 13. PEDIDOS Y PETICIONES */
+/* =========================================== */
+/* 13. SISTEMA DE PEDIDOS Y PETICIONES */
+/* =========================================== */
 .orders-list, .petitions-list {
   display: flex;
   flex-direction: column;
@@ -1229,7 +1261,9 @@ dialog.modal::backdrop {
   width: auto;
 }
 
+/* =========================================== */
 /* 14. FORMULARIOS AVANZADOS */
+/* =========================================== */
 .form-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -1257,7 +1291,9 @@ dialog.modal::backdrop {
   line-height: 1.5;
 }
 
-/* 15. CHECKOUT */
+/* =========================================== */
+/* 15. SISTEMA DE CHECKOUT */
+/* =========================================== */
 .checkout-layout {
   display: grid;
   grid-template-columns: 1fr;
@@ -1320,7 +1356,9 @@ dialog.modal::backdrop {
   width: 100%;
 }
 
-/* 16. DETALLE DE PEDIDO */
+/* =========================================== */
+/* 16. DETALLE DE PEDIDOS */
+/* =========================================== */
 .order-detail-header {
   display: flex;
   flex-direction: column;
@@ -1456,7 +1494,9 @@ dialog.modal::backdrop {
   border-top: 2px solid var(--accent-primary-pastel);
 }
 
+/* =========================================== */
 /* 17. COMPONENTES ESPECIALES */
+/* =========================================== */
 .admin-response {
   background: rgba(194, 220, 128, 0.2);
   border: 1px solid var(--color-sorbet-stem);
@@ -1551,6 +1591,7 @@ dialog.modal::backdrop {
   font-size: 0.95rem;
 }
 
+/* ========== 17.1 PAGINACIÓN ========== */
 .pagination-links nav {
   margin-top: 2rem;
   display: flex;
@@ -1595,7 +1636,361 @@ dialog.modal::backdrop {
   background: var(--accent-light-contrast);
 }
 
-/* 18. RESPONSIVE */
+/* ========== 17.2 CONTADOR DE CARRITO ========== */
+.cart-counter {
+    background: var(--accent-secondary-pastel);
+    color: white;
+    border-radius: 50%;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.8rem;
+    margin-left: 0.5rem;
+    min-width: 20px;
+    height: 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ========== 17.3 MENSAJES FLASH ========== */
+.flash-container {
+    position: fixed;
+    top: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    width: 90%;
+    max-width: 500px;
+}
+
+.flash-message {
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    font-weight: 600;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    animation: slideDown 0.3s ease-out;
+}
+
+.flash-success {
+    background: var(--accent-highlight-green);
+    color: var(--text-dark);
+    border: 1px solid rgba(194, 220, 128, 0.8);
+}
+
+.flash-error {
+    background: var(--accent-secondary-pastel);
+    color: white;
+    border: 1px solid rgba(213, 105, 137, 0.8);
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+/* =========================================== */
+/* 18. FILTROS Y ORDENAMIENTO MEJORADOS */
+/* =========================================== */
+.filters-sidebar {
+    background: var(--bg-glass);
+    border: var(--glass-border);
+    backdrop-filter: var(--glass-blur);
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: var(--glass-shadow);
+    margin-bottom: 2rem;
+}
+
+.filters-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--accent-light-contrast);
+}
+
+.filters-header h3 {
+    font-family: var(--font-heading);
+    color: var(--accent-dark-contrast);
+    font-size: 1.5rem;
+    margin: 0;
+}
+
+.clear-filters {
+    background: transparent;
+    border: 1px solid var(--accent-light-contrast);
+    color: var(--text-muted);
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.clear-filters:hover {
+    background: var(--accent-light-contrast);
+    color: var(--text-dark);
+}
+
+.filter-group {
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid rgba(213, 105, 137, 0.1);
+}
+
+.filter-group:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.filter-group h4 {
+    color: var(--accent-dark-contrast);
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.filter-group h4 i {
+    font-size: 1rem;
+    opacity: 0.7;
+}
+
+/* ========== 18.1 OPCIONES DE FILTRO ========== */
+.filter-options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.filter-option {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    margin-bottom: 0.5rem;
+}
+
+.filter-option:hover {
+    background: rgba(234, 156, 175, 0.1);
+}
+
+/* Checkboxes personalizados */
+.filter-option input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--accent-light-contrast);
+    border-radius: 4px;
+    appearance: none;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.filter-option input[type="checkbox"]:checked {
+    background: var(--accent-dark-contrast);
+    border-color: var(--accent-dark-contrast);
+}
+
+.filter-option input[type="checkbox"]:checked::after {
+    content: '✓';
+    position: absolute;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* Radio buttons personalizados */
+.filter-option input[type="radio"] {
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--accent-light-contrast);
+    border-radius: 50%;
+    appearance: none;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.filter-option input[type="radio"]:checked {
+    background: var(--accent-dark-contrast);
+    border-color: var(--accent-dark-contrast);
+}
+
+.filter-option input[type="radio"]:checked::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 8px;
+    height: 8px;
+    background: white;
+    border-radius: 50%;
+}
+
+.filter-option label {
+    color: var(--text-main);
+    cursor: pointer;
+    font-weight: 500;
+    flex: 1;
+}
+
+.filter-option span:not(.checkmark) {
+    color: var(--text-main);
+    cursor: pointer;
+    font-weight: 500;
+    flex: 1;
+}
+
+.checkmark {
+    color: var(--accent-dark-contrast);
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+.filter-count {
+    background: var(--color-powdered-lilac-grey);
+    color: var(--text-muted);
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    min-width: 24px;
+    text-align: center;
+}
+
+/* ========== 18.2 RANGO DE PRECIOS ========== */
+.price-range-inputs {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.price-input-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.price-input-group label {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.price-input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--accent-light-contrast);
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    color: var(--text-main);
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+}
+
+.price-input:focus {
+    outline: none;
+    border-color: var(--accent-dark-contrast);
+    box-shadow: 0 0 0 3px rgba(213, 105, 137, 0.1);
+}
+
+/* ========== 18.3 SELECT PERSONALIZADO ========== */
+.sort-select {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--accent-light-contrast);
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    color: var(--text-main);
+    font-size: 0.95rem;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23D56989' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 0.75rem center;
+    background-repeat: no-repeat;
+    background-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.sort-select:focus {
+    outline: none;
+    border-color: var(--accent-dark-contrast);
+    box-shadow: 0 0 0 3px rgba(213, 105, 137, 0.1);
+}
+
+/* ========== 18.4 BOTÓN APLICAR FILTROS ========== */
+.apply-filters-btn {
+    width: 100%;
+    background: var(--accent-dark-contrast);
+    color: white;
+    border: none;
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    box-shadow: 0 4px 15px rgba(213, 105, 137, 0.3);
+}
+
+.apply-filters-btn:hover {
+    background: #C75E7E;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(213, 105, 137, 0.4);
+}
+
+.apply-filters-btn:active {
+    transform: translateY(0);
+}
+
+.apply-filters-btn.loading {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.apply-filters-btn.loading::after {
+    content: '';
+    width: 16px;
+    height: 16px;
+    border: 2px solid transparent;
+    border-top: 2px solid white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* =========================================== */
+/* 19. MEDIA QUERIES - DISEÑO RESPONSIVE */
+/* =========================================== */
+
+/* ========== 19.1 TABLETS Y DISPOSITIVOS MEDIANOS ========== */
 @media (max-width: 768px) {
   .navbar {
     flex-direction: column;
@@ -1616,6 +2011,7 @@ dialog.modal::backdrop {
   
   .filters-sidebar {
     flex-basis: auto;
+    padding: 1.5rem;
   }
   
   .image-carousel {
@@ -1677,8 +2073,19 @@ dialog.modal::backdrop {
   .form-grid {
     grid-template-columns: 1fr;
   }
+  
+  .price-range-inputs {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .filter-group {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+  }
 }
 
+/* ========== 19.2 MÓVILES Y DISPOSITIVOS PEQUEÑOS ========== */
 @media (max-width: 480px) {
   .image-carousel {
     height: 180px;
@@ -1761,7 +2168,9 @@ dialog.modal::backdrop {
   }
 }
 
-/* Modales específicos */
+/* =========================================== */
+/* 20. MODALES ESPECÍFICOS */
+/* =========================================== */
 #loginModal .modal-content {
   display: block;
   min-height: 0;
@@ -1796,324 +2205,4 @@ dialog.modal::backdrop {
   display: block;
   max-width: 600px;
   margin: 0 auto;
-}
-/* Agregar esto a tu archivo tienda.css */
-.cart-counter {
-    background: var(--accent-secondary-pastel);
-    color: white;
-    border-radius: 50%;
-    padding: 0.25rem 0.5rem;
-    font-size: 0.8rem;
-    margin-left: 0.5rem;
-    min-width: 20px;
-    height: 20px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.flash-container {
-    position: fixed;
-    top: 100px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 1000;
-    width: 90%;
-    max-width: 500px;
-}
-
-.flash-message {
-    padding: 1rem 1.5rem;
-    border-radius: 8px;
-    margin-bottom: 1rem;
-    font-weight: 600;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    animation: slideDown 0.3s ease-out;
-}
-
-.flash-success {
-    background: var(--accent-highlight-green);
-    color: var(--text-dark);
-    border: 1px solid rgba(194, 220, 128, 0.8);
-}
-
-.flash-error {
-    background: var(--accent-secondary-pastel);
-    color: white;
-    border: 1px solid rgba(213, 105, 137, 0.8);
-}
-
-@keyframes slideDown {
-    from {
-        opacity: 0;
-        transform: translateX(-50%) translateY(-20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateX(-50%) translateY(0);
-    }
-}
-/* ====== ESTILOS PARA FILTROS Y ORDENAMIENTO ====== */
-
-.filters-sidebar {
-    background: var(--bg-glass);
-    border: var(--glass-border);
-    backdrop-filter: var(--glass-blur);
-    border-radius: 16px;
-    padding: 2rem;
-    box-shadow: var(--glass-shadow);
-    margin-bottom: 2rem;
-}
-
-.filters-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1.5rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid var(--accent-light-contrast);
-}
-
-.filters-header h3 {
-    font-family: var(--font-heading);
-    color: var(--accent-dark-contrast);
-    font-size: 1.5rem;
-    margin: 0;
-}
-
-.clear-filters {
-    background: transparent;
-    border: 1px solid var(--accent-light-contrast);
-    color: var(--text-muted);
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.clear-filters:hover {
-    background: var(--accent-light-contrast);
-    color: var(--text-dark);
-}
-
-.filter-group {
-    margin-bottom: 2rem;
-    padding-bottom: 1.5rem;
-    border-bottom: 1px solid rgba(213, 105, 137, 0.1);
-}
-
-.filter-group:last-child {
-    border-bottom: none;
-    margin-bottom: 0;
-}
-
-.filter-group h4 {
-    color: var(--accent-dark-contrast);
-    font-weight: 600;
-    font-size: 1.1rem;
-    margin-bottom: 1rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.filter-group h4 i {
-    font-size: 1rem;
-    opacity: 0.7;
-}
-
-/* Checkboxes personalizados */
-.filter-options {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-}
-
-.filter-option {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    cursor: pointer;
-    padding: 0.5rem;
-    border-radius: 8px;
-    transition: all 0.3s ease;
-}
-
-.filter-option:hover {
-    background: rgba(234, 156, 175, 0.1);
-}
-
-.filter-option input[type="checkbox"] {
-    width: 18px;
-    height: 18px;
-    border: 2px solid var(--accent-light-contrast);
-    border-radius: 4px;
-    appearance: none;
-    cursor: pointer;
-    position: relative;
-    transition: all 0.3s ease;
-}
-
-.filter-option input[type="checkbox"]:checked {
-    background: var(--accent-dark-contrast);
-    border-color: var(--accent-dark-contrast);
-}
-
-.filter-option input[type="checkbox"]:checked::after {
-    content: '✓';
-    position: absolute;
-    color: white;
-    font-size: 12px;
-    font-weight: bold;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
-
-.filter-option label {
-    color: var(--text-main);
-    cursor: pointer;
-    font-weight: 500;
-    flex: 1;
-}
-
-.filter-count {
-    background: var(--color-powdered-lilac-grey);
-    color: var(--text-muted);
-    padding: 0.25rem 0.5rem;
-    border-radius: 12px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    min-width: 24px;
-    text-align: center;
-}
-
-/* Rango de precios */
-.price-range-inputs {
-    display: flex;
-    gap: 1rem;
-    margin-bottom: 1rem;
-}
-
-.price-input-group {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-.price-input-group label {
-    color: var(--text-muted);
-    font-size: 0.9rem;
-    font-weight: 600;
-}
-
-.price-input {
-    width: 100%;
-    padding: 0.75rem;
-    border: 1px solid var(--accent-light-contrast);
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 8px;
-    color: var(--text-main);
-    font-size: 0.95rem;
-    transition: all 0.3s ease;
-}
-
-.price-input:focus {
-    outline: none;
-    border-color: var(--accent-dark-contrast);
-    box-shadow: 0 0 0 3px rgba(213, 105, 137, 0.1);
-}
-
-/* Select personalizado */
-.sort-select {
-    width: 100%;
-    padding: 0.75rem 1rem;
-    border: 1px solid var(--accent-light-contrast);
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 8px;
-    color: var(--text-main);
-    font-size: 0.95rem;
-    cursor: pointer;
-    appearance: none;
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23D56989' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
-    background-position: right 0.75rem center;
-    background-repeat: no-repeat;
-    background-size: 1rem;
-    transition: all 0.3s ease;
-}
-
-.sort-select:focus {
-    outline: none;
-    border-color: var(--accent-dark-contrast);
-    box-shadow: 0 0 0 3px rgba(213, 105, 137, 0.1);
-}
-
-/* Botón aplicar filtros */
-.apply-filters-btn {
-    width: 100%;
-    background: var(--accent-dark-contrast);
-    color: white;
-    border: none;
-    padding: 1rem 1.5rem;
-    border-radius: 12px;
-    font-weight: 700;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    margin-top: 1rem;
-    box-shadow: 0 4px 15px rgba(213, 105, 137, 0.3);
-}
-
-.apply-filters-btn:hover {
-    background: #C75E7E;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(213, 105, 137, 0.4);
-}
-
-.apply-filters-btn:active {
-    transform: translateY(0);
-}
-
-/* Estado de carga */
-.apply-filters-btn.loading {
-    opacity: 0.7;
-    cursor: not-allowed;
-}
-
-.apply-filters-btn.loading::after {
-    content: '';
-    width: 16px;
-    height: 16px;
-    border: 2px solid transparent;
-    border-top: 2px solid white;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-    .filters-sidebar {
-        padding: 1.5rem;
-    }
-    
-    .price-range-inputs {
-        flex-direction: column;
-        gap: 0.75rem;
-    }
-    
-    .filter-group {
-        margin-bottom: 1.5rem;
-        padding-bottom: 1rem;
-    }
 }

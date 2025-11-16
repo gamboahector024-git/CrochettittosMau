@@ -21,6 +21,8 @@ use App\Http\Controllers\Cliente\{
     PedidoController as ClientePedidoController
 };
 use App\Http\Controllers\PayPalController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cookie; // <-- AGREGAR ESTA LÍNEA
 
 /*
 |--------------------------------------------------------------------------
@@ -113,6 +115,14 @@ Route::middleware(['web', 'track-user-activity'])->group(function () {
     Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
 
+        // Toggle del tema (modo oscuro) - VERSIÓN CON COOKIES
+        Route::post('/theme/toggle', function (Request $request) {
+            $currentTheme = Cookie::get('theme', 'light');
+            $newTheme = $currentTheme === 'light' ? 'dark' : 'light';
+            
+            return back()->withCookie(cookie('theme', $newTheme, 60*24*30)); // 30 días
+        })->name('theme.toggle');
+
         // Usuarios
         Route::resource('usuarios', UsuarioController::class)->except(['show']);
         Route::delete('usuarios/bulk-delete', [UsuarioController::class, 'bulkDelete'])->name('usuarios.bulk-delete');
@@ -149,4 +159,3 @@ Route::middleware(['web', 'track-user-activity'])->group(function () {
         Route::resource('carrusel', CarruselController::class)->except(['show']);
     });
 });
-?>
