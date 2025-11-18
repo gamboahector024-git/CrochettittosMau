@@ -88,10 +88,10 @@
                         @foreach($peticiones->take(3) as $peticion) 
                             <div class="peticion-card">
                                 <div class="peticion-header">
-                                    <span class="peticion-id">Petición #{{ $peticion->id }}</span>
-                                    <span class="peticion-date">{{ $peticion->created_at->format('d/m/Y') }}</span>
-                                    <span class="peticion-status status-{{ strtolower($peticion->estado) }}">
-                                        {{ $peticion->estado }}
+                                    <span class="peticion-id">Petición #{{ $peticion->id_peticion }}</span>
+                                    <span class="peticion-date">{{ optional($peticion->created_at)->format('d/m/Y') }}</span>
+                                    <span class="peticion-status status-{{ strtolower(str_replace(' ', '-', $peticion->estado)) }}">
+                                        {{ ucfirst($peticion->estado) }}
                                     </span>
                                 </div>
                                 <div class="peticion-body">

@@ -25,18 +25,45 @@
         
         <div class="card">
             <h2 class="sub-header">Detalle de la petición</h2>
-            <div class="pedido-info-grid" style="grid-template-columns: 1fr;"> <div class="info-item">
+            <div class="pedido-info-grid">
+                <div class="info-item">
                     <strong>Título:</strong> {{ $peticion->titulo }}
                 </div>
+                
+                @if($peticion->categoria)
+                    <div class="info-item">
+                        <strong>Categoría:</strong> {{ $peticion->categoria->nombre }}
+                    </div>
+                @endif
+                <div class="info-item">
+                    <strong>Cantidad solicitada:</strong> {{ $peticion->cantidad }} {{ $peticion->cantidad == 1 ? 'unidad' : 'unidades' }}
+                </div>
+                
                 <div class="info-item info-item-full">
                     <strong>Descripción:</strong>
                     <p>{{ $peticion->descripcion }}</p>
                 </div>
                 
+                <!-- Dirección de entrega -->
+                @if($peticion->calle)
+                    <div class="info-item info-item-full direccion-entrega">
+                        <strong>Dirección de entrega:</strong>
+                        <p>
+                            {{ $peticion->calle }}, {{ $peticion->colonia }}<br>
+                            {{ $peticion->municipio_ciudad }}, {{ $peticion->estado_direccion }}<br>
+                            CP: {{ $peticion->codigo_postal }}
+                        </p>
+                    </div>
+                @endif
+                
                 @if($peticion->respuesta_admin)
-                    <div class="info-item info-item-full alert alert-secondary" style="margin: 0;">
+                    <div class="info-item info-item-full alert alert-secondary">
                         <strong>Respuesta actual:</strong>
                         <p>{{ $peticion->respuesta_admin }}</p>
+                        @if($peticion->precio_propuesto)
+                            <p><strong>Precio propuesto:</strong> ${{ number_format($peticion->precio_propuesto, 2) }}</p>
+                            <p><small>Enviado: {{ $peticion->fecha_respuesta_admin?->format('d/m/Y H:i') }}</small></p>
+                        @endif
                     </div>
                 @endif
 
@@ -68,37 +95,40 @@
             </div>
 
             <div class="form-container">
-                <h2 class="sub-header" style="margin-top: 0;">Actualizar Petición</h2>
+                <h2 class="sub-header" style="margin-top: 0;">Enviar Propuesta al Cliente</h2>
                 <form action="{{ route('admin.peticiones.responder', $peticion->id_peticion) }}" method="POST">
                     @csrf
                     <div class="form-group">
-                        <label for="respuesta">Respuesta</label>
-                        <textarea id="respuesta" name="respuesta_admin" rows="5" class="form-control" required>{{ old('respuesta_admin', $peticion->respuesta_admin) }}</textarea>
+                        <label for="respuesta">Respuesta / Descripción del trabajo</label>
+                        <textarea id="respuesta" name="respuesta_admin" rows="5" class="form-control" required placeholder="Describe el trabajo que realizarás, materiales, tiempo estimado, etc.">{{ old('respuesta_admin', $peticion->respuesta_admin) }}</textarea>
                     </div>
 
                     <div class="form-group">
-                        <label for="estado">Actualizar estado</label>
-                        <select id="estado" name="estado" class="form-control">
-                            <option value="en revisión" {{ old('estado', $peticion->estado) === 'en revisión' ? 'selected' : '' }}>En revisión</option>
-                            <option value="aceptada" {{ old('estado', $peticion->estado) === 'aceptada' ? 'selected' : '' }}>Aceptada</option>
-                            <option value="rechazada" {{ old('estado', $peticion->estado) === 'rechazada' ? 'selected' : '' }}>Rechazada</option>
-                        </select>
+                        <label for="precio">Precio propuesto (MXN) *</label>
+                        <input type="number" id="precio" name="precio_propuesto" step="0.01" min="0.01" class="form-control" value="{{ old('precio_propuesto', $peticion->precio_propuesto) }}" required placeholder="0.00">
+                    </div>
+
+                    <div class="nota-informativa">
+                        <strong>Nota:</strong> Al enviar la propuesta, el estado cambiará automáticamente a <strong>"Aceptada"</strong> y el cliente podrá decidir si acepta o rechaza.
                     </div>
 
                     <div class="form-actions">
                         <button type="submit" class="btn btn-primary">
-                            {{ $peticion->estado === 'pendiente' ? 'Enviar respuesta' : 'Actualizar respuesta' }}
+                            {{ $peticion->respuesta_admin ? 'Actualizar Propuesta' : 'Enviar Propuesta al Cliente' }}
                         </button>
                     </div>
                 </form>
 
-                @if($peticion->estado === 'aceptada')
-                    <form action="{{ route('admin.peticiones.completar', $peticion->id_peticion) }}" method="POST" style="margin-top:12px;" onsubmit="return confirm('¿Marcar como completada y generar pedido?');">
-                        @csrf
-                        <button type="submit" class="btn btn-success" style="width: 100%;">
-                            Completar y Generar Pedido
-                        </button>
-                    </form>
+                @if($peticion->estado === 'completada')
+                    <div class="alert alert-success">
+                        <strong>Petición completada</strong><br>
+                        <small>El cliente aceptó la propuesta y realizó el pago. El pedido fue generado automáticamente.</small>
+                    </div>
+                @elseif($peticion->estado === 'rechazada')
+                    <div class="alert alert-danger">
+                        <strong>Petición rechazada</strong><br>
+                        <small>El cliente rechazó la propuesta.</small>
+                    </div>
                 @endif
             </div>
         </div>

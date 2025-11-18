@@ -41,16 +41,6 @@ class UsuarioSeeder extends Seeder
                 'rol' => 'cliente',
                 'fecha_registro' => now()->subDays(30),
             ],
-            [
-                'nombre' => 'Administrador',
-                'apellido' => 'Sistema',
-                'email' => 'admin@crochettittos.com',
-                'password_hash' => bcrypt('AdminSecure123!'),
-                'direccion' => 'Oficinas Centrales',
-                'telefono' => '555-000-1111',
-                'rol' => 'admin',
-                'fecha_registro' => now()->subDays(120),
-            ],
         ];
 
         // Evitar duplicados por email

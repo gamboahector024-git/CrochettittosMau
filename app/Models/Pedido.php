@@ -14,6 +14,7 @@ class Pedido extends Model
     protected $fillable = [
         'id_usuario',
         'id_peticion',
+        'invoice_id',
         'total',
         'estado', 
         'calle',

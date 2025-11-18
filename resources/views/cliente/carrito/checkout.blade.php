@@ -88,17 +88,11 @@
                         </div>
                     </div>
 
-                    {{-- 
-                      ESTA ES LA OTRA PARTE QUE SE ARREGLA:
-                      Usamos .secondary-button y .paypal-button
-                    --}}
+                    {{-- Pago con PayPal (mismo estilo que en peticiones personalizadas) --}}
                     <div class="form-actions" style="margin-top: 1.5rem;">
-                        <button type="submit" class="secondary-button">
-                            Confirmar Pedido
-                        </button>
-                        <button id="btnPayPal" type="button" class="paypal-button">
-                            Pagar con PayPal
-                        </button>
+                        <div class="paypal-container">
+                            <div id="paypal-button-container"></div>
+                        </div>
                     </div>
 
                 </div>
@@ -110,71 +104,6 @@
 @endsection
 
 @push('scripts')
-{{-- 10. Movimos tu script de PayPal aquí para mantener el HTML limpio --}}
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    const btnPayPal = document.getElementById('btnPayPal');
-    if (btnPayPal) {
-        btnPayPal.addEventListener('click', async () => {
-            const tokenMeta = document.querySelector('meta[name="csrf-token"]');
-            const csrf = tokenMeta ? tokenMeta.getAttribute('content') : '';
-
-            // Validamos que los campos existan antes de leer 'value'
-            const calleEl = document.getElementById('calle');
-            const coloniaEl = document.getElementById('colonia');
-            const municipioEl = document.getElementById('municipio_ciudad');
-            const cpEl = document.getElementById('codigo_postal');
-            const estadoEl = document.getElementById('estado');
-
-            const calle = calleEl ? calleEl.value.trim() : '';
-            const colonia = coloniaEl ? coloniaEl.value.trim() : '';
-            const municipio_ciudad = municipioEl ? municipioEl.value.trim() : '';
-            const codigo_postal = cpEl ? cpEl.value.trim() : '';
-            const estado = estadoEl ? estadoEl.value.trim() : '';
-
-            if (!calle || !colonia || !municipio_ciudad || !codigo_postal || !estado) {
-                alert('Por favor completa la dirección antes de pagar con PayPal.');
-                return;
-            }
-
-            try {
-                // Usamos la ruta de tu script
-                const res = await fetch('/paypal/create-payment', { 
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json',
-                        'X-CSRF-TOKEN': csrf,
-                        'X-Requested-With': 'XMLHttpRequest'
-                    },
-                    body: JSON.stringify({
-                        calle,
-                        colonia,
-                        municipio_ciudad,
-                        codigo_postal,
-                        estado
-                    })
-                });
-
-                const data = await res.json();
-                if (!res.ok || data.error) {
-                    const message = (data && data.message) ? data.message : 'Error al crear la orden de PayPal';
-                    alert(message);
-                    return;
-                }
-
-                const approve = (data.links || []).find(l => l.rel === 'approve');
-                if (approve && approve.href) {
-                    window.location.href = approve.href;
-                } else {
-                    alert('No se encontró el enlace de aprobación de PayPal.');
-                }
-            } catch (err) {
-                console.error('Error de red PayPal:', err);
-                alert('Error de red creando la orden de PayPal.');
-            }
-        });
-    }
-});
-</script>
+<script src="https://www.paypal.com/sdk/js?client-id={{ config('paypal.client_id') }}&currency=MXN&disable-funding=card"></script>
+<script src="{{ asset('js/cliente/checkout.js') }}"></script>
 @endpush

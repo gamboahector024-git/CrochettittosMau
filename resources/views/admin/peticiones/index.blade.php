@@ -124,25 +124,5 @@
 @endsection
 
 @section('scripts')
-<script>
-function submitRowDelete(url) {
-    if (!confirm('¿Eliminar esta petición?')) return;
-    const form = document.createElement('form');
-    form.method = 'POST';
-    form.action = url;
-    const token = document.createElement('input');
-    token.type = 'hidden';
-    token.name = '_token';
-    token.value = '{{ csrf_token() }}';
-    const method = document.createElement('input');
-    method.type = 'hidden';
-    method.name = '_method';
-    method.value = 'DELETE';
-    form.appendChild(token);
-    form.appendChild(method);
-    document.body.appendChild(form);
-    form.submit();
-}
-</script>
-<script src="{{ asset('js/admin/peticiones.js') }}?v=1"></script>
+<script src="{{ asset('js/admin/peticiones.js') }}?v=2"></script>
 @endsection

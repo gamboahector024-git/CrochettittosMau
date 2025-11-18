@@ -53,17 +53,6 @@ class PeticionSeeder extends Seeder
                 'created_at' => now()->subDays(6),
                 'updated_at' => now()->subDays(4),
             ],
-            // Petición de Valeria
-            [
-                'id_usuario' => $valeriaId,
-                'titulo' => 'Juego de manteles tejidos',
-                'descripcion' => 'Quiero un juego de 6 manteles redondos tejidos a crochet, color beige con detalles en verde. Diámetro de 30cm cada uno.',
-                'imagen_referencia' => null,
-                'estado' => 'pendiente',
-                'respuesta_admin' => null,
-                'created_at' => now()->subDays(2),
-                'updated_at' => now()->subDays(2),
-            ],
         ];
 
         DB::table('peticiones')->insert($rows);

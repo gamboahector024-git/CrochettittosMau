@@ -15,20 +15,15 @@
 
     <section class="image-carousel">
         <div class="carousel-track">
-            
-            <div class="carousel-slide">
-                {{-- <img src="{{ asset('img/image_a2e101.jpg') }}" alt="Amigurumi Especial"> --}}
-                <img src="Captura de pantalla 2025-11-11 011338" alt="Imagen de Bienvenida 1">
-            </div>
-            
-            <div class="carousel-slide">
-                <img src="https://via.placeholder.com/1200x400/5B8CFF/FFFFFF?text=Novedades" alt="Novedades">
-            </div>
-            
-            <div class="carousel-slide">
-                <img src="https://via.placeholder.com/1200x400/AEE6ED/FFFFFF?text=Hecho+a+Mano" alt="Hecho a Mano">
-            </div>
-
+            @forelse($carruseles as $carrusel)
+                <div class="carousel-slide">
+                    <img src="{{ asset($carrusel->imagen) }}" alt="Imagen carrusel #{{ $loop->iteration }}">
+                </div>
+            @empty
+                <div class="carousel-slide">
+                    <img src="https://via.placeholder.com/1200x400/dedede/555?text=Sin+imagenes+disponibles" alt="Sin imágenes">
+                </div>
+            @endforelse
         </div>
         <div class="carousel-dots"></div>
     </section>
@@ -260,7 +255,7 @@
                 dots.push(dot);
             }
 
-            let intervalId = setInterval(autoSlide, 5000); 
+            intervalId = setInterval(autoSlide, 5000); 
 
             function resetAutoSlide() {
                 clearInterval(intervalId);

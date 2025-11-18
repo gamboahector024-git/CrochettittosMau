@@ -1,4 +1,0 @@
-# Permitir acceso a archivos estáticos
-<FilesMatch "\.(jpg|jpeg|png|gif|webp|svg)$">
-    Allow from all
-</FilesMatch>

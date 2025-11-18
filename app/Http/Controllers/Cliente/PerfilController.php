@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Usuario;
 use App\Models\Pedido;
+use App\Models\Peticion;
 use App\Http\Requests\UpdateProfileRequest; // Punto 4 - Form Request
 
 class PerfilController extends Controller
@@ -22,13 +23,18 @@ class PerfilController extends Controller
     {
         $usuario = $this->getAuthenticatedUser();
         $pedidos = Pedido::with('productos')
-                    ->where('id_usuario', $usuario->id)
+                    ->where('id_usuario', $usuario->id_usuario)
                     ->orderBy('created_at', 'desc')
                     ->get();
 
-        return view('cliente.perfil', [
+        $peticiones = Peticion::where('id_usuario', $usuario->id_usuario)
+                    ->orderBy('created_at', 'desc')
+                    ->get();
+
+        return view('cliente.perfil.index', [
             'usuario' => $usuario,
-            'pedidos' => $pedidos
+            'pedidos' => $pedidos,
+            'peticiones' => $peticiones
         ]);
     }
 
@@ -36,7 +42,7 @@ class PerfilController extends Controller
     public function edit()
     {
         $usuario = $this->getAuthenticatedUser();
-        return view('cliente.perfil-edit', compact('usuario'));
+        return view('cliente.perfil.edit', compact('usuario'));
     }
 
     // Actualizar perfil (usando Form Request)

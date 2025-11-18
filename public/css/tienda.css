@@ -558,56 +558,53 @@ select.form-input {
 /* =========================================== */
 .image-carousel {
   position: relative;
+  max-width: 1100px;
   width: 100%;
-  height: 400px;
-  margin: 0 auto 4rem auto;
+  margin: 40px auto 48px; /* separa del encabezado y de la barra de búsqueda */
   overflow: hidden;
-  border-radius: 16px;
-  box-shadow: var(--glass-shadow);
-  border: var(--glass-border);
-  backdrop-filter: var(--glass-blur);
+  border-radius: 20px;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+  background: #ffffff;
 }
 
 .carousel-track {
   display: flex;
-  width: fit-content;
-  height: 100%;
   transition: transform 0.8s ease-in-out;
+  will-change: transform;
 }
 
 .carousel-slide {
   min-width: 100%;
-  height: 100%;
+  background: #f7f7f7;
 }
 
 .carousel-slide img {
   width: 100%;
-  height: 100%;
+  height: 320px; /* más bajo para que no se vea tan grande */
   object-fit: cover;
-  display: block;
 }
 
 .carousel-dots {
   position: absolute;
-  bottom: 20px;
+  bottom: 14px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  gap: 10px;
+  gap: 8px;
 }
 
-.dot {
-  width: 12px;
-  height: 12px;
-  background-color: rgba(255, 255, 255, 0.7);
+.carousel-dots .dot {
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(0,0,0,0.15);
   cursor: pointer;
-  transition: all 0.3s ease;
-  border: 1px solid rgba(255, 255, 255, 0.9);
+  transition: all 0.25s ease;
 }
 
-.dot.active {
-  background-color: var(--accent-secondary-pastel);
+.carousel-dots .dot.active {
+  background: #ff6b81;
   transform: scale(1.2);
 }
 

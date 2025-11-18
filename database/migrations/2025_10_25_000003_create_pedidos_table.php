@@ -10,6 +10,7 @@ return new class extends Migration
     {
         Schema::create('pedidos', function (Blueprint $table) {
             $table->id('id_pedido');
+            $table->string('invoice_id', 100)->nullable()->unique();
             $table->foreignId('id_usuario')
                   ->constrained('usuarios', 'id_usuario')
                   ->cascadeOnDelete();

@@ -41,8 +41,28 @@ class PedidoController extends Controller
             abort(404); // O 403, dependiendo de la política de acceso.
         }
 
+        // Calcular número de pedido secuencial para el cliente (mismo criterio que en el índice)
+        $userId = Auth::id();
+
+        // Total de pedidos del usuario
+        $totalItems = Pedido::where('id_usuario', $userId)->count();
+
+        // Posición del pedido en orden descendente por fecha (y id como desempate)
+        $rankDesc = Pedido::where('id_usuario', $userId)
+            ->where(function ($q) use ($pedido) {
+                $q->where('fecha_pedido', '>', $pedido->fecha_pedido)
+                    ->orWhere(function ($q2) use ($pedido) {
+                        $q2->where('fecha_pedido', $pedido->fecha_pedido)
+                            ->where('id_pedido', '>', $pedido->id_pedido);
+                    });
+            })
+            ->count() + 1;
+
+        // Mismo número que se ve en el listado (1 = primer pedido creado)
+        $pedido->numero_pedido_cliente = $totalItems - $rankDesc + 1;
+
         // Cargar las relaciones para usarlas en la vista
-        $pedido->load('detalles.producto');
+        $pedido->load('detalles.producto', 'peticion');
 
         return view('cliente.pedidos.show', compact('pedido'));
     }

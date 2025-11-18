@@ -7,6 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 class Carrusel extends Model
 {
     protected $table = 'carruseles';
-    protected $fillable = ['imagen', 'orden'];
+    protected $fillable = ['imagen', 'orden', 'activo'];
     public $timestamps = false;
 }
