@@ -1,0 +1,148 @@
+/* =========================================
+   ESTILOS PREGUNTAS FRECUENTES (Rose & Green)
+   ========================================= */
+
+/* --- Contenedor Principal --- */
+.faq-section {
+    font-family: 'Poppins', sans-serif;
+    background-color: #F3EEF1; /* Fondo Lila Grisáceo */
+    min-height: 100vh;
+    padding: 60px 20px;
+    color: #4A3A44;
+}
+
+.faq-container-width {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* --- Título --- */
+.faq-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 3rem;
+    font-weight: 700;
+    text-align: center;
+    color: #D56989; /* Rosa Fuerte */
+    margin-bottom: 40px;
+}
+
+/* --- Categorías (Filtros) --- */
+.faq-categories {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 40px;
+}
+
+.faq-categories .btn {
+    background: transparent;
+    border: 1px solid #D56989;
+    color: #D56989;
+    padding: 8px 24px;
+    border-radius: 50px; /* Píldora */
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.faq-categories .btn:hover {
+    background-color: rgba(213, 105, 137, 0.1);
+    transform: translateY(-2px);
+}
+
+.faq-categories .btn.active {
+    background-color: #D56989;
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(213, 105, 137, 0.3);
+}
+
+/* --- Lista de Preguntas --- */
+.faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px; /* Espacio entre tarjetas */
+}
+
+/* --- Tarjeta Individual --- */
+.faq-item {
+    background-color: #fff;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.faq-item:hover {
+    border-color: rgba(213, 105, 137, 0.3);
+    box-shadow: 0 8px 25px rgba(213, 105, 137, 0.1);
+}
+
+/* --- Botón de la Pregunta --- */
+.faq-question {
+    width: 100%;
+    background: none;
+    border: none;
+    padding: 20px 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    text-align: left;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #4A3A44;
+    transition: color 0.3s ease;
+}
+
+/* Flecha */
+.faq-arrow {
+    font-size: 0.8rem;
+    width: 32px;
+    height: 32px;
+    background-color: #F3EEF1;
+    color: #D56989;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+    margin-left: 15px;
+}
+
+/* Estados "Abierto" (.open) */
+.faq-item.open .faq-question {
+    color: #D56989; /* Texto rosa al abrir */
+}
+
+.faq-item.open .faq-arrow {
+    background-color: #D56989;
+    color: #fff;
+    transform: rotate(180deg);
+}
+
+/* --- Respuesta (Acordeón) --- */
+.faq-answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease-in-out;
+    background-color: #fff;
+}
+
+/* Contenido interno para dar padding sin romper la animación */
+.faq-answer-content {
+    padding: 0 25px 25px 25px;
+    color: #7A6A74;
+    line-height: 1.6;
+    border-top: 1px solid #F3EEF1;
+    margin-top: 5px;
+    padding-top: 15px;
+}
+
+/* Clase para ocultar al filtrar */
+.faq-item.hidden {
+    display: none;
+}

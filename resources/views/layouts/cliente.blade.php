@@ -6,11 +6,13 @@
     <title>@yield('title', 'Crochettittos')</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     
-    <link rel="stylesheet" href="{{ asset('css/tienda.css') }}?v=15">
+    {{-- Estilos CSS --}}
+    <link rel="stylesheet" href="{{ asset('css/tienda.css') }}?v=16">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="{{ asset('css/loading.css') }}">
 </head>
 <body>
+    {{-- PANTALLA DE CARGA (LOADER) --}}
     <div id="loading-overlay">
         <div class="loading-logo">Crochettittos</div>
         <div class="crochet-spinner">
@@ -28,34 +30,39 @@
         <div class="craft-message">
             Cada producto está hecho a mano con amor y dedicación
         </div>
-        <!-- Mantener el spinner original como respaldo -->
         <div class="spinner"></div>
     </div>
 
+    {{-- HEADER / BARRA DE NAVEGACIÓN --}}
     <header class="site-header">
         <nav class="navbar">
             <h1><a href="{{ url('/') }}">Crochettittos</a></h1>
             
+            {{-- MENÚ DE NAVEGACIÓN MEJORADO --}}
             <div class="nav-auth">
-                <a href="{{ route('faq') }}" class="nav-button nav-button-pastel-secondary">
-                    <i class="fas fa-question-circle"></i> Preguntas Frecuentes
+                {{-- 1. Enlace de Ayuda (Visible para todos) --}}
+                <a href="{{ route('faq') }}" class="nav-link-minimal" title="Preguntas Frecuentes">
+                    <i class="fas fa-question-circle"></i> <span>Ayuda</span>
                 </a>
+
                 @auth
-                    {{-- Si el usuario HA iniciado sesión --}}
-                    <a href="{{ route('perfil.index') }}" class="welcome-user">
-                        <i class="fas fa-user"></i> {{ Auth::user()->nombre }}
+                    <div class="nav-divider"></div>
+
+                    {{-- 2. Navegación Secundaria (Enlaces limpios) --}}
+                    <a href="{{ route('cliente.pedidos.index') }}" class="nav-link-minimal" title="Mis Pedidos">
+                        <i class="fas fa-box"></i> <span>Pedidos</span>
                     </a>
-                    <a href="{{ route('cliente.pedidos.index') }}" class="nav-button nav-button-pastel-secondary">
-                        <i class="fas fa-box"></i> Mis Pedidos
+                    <a href="{{ route('cliente.peticiones.index') }}" class="nav-link-minimal" title="Mis Peticiones">
+                        <i class="fas fa-inbox"></i> <span>Peticiones</span>
                     </a>
-                    <a href="{{ route('cliente.peticiones.index') }}" class="nav-button nav-button-pastel-secondary">
-                        <i class="fas fa-inbox"></i> Mis Peticiones
+
+                    {{-- 3. Acciones Principales (Botones con color) --}}
+                    <a href="#" id="newPeticionButton" class="nav-action-btn btn-rose">
+                        <i class="fas fa-plus"></i> Nueva Petición
                     </a>
-                    <a href="#" id="newPeticionButton" class="nav-button nav-button-pastel-primary">
-                        <i class="fas fa-envelope-open-text"></i> Nueva Petición
-                    </a>
-                    <a href="{{ route('carrito.index') }}" class="nav-button nav-button-pastel-primary">
-                        <i class="fas fa-shopping-cart"></i> Carrito
+
+                    <a href="{{ route('carrito.index') }}" class="nav-action-btn btn-green relative">
+                        <i class="fas fa-shopping-cart"></i>
                         @php
                             $carritoCount = 0;
                             if (Auth::check()) {
@@ -64,29 +71,37 @@
                             }
                         @endphp
                         @if($carritoCount > 0)
-                            <span class="cart-counter">{{ $carritoCount }}</span>
+                            <span class="cart-badge">{{ $carritoCount }}</span>
                         @endif
                     </a>
-                    <a href="{{ route('logout') }}" class="nav-button nav-button-pastel-secondary">
-                        <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
-                    </a>
+
+                    {{-- 4. Menú de Usuario (Avatar) --}}
+                    <div class="user-menu-group">
+                        <a href="{{ route('perfil.index') }}" class="user-profile-link">
+                            <div class="user-avatar">
+                                {{ substr(Auth::user()->nombre, 0, 1) }}
+                            </div>
+                            <span class="user-name">{{ Auth::user()->nombre }}</span>
+                        </a>
+                        
+                        <a href="{{ route('logout') }}" class="logout-icon-btn" title="Cerrar Sesión">
+                            <i class="fas fa-sign-out-alt"></i>
+                        </a>
+                    </div>
 
                 @else
-                    {{-- Si el usuario NO ha iniciado sesión (es invitado) --}}
-                    <a href="{{ route('login.form') }}" class="nav-button nav-button-pastel-secondary">
-                        <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
-                    </a>
-                    <a href="{{ route('registro.form') }}" class="nav-button nav-button-pastel-primary">
-                        <i class="fas fa-user-plus"></i> Registrarse
-                    </a>
+                    {{-- Versión Invitado --}}
+                    <a href="{{ route('login.form') }}" class="nav-link-minimal">Iniciar Sesión</a>
+                    <a href="{{ route('registro.form') }}" class="nav-action-btn btn-rose">Registrarse</a>
                 
                 @endauth
             </div>
         </nav>
     </header>
 
+    {{-- CONTENIDO PRINCIPAL --}}
     <main>
-        {{-- Contenedor para mensajes flash --}}
+        {{-- Mensajes Flash --}}
         <div class="flash-container">
             @if(session('success'))
                 <div class="flash-message flash-success" role="alert">
@@ -103,21 +118,36 @@
         @yield('content')
     </main>
 
+    {{-- FOOTER COMPACTO CON OLA --}}
     <footer class="site-footer">
-        <p>&copy; {{ date('Y') }} Crochettittos. Todos los derechos reservados.</p>
-        <div class="social-links">
-            <a href="https://www.facebook.com/Crochettittos" target="_blank" rel="noopener noreferrer" aria-label="Visita nuestra página de Facebook">
-                <i class="fab fa-facebook-f"></i>
-            </a>
-            <a href="https://www.instagram.com/Crochettittos" target="_blank" rel="noopener noreferrer" aria-label="Visita nuestra página de Instagram">
-                <i class="fab fa-instagram"></i>
-            </a>
+        <div class="footer-wave">
+            <svg viewBox="0 0 1440 320" xmlns="http://www.w3.org/2000/svg">
+                <path fill="#F3EEF1" fill-opacity="1" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,112C672,96,768,96,864,112C960,128,1056,160,1152,160C1248,160,1344,128,1392,112L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+            </svg>
+        </div>
+    
+        <div class="footer-content">
+            <div class="footer-social">
+                <h3 class="social-title">¡Síguenos en nuestras redes! 🧶</h3>
+                <div class="social-icons">
+                    <a href="https://www.facebook.com/Crochettittos" target="_blank" rel="noopener noreferrer" class="social-btn facebook" aria-label="Facebook">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="https://www.instagram.com/Crochettittos" target="_blank" rel="noopener noreferrer" class="social-btn instagram" aria-label="Instagram">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                </div>
+            </div>
+    
+            <div class="footer-copyright">
+                <p>&copy; {{ date('Y') }} <strong>Crochettittos</strong>. Hecho con mucho ❤️ en Chiapas.</p>
+            </div>
         </div>
     </footer>
 
     {{-- MODALES --}}
     
-    {{-- Modal de Producto --}}
+    {{-- 1. Modal de Producto --}}
     <div id="productModal" class="modal">
         <div class="modal-content">
             <span class="close-button">&times;</span>
@@ -157,7 +187,7 @@
         </div>
     </div>
 
-    {{-- Modal de Login --}}
+    {{-- 2. Modal de Login --}}
     <div id="loginModal" class="modal">
         <div class="modal-content">
             <span class="close-button" onclick="document.getElementById('loginModal').style.display='none'">&times;</span>
@@ -170,7 +200,7 @@
         </div>
     </div>
 
-    {{-- Modal de Petición --}}
+    {{-- 3. Modal de Petición --}}
     <div id="peticionModal" class="modal" style="display:none;">
         <div class="modal-content" style="display: block; max-width: 700px; max-height: 90vh; overflow-y: auto;">
             <button class="close-modal" id="closePeticionModal">&times;</button>
@@ -180,7 +210,6 @@
                     @csrf
                     
                     <h3>Detalles del Producto</h3>
-                    
                     <div class="form-group">
                         <label for="titulo">Título *</label>
                         <input id="titulo" name="titulo" type="text" class="form-input" required maxlength="255" placeholder="Ej: Amigurumi personalizado de mi mascota">
@@ -199,7 +228,6 @@
                                 @endforeach
                             </select>
                         </div>
-
                         <div class="form-group">
                             <label for="cantidad">Cantidad *</label>
                             <input id="cantidad" name="cantidad" type="number" class="form-input" required min="1" max="100" value="1" placeholder="1">
@@ -217,7 +245,6 @@
                     </div>
 
                     <h3>Dirección de Entrega</h3>
-                    
                     <div class="form-group">
                         <label for="calle">Calle y número *</label>
                         <input id="calle" name="calle" type="text" class="form-input" required maxlength="255" placeholder="Ej: Av. Juárez 123">
@@ -228,7 +255,6 @@
                             <label for="colonia">Colonia *</label>
                             <input id="colonia" name="colonia" type="text" class="form-input" required maxlength="255" placeholder="Ej: Centro">
                         </div>
-                        
                         <div class="form-group">
                             <label for="codigo_postal">Código Postal *</label>
                             <input id="codigo_postal" name="codigo_postal" type="text" class="form-input" required maxlength="10" placeholder="Ej: 44100">
@@ -240,7 +266,6 @@
                             <label for="municipio_ciudad">Municipio/Ciudad *</label>
                             <input id="municipio_ciudad" name="municipio_ciudad" type="text" class="form-input" required maxlength="255" placeholder="Ej: Guadalajara">
                         </div>
-                        
                         <div class="form-group">
                             <label for="estado_direccion">Estado *</label>
                             <input id="estado_direccion" name="estado_direccion" type="text" class="form-input" required maxlength="100" placeholder="Ej: Jalisco">
@@ -256,6 +281,7 @@
         </div>
     </div>
 
+    {{-- SCRIPTS --}}
     <script src="{{ asset('js/main.js') }}?v=15"></script>
     <script src="{{ asset('js/cliente/peticion-modal.js') }}"></script>
 

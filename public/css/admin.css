@@ -3,7 +3,7 @@
 /* 1. Fuentes */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Playfair+Display:wght@700&display=swap');
 
-/* ====== 2. Paleta de Colores (NUEVA PALETA COMPLETA) ====== */
+/* ====== 2. Paleta de Colores (SOLO MODO CLARO) ====== */
 :root {
   /* Fuentes */
   --font-heading: 'Playfair Display', serif;
@@ -17,11 +17,17 @@
 
   /* Mapeo a las variables del CSS */
   --bg-main: linear-gradient(135deg, var(--color-powdered-lilac-grey), #EAE6F9); 
-  --bg-card: rgba(255, 255, 255, 0.4); /* Fondo de tarjeta Glassmorphism */
+  --bg-card: rgba(255, 255, 255, 0.85); /* Fondo de tarjeta Glassmorphism */
+  --bg-sidebar: rgba(255, 255, 255, 0.8);
+  
   --border: rgba(255, 255, 255, 0.6); /* Borde de tarjeta Glassmorphism */
+  --border-light: rgba(213, 105, 137, 0.2);
+
   --text-light: #4A3A44; /* Texto principal (oscuro) */
+  --text-main: #5D4A56;
   --text-muted: #7A6A74; /* Texto secundario (más suave) */
   --text-dark: #4A3A44; /* Texto más oscuro */
+  
   --accent: var(--color-dusty-orchid); /* Acento principal (Rosa Fuerte) */
   --radius: 16px;
   
@@ -29,7 +35,7 @@
   --accent-green: var(--color-sorbet-stem);
   --accent-pink-soft: var(--color-petal-glaze);
 
-  /* Glassmorphism (del nuevo tema) */
+  /* Glassmorphism */
   --glass-blur: blur(15px);
   --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), 0 0 15px rgba(255, 255, 255, 0.3);
 }
@@ -39,6 +45,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
 body {
@@ -100,7 +107,6 @@ body {
   margin-left: 270px; /* 250px de sidebar + 20px de espacio */
   padding: 50px 60px;
   width: calc(100% - 270px);
-  /* background: (eliminado, usa el del body) */
   min-height: 100vh;
 }
 
@@ -138,7 +144,6 @@ body {
   border-color: var(--accent);
 }
 
-/* Efecto de brillo eliminado */
 .stat-card::after {
   display: none; 
 }
@@ -176,7 +181,7 @@ body {
 .yellow { border-left: 4px solid #FDFD96; } /* Amarillo Pastel */
 .red { border-left: 4px solid var(--accent); } /* Rosa Fuerte (reemplaza rojo) */
 
-/* ===== SECCIÓN DE GRÁFICO ===== */
+/* ===== SECCIÓN DE GRÁFICO Y CONTENEDORES ===== */
 .chart-container,
 .card, /* Clase genérica para tablas */
 .form-container { /* Clase genérica para formularios */
@@ -205,18 +210,6 @@ body {
   justify-content: center;
   color: var(--text-muted);
   font-weight: 500;
-}
-
-/* ===== RESPONSIVO (900px) ===== */
-@media (max-width: 900px) {
-  .main-content {
-    margin-left: 0;
-    padding: 30px 20px;
-    width: 100%;
-  }
-  .sidebar {
-    display: none;
-  }
 }
 
 /* ===== TABLAS (Sección 8) ===== */
@@ -378,7 +371,7 @@ table a:hover {
   gap: 12px;
 }
 
-/* Estilos para el Checkbox Minimalista (NUEVO) */
+/* Estilos para el Checkbox Minimalista */
 .form-check-minimal {
   display: flex;
   align-items: center;
@@ -438,13 +431,13 @@ table a:hover {
 .status-badge.status-entregado { background-color: var(--accent-green); } /* Verde Suave */
 .status-badge.status-cancelado { background-color: #ef4444; color: #fff; } /* Rojo */
 
-/* Estados de Peticiones (NUEVO) */
+/* Estados de Peticiones */
 .status-badge.status-en-revisión { background-color: var(--accent-pink-soft); }
 .status-badge.status-aceptada { background-color: var(--accent-green); }
 .status-badge.status-rechazada { background-color: #ef4444; color: #fff; }
 .status-badge.status-completada { background-color: var(--accent); color: #fff; }
 
-/* Estados de Promoción (NUEVO) */
+/* Estados de Promoción */
 .status-badge.status-activa { 
   background-color: var(--accent-green); 
   color: var(--text-dark); 
@@ -548,72 +541,13 @@ table a:hover {
   margin-right: 10px;
 }
 
-/* ====== 13. Responsive (Sección 13) ===== */
-@media (max-width: 900px) {
-  .main-content {
-    margin-left: 0;
-    padding: 30px 20px;
-    width: 100%;
-  }
-  .sidebar {
-    display: none;
-  }
-}
-
-@media (max-width: 480px) {
-    .main-content {
-        padding: 20px 15px;
-    }
-    .dashboard-grid {
-        grid-template-columns: 1fr;
-    }
-    .filter-form {
-        flex-direction: column;
-        gap: 15px;
-    }
-    .filter-form .form-group {
-        width: 100%;
-        margin-bottom: 0;
-    }
-    .filter-actions {
-        width: 100%;
-        flex-direction: column;
-    }
-    .filter-actions .btn {
-        width: 100%;
-        text-align: center;
-    }
-    .actions-header {
-        flex-direction: column;
-        align-items: stretch;
-    }
-    .search-form {
-        flex-direction: column;
-        align-items: stretch;
-    }
-    .search-form .form-control, .search-form select {
-        width: 100%;
-        min-width: 0;
-    }
-    .pedido-info-grid {
-        grid-template-columns: 1fr;
-    }
-}
-/* ====== 14. Estilos Dashboard (Bajo Stock) ====== */
-
-/* Esto reemplaza tu <style> en línea.
-  Es el grid para las mini-tarjetas de productos.
-*/
+/* ====== 13. Estilos Dashboard (Bajo Stock) ====== */
 .low-stock-grid {
   display: grid;
-  /* Ajusta minmax para que quepan más o menos tarjetas por fila */
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 1rem;
 }
 
-/* Esto reemplaza tu <style> en línea y lo hace "Glassmorphism"
-  usando las variables de tu propio CSS.
-*/
 .low-stock-card {
   background: var(--bg-card);
   border: 1px solid var(--border);
@@ -640,104 +574,61 @@ table a:hover {
 .low-stock-card .card-body {
   color: var(--text-muted);
   font-size: 0.9rem;
-  flex-grow: 1; /* Empuja el botón hacia abajo */
+  flex-grow: 1; 
 }
 
 .low-stock-card .card-actions {
   margin-top: 12px;
 }
-/* ====== SISTEMA DE MODO OSCURO ====== */
 
-/* Variables para modo claro (tus variables actuales) */
-:root {
-    --color-sorbet-stem: #C2DC80;
-    --color-petal-glaze: #EA9CAF;
-    --color-dusty-orchid: #D56989;
-    --color-powdered-lilac-grey: #F3EEF1;
-    
-    --bg-main: linear-gradient(135deg, var(--color-powdered-lilac-grey), #EAE6F9);
-    --bg-card: rgba(255, 255, 255, 0.85);
-    --bg-sidebar: rgba(255, 255, 255, 0.8);
-    
-    --text-main: #5D4A56;
-    --text-dark: #4A3A44;
-    --text-muted: #7A6A74;
-    --text-light: #FFFFFF;
-    
-    --border: rgba(255, 255, 255, 0.6);
-    --border-light: rgba(213, 105, 137, 0.2);
-    
-    --accent: var(--color-dusty-orchid);
-    --accent-green: var(--color-sorbet-stem);
-    --accent-pink-soft: var(--color-petal-glaze);
-    
-    --glass-blur: blur(20px);
-    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), 0 0 15px rgba(255, 255, 255, 0.3);
+/* ====== 14. Responsive ====== */
+@media (max-width: 900px) {
+  .main-content {
+    margin-left: 0;
+    padding: 30px 20px;
+    width: 100%;
+  }
+  .sidebar {
+    display: none;
+  }
 }
 
-/* Variables para modo oscuro */
-[data-theme="dark"] {
-    --bg-main: linear-gradient(135deg, #2D1B2E, #3A2A3B);
-    --bg-card: rgba(45, 27, 46, 0.9);
-    --bg-sidebar: rgba(45, 27, 46, 0.95);
-    
-    --text-main: #E8DEE9;
-    --text-dark: #FFFFFF;
-    --text-muted: #B8AAB9;
-    
-    --border: rgba(255, 255, 255, 0.1);
-    --border-light: rgba(234, 156, 175, 0.3);
-    
-    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 15px rgba(255, 255, 255, 0.1);
+@media (max-width: 480px) {
+  .main-content {
+    padding: 20px 15px;
+  }
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+  .filter-form {
+    flex-direction: column;
+    gap: 15px;
+  }
+  .filter-form .form-group {
+    width: 100%;
+    margin-bottom: 0;
+  }
+  .filter-actions {
+    width: 100%;
+    flex-direction: column;
+  }
+  .filter-actions .btn {
+    width: 100%;
+    text-align: center;
+  }
+  .actions-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .search-form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .search-form .form-control, .search-form select {
+    width: 100%;
+    min-width: 0;
+  }
+  .pedido-info-grid {
+    grid-template-columns: 1fr;
+  }
 }
-
-/* Transiciones suaves */
-* {
-    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
-}
-
-/* Estilos del toggle */
-.theme-toggle {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 1000;
-}
-
-.toggle-form {
-    margin: 0;
-    padding: 0;
-}
-
-.toggle-btn {
-    background: var(--bg-card);
-    backdrop-filter: var(--glass-blur);
-    border: 1px solid var(--border);
-    border-radius: 50px;
-    padding: 10px 15px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    box-shadow: var(--glass-shadow);
-    color: var(--text-main);
-    font-weight: 600;
-    font-family: inherit;
-    font-size: 0.9rem;
-    transition: all 0.3s ease;
-}
-
-.toggle-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-}
-
-.toggle-icon {
-    font-size: 1.1rem;
-}
-
-.sun-icon { display: none; }
-.moon-icon { display: inline; }
-
-[data-theme="dark"] .sun-icon { display: inline; }
-[data-theme="dark"] .moon-icon { display: none; }
