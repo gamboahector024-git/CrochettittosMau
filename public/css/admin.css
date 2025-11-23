@@ -1,66 +1,61 @@
-/* ====== css/admin.css (Diseño "Rose & Green Pastel Glassmorphism") ====== */
+/* ====== css/admin.css (Diseño "Rose & Green Pastel Glassmorphism" - Ordenado) ====== */
 
 /* 1. Fuentes */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Playfair+Display:wght@700&display=swap');
 
-/* ====== 2. Paleta de Colores (SOLO MODO CLARO) ====== */
+/* ====== 2. VARIABLES Y CONFIGURACIÓN GLOBAL ====== */
 :root {
   /* Fuentes */
   --font-heading: 'Playfair Display', serif;
   --font-body: 'Poppins', sans-serif;
 
-  /* Colores de tu paleta */
-  --color-sorbet-stem: #C2DC80; /* Verde Suave */
-  --color-petal-glaze: #EA9CAF; /* Rosa Suave */
-  --color-dusty-orchid: #D56989; /* Rosa Fuerte */
-  --color-powdered-lilac-grey: #F3EEF1; /* Fondo muy claro */
+  /* Paleta de Colores */
+  --color-sorbet-stem: #C2DC80;
+  --color-petal-glaze: #EA9CAF;
+  --color-dusty-orchid: #D56989;
+  --color-powdered-lilac-grey: #F3EEF1;
 
-  /* Mapeo a las variables del CSS */
-  --bg-main: linear-gradient(135deg, var(--color-powdered-lilac-grey), #EAE6F9); 
-  --bg-card: rgba(255, 255, 255, 0.85); /* Fondo de tarjeta Glassmorphism */
-  --bg-sidebar: rgba(255, 255, 255, 0.8);
-  
-  --border: rgba(255, 255, 255, 0.6); /* Borde de tarjeta Glassmorphism */
-  --border-light: rgba(213, 105, 137, 0.2);
-
-  --text-light: #4A3A44; /* Texto principal (oscuro) */
-  --text-main: #5D4A56;
-  --text-muted: #7A6A74; /* Texto secundario (más suave) */
-  --text-dark: #4A3A44; /* Texto más oscuro */
-  
-  --accent: var(--color-dusty-orchid); /* Acento principal (Rosa Fuerte) */
+  /* Sistema de Diseño */
+  --bg-main: linear-gradient(135deg, var(--color-powdered-lilac-grey), #EAE6F9);
+  --bg-card: rgba(255, 255, 255, 0.4);
+  --border: rgba(255, 255, 255, 0.6);
+  --text-light: #4A3A44;
+  --text-muted: #7A6A74;
+  --text-dark: #4A3A44;
+  --accent: var(--color-dusty-orchid);
   --radius: 16px;
   
-  /* Colores de acento adicionales */
+  /* Colores de Acento */
   --accent-green: var(--color-sorbet-stem);
   --accent-pink-soft: var(--color-petal-glaze);
 
-  /* Glassmorphism */
+  /* Efectos Glassmorphism */
   --glass-blur: blur(15px);
   --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), 0 0 15px rgba(255, 255, 255, 0.3);
 }
 
-/* ====== 3. Reset y Base ====== */
+/* ====== 3. RESET Y BASE ====== */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
 body {
-  font-family: var(--font-body); /* Usar Poppins */
-  background: var(--bg-main); /* Fondo claro */
-  color: var(--text-light); /* Texto oscuro */
+  font-family: var(--font-body);
+  background: var(--bg-main);
+  color: var(--text-light);
   display: flex;
   min-height: 100vh;
 }
 
-/* ===== SIDEBAR ===== */
+/* ====== 4. LAYOUT PRINCIPAL ====== */
+
+/* SIDEBAR */
 .sidebar {
   width: 250px;
-  background: var(--bg-card); /* Glassmorphism claro */
-  backdrop-filter: var(--glass-blur); /* Desenfoque */
+  background: var(--bg-card);
+  backdrop-filter: var(--glass-blur);
   border-right: 1px solid var(--border);
   padding: 25px 20px;
   display: flex;
@@ -68,17 +63,17 @@ body {
   position: fixed;
   height: 100vh;
   transition: all 0.3s ease;
-  box-shadow: var(--glass-shadow); /* Sombra suave */
+  box-shadow: var(--glass-shadow);
 }
 
 .sidebar h2 {
-  font-family: var(--font-heading); /* Fuente de encabezado */
+  font-family: var(--font-heading);
   font-weight: 600;
-  font-size: 1.6rem; /* Un poco más grande */
+  font-size: 1.6rem;
   margin-bottom: 30px;
   text-align: center;
   letter-spacing: 0.5px;
-  color: var(--accent); /* Rosa Fuerte */
+  color: var(--accent);
 }
 
 .sidebar a {
@@ -91,81 +86,113 @@ body {
   align-items: center;
   gap: 8px;
   transition: all 0.25s ease;
-  font-weight: 600; /* Más legible */
+  font-weight: 600;
 }
 
 .sidebar a:hover,
 .sidebar a.active {
-  background: var(--accent); /* Rosa Fuerte */
-  color: #fff; /* Texto blanco para contraste */
+  background: var(--accent);
+  color: #fff;
   transform: translateX(5px);
-  box-shadow: 0 4px 15px rgba(213, 105, 137, 0.4); /* Sombra Rosa */
+  box-shadow: 0 4px 15px rgba(213, 105, 137, 0.4);
 }
 
-/* ===== CONTENIDO PRINCIPAL ===== */
+/* Botón Cerrar Sesión en Sidebar */
+.sidebar-footer {
+  margin-top: auto;
+  width: 100%;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.btn-logout {
+  width: 100%;
+  background: transparent;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  color: var(--text-muted);
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+  text-align: left;
+}
+
+.btn-logout:hover {
+  background-color: #fee2e2;
+  color: #b91c1c;
+  transform: translateX(5px);
+  box-shadow: 0 4px 10px rgba(254, 226, 226, 0.5);
+}
+
+/* CONTENIDO PRINCIPAL */
 .main-content {
-  margin-left: 270px; /* 250px de sidebar + 20px de espacio */
+  margin-left: 270px;
   padding: 50px 60px;
   width: calc(100% - 270px);
   min-height: 100vh;
 }
 
 .main-content h1 {
-  font-family: var(--font-heading); /* Fuente de encabezado */
-  font-size: 2.2rem; /* Más grande */
+  font-family: var(--font-heading);
+  font-size: 2.2rem;
   font-weight: 600;
   margin-bottom: 40px;
   letter-spacing: -0.5px;
-  color: var(--accent); /* Rosa Fuerte */
+  color: var(--accent);
 }
 
-/* ===== TARJETAS ===== */
+/* ====== 5. COMPONENTES DE CARDS ====== */
+
+/* Grid del Dashboard */
 .dashboard-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 28px;
 }
 
+/* Tarjetas de Estadísticas */
 .stat-card {
-  background: var(--bg-card); /* Glassmorphism claro */
+  background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 28px;
   position: relative;
   overflow: hidden;
   transition: all 0.35s ease;
-  box-shadow: var(--glass-shadow); /* Sombra suave */
-  backdrop-filter: var(--glass-blur); /* Desenfoque */
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: var(--glass-blur);
 }
 
 .stat-card:hover {
   transform: translateY(-6px);
-  box-shadow: 0 8px 35px rgba(0, 0, 0, 0.15); /* Sombra más pronunciada */
+  box-shadow: 0 8px 35px rgba(0, 0, 0, 0.15);
   border-color: var(--accent);
-}
-
-.stat-card::after {
-  display: none; 
 }
 
 .card-icon {
   font-size: 2rem;
   margin-bottom: 15px;
-  color: var(--accent); /* Icono Rosa Fuerte */
+  color: var(--accent);
 }
 
 .stat-card h3 {
   font-size: 1.1rem;
   font-weight: 500;
-  color: var(--text-light); /* Texto oscuro */
+  color: var(--text-light);
   margin-bottom: 6px;
 }
 
 .value {
-  font-family: var(--font-heading); /* Fuente de encabezado */
+  font-family: var(--font-heading);
   font-size: 2.2rem;
   font-weight: 700;
-  color: var(--accent); /* Valor Rosa Fuerte */
+  color: var(--accent);
   margin-bottom: 4px;
 }
 
@@ -174,17 +201,17 @@ body {
   color: var(--text-muted);
 }
 
-/* ===== COLORES DE BORDES ===== */
-.blue { border-left: 4px solid var(--accent-pink-soft); } /* Rosa Suave */
-.green { border-left: 4px solid var(--accent-green); } /* Verde Suave */
-.purple { border-left: 4px solid var(--accent); } /* Rosa Fuerte */
-.yellow { border-left: 4px solid #FDFD96; } /* Amarillo Pastel */
-.red { border-left: 4px solid var(--accent); } /* Rosa Fuerte (reemplaza rojo) */
+/* Colores de Bordes para Tarjetas */
+.blue { border-left: 4px solid var(--accent-pink-soft); }
+.green { border-left: 4px solid var(--accent-green); }
+.purple { border-left: 4px solid var(--accent); }
+.yellow { border-left: 4px solid #FDFD96; }
+.red { border-left: 4px solid var(--accent); }
 
-/* ===== SECCIÓN DE GRÁFICO Y CONTENEDORES ===== */
+/* Contenedores de Sección */
 .chart-container,
-.card, /* Clase genérica para tablas */
-.form-container { /* Clase genérica para formularios */
+.card,
+.form-container {
   margin-top: 25px;
   background: var(--bg-card);
   border-radius: var(--radius);
@@ -197,14 +224,14 @@ body {
 .chart-container h2 {
   font-size: 1.3rem;
   font-weight: 500;
-  color: var(--text-light); /* Texto oscuro */
+  color: var(--text-light);
   margin-bottom: 20px;
 }
 
 .chart-placeholder {
   height: 240px;
   border-radius: 12px;
-  background: rgba(0, 0, 0, 0.05); /* Gris claro */
+  background: rgba(0, 0, 0, 0.05);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -212,17 +239,19 @@ body {
   font-weight: 500;
 }
 
-/* ===== TABLAS (Sección 8) ===== */
+/* ====== 6. COMPONENTES DE TABLAS ====== */
 table {
   width: 100%;
   border-collapse: collapse;
 }
+
 table th, table td {
   padding: 16px;
   text-align: left;
   border-bottom: 1px solid var(--border);
   color: var(--text-light);
 }
+
 table th {
   font-weight: 600;
   font-size: 0.8rem;
@@ -230,23 +259,28 @@ table th {
   color: var(--text-muted);
   letter-spacing: 0.05em;
 }
+
 table tr:last-child td {
   border-bottom: none;
 }
+
 table a {
   color: var(--accent);
   text-decoration: none;
   font-weight: 600;
 }
+
 table a:hover {
-    text-decoration: underline;
+  text-decoration: underline;
 }
+
 .empty-row {
   text-align: center;
   color: var(--text-muted);
   padding: 40px;
   font-style: italic;
 }
+
 .cliente-cell small {
   display: block;
   color: var(--text-muted);
@@ -254,7 +288,118 @@ table a:hover {
   margin-top: 2px;
 }
 
-/* ===== BOTONES (Sección 9) ===== */
+/* ====== 7. COMPONENTES DE FORMULARIOS ====== */
+.form-control, select[name="categoria"], select[name="rol"] {
+  background: rgba(255, 255, 255, 0.3);
+  border: 1px solid var(--border);
+  color: var(--text-light);
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  width: 100%;
+}
+
+.form-control:focus, select[name="categoria"]:focus, select[name="rol"]:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(213, 105, 137, 0.3);
+}
+
+.form-control option {
+  background: #fff;
+  color: #111827;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: var(--text-light);
+}
+
+.form-error {
+  color: #ef4444;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-top: 8px;
+}
+
+.form-group label small {
+  font-weight: 400;
+  color: var(--text-muted);
+  font-style: italic;
+  margin-left: 6px;
+}
+
+.form-control[rows="3"] {
+  min-height: 80px;
+  resize: vertical;
+}
+
+.form-actions {
+  margin-top: 25px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.form-image-preview {
+  max-width: 180px;
+  max-height: 180px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  margin-top: 15px;
+}
+
+/* Formularios de Filtro */
+.filter-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  align-items: flex-end;
+}
+
+.filter-form .form-group {
+  flex-grow: 1;
+  min-width: 180px;
+  margin-bottom: 0;
+}
+
+.filter-actions {
+  display: flex;
+  gap: 12px;
+}
+
+/* Checkbox Minimalista */
+.form-check-minimal {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.3);
+  border: 1px solid var(--border);
+  padding: 12px 14px;
+  border-radius: 10px;
+}
+
+.form-check-minimal input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.form-check-minimal label {
+  margin-bottom: 0;
+  font-weight: 500;
+  color: var(--text-light);
+}
+
+/* ====== 8. COMPONENTES DE BOTONES ====== */
 .btn {
   padding: 10px 16px;
   border: none;
@@ -267,132 +412,70 @@ table a:hover {
   display: inline-block;
   text-decoration: none;
 }
+
 .btn:hover {
   transform: translateY(-2px);
   opacity: 0.9;
 }
-.btn-primary { 
-  background-color: var(--accent); /* Rosa Fuerte */
-  box-shadow: 0 4px 15px rgba(213, 105, 137, 0.4); /* Sombra Rosa */
+
+.btn-primary {
+  background-color: var(--accent);
+  box-shadow: 0 4px 15px rgba(213, 105, 137, 0.4);
 }
-.btn-danger { 
-  background-color: #ef4444; /* Rojo */
-  box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3); 
+
+.btn-danger {
+  background-color: #ef4444;
+  box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
 }
-.btn-secondary { 
-  background-color: rgba(0,0,0,0.05); /* Gris claro */
+
+.btn-secondary {
+  background-color: rgba(0,0,0,0.05);
   border: 1px solid rgba(0,0,0,0.1);
-  color: var(--text-muted); /* Texto oscuro */
-}
-.btn-secondary:hover { 
-  background-color: rgba(0,0,0,0.1); 
-}
-.btn-success {
-  background-color: var(--accent-green); /* Verde Suave */
-  color: var(--text-dark);
-  box-shadow: 0 4px 15px rgba(194, 220, 128, 0.4); 
-}
-.btn-success:hover { 
-  background-color: #B0D070; /* Verde más oscuro */
-}
-
-/* ===== FORMULARIOS (Sección 10) ===== */
-.form-control, select[name="categoria"], select[name="rol"] {
-  background: rgba(255, 255, 255, 0.3);
-  border: 1px solid var(--border);
-  color: var(--text-light);
-  padding: 10px 14px;
-  border-radius: 10px;
-  font-family: var(--font-body);
-  font-size: 0.9rem;
-  width: 100%;
-}
-.form-control:focus, select[name="categoria"]:focus, select[name="rol"]:focus {
-  outline: none;
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(213, 105, 137, 0.3); /* Sombra Rosa */
-}
-.form-control option {
-  background: #fff;
-  color: #111827;
-}
-.form-group {
-  margin-bottom: 1.5rem; /* Más espacio */
-}
-.form-group label {
-  display: block;
-  margin-bottom: 8px;
-  font-weight: 500;
-  color: var(--text-light);
-}
-.form-error {
-  color: #ef4444;
-  font-size: 0.875rem;
-  font-weight: 500;
-  margin-top: 8px;
-}
-.form-group label small {
-  font-weight: 400;
   color: var(--text-muted);
-  font-style: italic;
-  margin-left: 6px;
-}
-.form-control[rows="3"] {
-  min-height: 80px;
-  resize: vertical;
-}
-.form-actions {
-  margin-top: 25px;
-  display: flex;
-  gap: 12px;
-  align-items: center;
-}
-.form-image-preview {
-  max-width: 180px;
-  max-height: 180px;
-  object-fit: cover;
-  border-radius: 10px;
-  border: 1px solid var(--border);
-  margin-top: 15px;
-}
-.filter-form {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  align-items: flex-end;
-}
-.filter-form .form-group {
-  flex-grow: 1;
-  min-width: 180px;
-  margin-bottom: 0; /* Alinear con botones */
-}
-.filter-actions {
-  display: flex;
-  gap: 12px;
 }
 
-/* Estilos para el Checkbox Minimalista */
-.form-check-minimal {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: rgba(255, 255, 255, 0.3);
-  border: 1px solid var(--border);
-  padding: 12px 14px;
-  border-radius: 10px;
-}
-.form-check-minimal input[type="checkbox"] {
-  width: 18px;
-  height: 18px;
-  flex-shrink: 0;
-}
-.form-check-minimal label {
-  margin-bottom: 0; 
-  font-weight: 500;
-  color: var(--text-light);
+.btn-secondary:hover {
+  background-color: rgba(0,0,0,0.1);
 }
 
-/* ====== 11. Alertas y Badges ====== */
+.btn-success {
+  background-color: var(--accent-green);
+  color: var(--text-dark);
+  box-shadow: 0 4px 15px rgba(194, 220, 128, 0.4);
+}
+
+.btn-success:hover {
+  background-color: #B0D070;
+}
+
+/* Botones de Icono */
+.btn-icon {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  font-size: 1.1rem;
+}
+
+.btn-icon:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  background-color: var(--color-powdered-lilac-grey);
+}
+
+.btn-icon.delete:hover {
+  background-color: #fee2e2;
+  border-color: #fecaca;
+}
+
+/* ====== 9. COMPONENTES DE ALERTAS Y BADGES ====== */
 .alert {
   padding: 16px;
   margin-bottom: 20px;
@@ -400,36 +483,46 @@ table a:hover {
   font-weight: 500;
   border: 1px solid transparent;
 }
+
 .alert-success {
-  background-color: rgba(194, 220, 128, 0.3); /* Verde Suave */
+  background-color: rgba(194, 220, 128, 0.3);
   color: #4F8A10;
   border-color: var(--accent-green);
 }
+
 .alert-danger {
-  background-color: rgba(234, 156, 175, 0.2); /* Rosa Suave */
+  background-color: rgba(234, 156, 175, 0.2);
   color: #D8000C;
   border-color: var(--accent-pink-soft);
 }
+
 .alert ul {
   margin: 0;
   padding-left: 20px;
   list-style-type: disc;
 }
-.alert li { margin-bottom: 5px; }
 
-.status-badge {
-  padding: 4px 10px;
-  border-radius: 20px;
-  font-weight: 600;
-  font-size: 0.8rem;
-  color: var(--text-dark);
+.alert li {
+  margin-bottom: 5px;
 }
+
+/* Badges de Estado */
+.status-badge {
+  padding: 6px 14px;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--text-dark);
+  display: inline-block;
+  letter-spacing: 0.3px;
+}
+
 /* Estados de Pedidos */
-.status-badge.status-pendiente { background-color: #FDFD96; color: #5D5D4E; } /* Amarillo Pastel */
-.status-badge.status-procesando { background-color: var(--accent-pink-soft); } /* Rosa Suave */
-.status-badge.status-enviado { background-color: var(--accent); color: white; } /* Rosa Fuerte */
-.status-badge.status-entregado { background-color: var(--accent-green); } /* Verde Suave */
-.status-badge.status-cancelado { background-color: #ef4444; color: #fff; } /* Rojo */
+.status-badge.status-pendiente { background-color: #FDFD96; color: #5D5D4E; }
+.status-badge.status-procesando { background-color: var(--accent-pink-soft); }
+.status-badge.status-enviado { background-color: var(--accent); color: white; }
+.status-badge.status-entregado { background-color: var(--accent-green); }
+.status-badge.status-cancelado { background-color: #ef4444; color: #fff; }
 
 /* Estados de Peticiones */
 .status-badge.status-en-revisión { background-color: var(--accent-pink-soft); }
@@ -438,16 +531,49 @@ table a:hover {
 .status-badge.status-completada { background-color: var(--accent); color: #fff; }
 
 /* Estados de Promoción */
-.status-badge.status-activa { 
-  background-color: var(--accent-green); 
-  color: var(--text-dark); 
+.status-badge.status-activa {
+  background-color: var(--accent-green);
+  color: var(--text-dark);
 }
-.status-badge.status-inactiva { 
-  background-color: rgba(0,0,0,0.1); 
+
+.status-badge.status-inactiva {
+  background-color: rgba(0,0,0,0.1);
   color: var(--text-muted);
 }
 
-/* ====== 12. Vistas Específicas (Pedidos, etc.) ====== */
+/* Badges de Colores */
+.badge-green {
+  background-color: #ecfdf5;
+  color: #047857;
+  border: 1px solid #d1fae5;
+}
+
+.badge-pink {
+  background-color: #fdf2f8;
+  color: #db2777;
+  border: 1px solid #fce7f3;
+}
+
+.badge-yellow {
+  background-color: #fefce8;
+  color: #a16207;
+  border: 1px solid #fef9c3;
+}
+
+.badge-purple {
+  background-color: #f3e8ff;
+  color: #7e22ce;
+  border: 1px solid #e9d5ff;
+}
+
+.badge-gray {
+  background-color: #f3f4f6;
+  color: #4b5563;
+}
+
+/* ====== 10. COMPONENTES ESPECÍFICOS ====== */
+
+/* Header de Acciones */
 .actions-header {
   display: flex;
   justify-content: space-between;
@@ -456,78 +582,87 @@ table a:hover {
   gap: 16px;
   margin-bottom: 25px;
 }
+
 .search-form {
   display: flex;
   gap: 12px;
   align-items: center;
   flex-wrap: wrap;
 }
+
 .search-form .form-control, .search-form select {
   width: auto;
   min-width: 180px;
 }
+
 .action-links {
   display: flex;
   gap: 8px;
   align-items: center;
 }
+
 .action-links form {
   display: inline;
   margin: 0;
   padding: 0;
 }
+
 .action-links .btn {
   padding: 8px 12px;
   font-size: 14px;
 }
-.sub-header {
-  font-family: var(--font-heading);
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: var(--text-light);
-  margin-top: 40px;
-  margin-bottom: 20px;
-  border-bottom: 1px solid var(--border);
-  padding-bottom: 10px;
-}
+
+/* Grid de Información */
 .pedido-info-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 20px 28px;
 }
+
 .info-item {
   font-size: 1rem;
   color: var(--text-muted);
 }
+
 .info-item strong {
   color: var(--text-light);
   margin-right: 8px;
   font-weight: 600;
 }
+
 .info-item p {
   margin: 5px 0 0 0;
   color: var(--text-light);
   line-height: 1.6;
 }
+
 .info-item small {
   color: var(--text-muted);
   font-style: italic;
 }
-.info-item-full { grid-column: 1 / -1; }
+
+.info-item-full {
+  grid-column: 1 / -1;
+}
+
+/* Formulario de Actualización de Estado */
 .status-update-form {
   display: flex;
   gap: 12px;
   align-items: center;
   flex-wrap: wrap;
 }
+
 .status-update-form label {
   margin: 0;
   font-size: 1rem;
 }
+
 .status-update-form .form-control {
   width: auto;
   min-width: 200px;
 }
+
 .pedido-total {
   margin-top: 25px;
   text-align: right;
@@ -535,13 +670,16 @@ table a:hover {
   font-weight: 700;
   color: var(--text-light);
 }
+
 .pedido-total strong {
   font-weight: 600;
   color: var(--text-muted);
   margin-right: 10px;
 }
 
-/* ====== 13. Estilos Dashboard (Bajo Stock) ====== */
+/* ====== 11. COMPONENTES ESPECIALIZADOS ====== */
+
+/* Dashboard - Bajo Stock */
 .low-stock-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -559,6 +697,7 @@ table a:hover {
   flex-direction: column;
   transition: all 0.3s ease;
 }
+
 .low-stock-card:hover {
   transform: translateY(-4px);
   border-color: var(--accent);
@@ -574,22 +713,183 @@ table a:hover {
 .low-stock-card .card-body {
   color: var(--text-muted);
   font-size: 0.9rem;
-  flex-grow: 1; 
+  flex-grow: 1;
 }
 
 .low-stock-card .card-actions {
   margin-top: 12px;
 }
 
-/* ====== 14. Responsive ====== */
+/* Formularios Avanzados */
+.form-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 40px;
+}
+
+.row-2-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+/* Upload de Imágenes */
+.image-upload-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.upload-area {
+  border: 2px dashed #d1d5db;
+  border-radius: 16px;
+  padding: 30px;
+  text-align: center;
+  background-color: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+}
+
+.upload-area:hover {
+  border-color: var(--accent);
+  background-color: rgba(255, 255, 255, 0.6);
+}
+
+.upload-icon {
+  font-size: 3rem;
+  color: var(--color-petal-glaze);
+  margin-bottom: 10px;
+}
+
+.upload-text {
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.upload-text span {
+  color: var(--accent);
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.file-input-hidden {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.image-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 12px;
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 10px;
+}
+
+/* Avatar de Usuario */
+.user-avatar {
+  width: 45px;
+  height: 45px;
+  background: linear-gradient(135deg, var(--color-petal-glaze), var(--color-dusty-orchid));
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.2rem;
+  font-family: var(--font-heading);
+  box-shadow: 0 4px 10px rgba(213, 105, 137, 0.3);
+  flex-shrink: 0;
+}
+
+/* Galería de Carrusel */
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 25px;
+}
+
+.carousel-card {
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.carousel-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  border-color: var(--accent);
+}
+
+.carousel-img-container {
+  width: 100%;
+  height: 160px;
+  overflow: hidden;
+  position: relative;
+  background-color: #f3f4f6;
+}
+
+.carousel-img-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.carousel-card:hover .carousel-img-container img {
+  transform: scale(1.05);
+}
+
+.carousel-body {
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid rgba(255,255,255,0.5);
+}
+
+.order-badge {
+  background: var(--text-dark);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+/* ====== 12. RESPONSIVE DESIGN ====== */
 @media (max-width: 900px) {
   .main-content {
     margin-left: 0;
     padding: 30px 20px;
     width: 100%;
   }
+  
   .sidebar {
     display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .form-grid {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -597,38 +897,51 @@ table a:hover {
   .main-content {
     padding: 20px 15px;
   }
+  
   .dashboard-grid {
     grid-template-columns: 1fr;
   }
+  
   .filter-form {
     flex-direction: column;
     gap: 15px;
   }
+  
   .filter-form .form-group {
     width: 100%;
     margin-bottom: 0;
   }
+  
   .filter-actions {
     width: 100%;
     flex-direction: column;
   }
+  
   .filter-actions .btn {
     width: 100%;
     text-align: center;
   }
+  
   .actions-header {
     flex-direction: column;
     align-items: stretch;
   }
+  
   .search-form {
     flex-direction: column;
     align-items: stretch;
   }
+  
   .search-form .form-control, .search-form select {
     width: 100%;
     min-width: 0;
   }
+  
   .pedido-info-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .row-2-cols {
     grid-template-columns: 1fr;
   }
 }

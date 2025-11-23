@@ -1,85 +1,22 @@
 @extends('layouts.admin')
-
-@section('title', 'Crear Imagen del Carrusel')
+@section('title', 'Nuevo Banner')
 
 @section('content')
-<div class="content-header">
-    <h1>Agregar Nueva Imagen al Carrusel</h1>
-    <a href="{{ route('admin.carrusel.index') }}" class="btn btn-secondary">
-        <i class="fas fa-arrow-left"></i> Volver
-    </a>
-</div>
-
-@if($errors->any())
-    <div class="alert alert-error">
-        <strong>¡Error en la validación!</strong>
-        <ul>
-            @foreach($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
+    <div class="content-header" style="margin-bottom: 30px;">
+        <h1 style="font-family: var(--font-heading); color: var(--accent); font-size: 2.5rem;">Agregar Banner</h1>
     </div>
-@endif
 
-<div class="form-container">
-    <form action="{{ route('admin.carrusel.store') }}" method="POST" enctype="multipart/form-data">
-        @csrf
+    @if ($errors->any()) <div class="alert alert-danger"><ul>@foreach ($errors->all() as $error) <li>{{ $error }}</li> @endforeach</ul></div> @endif
 
-        <div class="form-group">
-            <label for="imagen">Imagen del Carrusel</label>
-            <input 
-                type="file" 
-                id="imagen" 
-                name="imagen" 
-                class="form-control @error('imagen') is-invalid @enderror"
-                accept="image/*"
-                required
-            >
-            @error('imagen')
-                <span class="error-message">{{ $message }}</span>
-            @enderror
-        </div>
-
-        <div class="form-group">
-            <label for="orden">Orden</label>
-            <input 
-                type="number" 
-                id="orden" 
-                name="orden" 
-                class="form-control @error('orden') is-invalid @enderror"
-                placeholder="0"
-                min="0"
-                value="{{ old('orden', 0) }}"
-            >
-            <small>Número menor = aparece primero en el carrusel</small>
-            @error('orden')
-                <span class="error-message">{{ $message }}</span>
-            @enderror
-        </div>
-
-        <div class="form-group form-check">
-            <input type="hidden" name="activo" value="0">
-            <input 
-                type="checkbox" 
-                id="activo" 
-                name="activo" 
-                class="form-check-input"
-                value="1"
-                {{ old('activo', true) ? 'checked' : '' }}
-            >
-            <label class="form-check-label" for="activo">Mostrar en el carrusel</label>
-        </div>
-
-        <div class="form-actions">
-            <button type="submit" class="btn btn-success">
-                <i class="fas fa-save"></i> Guardar Imagen
-            </button>
-            <a href="{{ route('admin.carrusel.index') }}" class="btn btn-secondary">
-                Cancelar
-            </a>
-        </div>
-    </form>
-</div>
-
-
+    <div class="card">
+        <form action="{{ route('admin.carrusel.store') }}" method="POST" enctype="multipart/form-data">
+            @csrf
+            @include('admin.carrusel._form')
+            
+            <div class="form-actions" style="margin-top: 40px; border-top: 1px solid var(--border); padding-top: 20px; justify-content: flex-end;">
+                <a href="{{ route('admin.carrusel.index') }}" class="btn btn-secondary" style="margin-right: 10px;">Cancelar</a>
+                <button type="submit" class="btn btn-primary">Guardar Imagen</button>
+            </div>
+        </form>
+    </div>
 @endsection

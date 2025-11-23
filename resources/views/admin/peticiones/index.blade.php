@@ -3,8 +3,11 @@
 @section('title', 'Buzón de Peticiones')
 
 @section('content')
-    <div class="content-header">
-        <h1>Buzón de Peticiones</h1>
+    <div class="content-header" style="margin-bottom: 2rem;">
+        <h1 style="font-family: var(--font-heading); color: var(--accent); font-size: 2.5rem;">
+            Buzón de Peticiones
+        </h1>
+        <p style="color: var(--text-muted);">Gestiona las solicitudes personalizadas de tus clientes.</p>
     </div>
 
     @if (session('success'))
@@ -13,116 +16,135 @@
     @if (session('error'))
         <div class="alert alert-danger">{{ session('error') }}</div>
     @endif
-    @if ($errors->any())
-        <div class="alert alert-danger">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
 
-    <div class="card" style="margin-bottom: 25px;">
+    {{-- 1. Tarjeta de Filtros --}}
+    <div class="card search-card" style="margin-bottom: 2rem;">
         <form action="{{ route('admin.peticiones.index') }}" method="GET" class="filter-form">
-            <div class="form-group">
-                <label for="q">Buscar</label>
-                <input type="text" id="q" name="q" class="form-control" value="{{ request('q') }}" placeholder="Título, descripción o usuario">
+            
+            <div class="form-group" style="flex-grow: 2;">
+                <input type="text" name="q" class="form-control" value="{{ request('q') }}" 
+                       placeholder="🔍 Buscar por título, cliente..." style="border-radius: 20px;">
             </div>
+
             <div class="form-group">
-                <label for="estado">Estado</label>
-                <select id="estado" name="estado" class="form-control">
-                    <option value="">Todos</option>
-                    <option value="pendiente" {{ request('estado') === 'pendiente' ? 'selected' : '' }}>Pendiente</option>
-                    <option value="en revisión" {{ request('estado') === 'en revisión' ? 'selected' : '' }}>En revisión</option>
-                    <option value="aceptada" {{ request('estado') === 'aceptada' ? 'selected' : '' }}>Aceptada</option>
-                    <option value="rechazada" {{ request('estado') === 'rechazada' ? 'selected' : '' }}>Rechazada</option>
-                    <option value="completada" {{ request('estado') === 'completada' ? 'selected' : '' }}>Completada</option>
+                <select name="estado" class="form-control" style="border-radius: 20px;">
+                    <option value="">📂 Todos los estados</option>
+                    @foreach(['pendiente', 'en revisión', 'aceptada', 'rechazada', 'completada'] as $est)
+                        <option value="{{ $est }}" {{ request('estado') === $est ? 'selected' : '' }}>
+                            {{ ucfirst($est) }}
+                        </option>
+                    @endforeach
                 </select>
             </div>
-            <div class="form-group">
-                <label for="from">Desde</label>
-                <input type="date" id="from" name="from" class="form-control" value="{{ request('from') }}">
+
+            <div class="form-group" style="display:flex; align-items:center; gap:10px;">
+                <input type="date" name="from" class="form-control" value="{{ request('from') }}" style="border-radius: 20px;">
+                <span style="color:var(--text-muted)">a</span>
+                <input type="date" name="to" class="form-control" value="{{ request('to') }}" style="border-radius: 20px;">
             </div>
-            <div class="form-group">
-                <label for="to">Hasta</label>
-                <input type="date" id="to" name="to" class="form-control" value="{{ request('to') }}">
-            </div>
-            <div class="filter-actions">
-                <button type="submit" class="btn btn-primary">Filtrar</button>
-                @if(request()->has('q') || request()->has('estado') || request()->has('from') || request()->has('to'))
-                    <a href="{{ route('admin.peticiones.index') }}" class="btn btn-secondary">Limpiar</a>
-                @endif
-            </div>
+
+            <button type="submit" class="btn btn-primary" style="border-radius: 20px;">Filtrar</button>
+            
+            @if(request()->anyFilled(['q', 'estado', 'from', 'to']))
+                <a href="{{ route('admin.peticiones.index') }}" class="btn btn-secondary" style="border-radius: 20px;">Limpiar</a>
+            @endif
         </form>
     </div>
 
-    <div class="card">
+    {{-- 2. Tabla de Peticiones con Acciones Masivas --}}
+    <div class="card" style="padding: 0; overflow: hidden;">
         <form method="POST" action="{{ route('admin.peticiones.bulk-status') }}" id="bulk-action-form">
             @csrf
-            <div class="actions-header" style="padding: 20px 20px 0 20px;">
-                <div class="form-group" style="margin-bottom: 0;">
-                    <label for="estado-masivo" style="margin-right: 10px;">Acciones masivas:</label>
-                    <select id="estado-masivo" name="estado" class="form-control" style="width: auto; display: inline-block;">
+            
+            {{-- Barra de herramientas de tabla (Toolbar) --}}
+            <div style="padding: 15px 20px; background: rgba(255,255,255,0.3); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 15px;">
+                <div style="font-size: 0.9rem; color: var(--text-muted); font-weight: 600;">
+                    Selecciona para acciones masivas:
+                </div>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <select name="estado" class="form-control" style="padding: 6px 12px; height: auto; width: auto; font-size: 0.9rem;">
                         <option value="en revisión">Mover a "En revisión"</option>
                         <option value="aceptada">Mover a "Aceptada"</option>
                         <option value="rechazada">Mover a "Rechazada"</option>
                     </select>
-                </div>
-                <div class="action-links">
-                    <button type="submit" class="btn btn-primary" formaction="{{ route('admin.peticiones.bulk-status') }}">
-                        Aplicar
-                    </button>
-                    <button type="submit" class="btn btn-danger" formaction="{{ route('admin.peticiones.bulk-delete') }}" onclick="return confirm('¿Eliminar peticiones seleccionadas?');">
-                        Eliminar
+                    <button type="submit" class="btn btn-primary" style="padding: 6px 15px; font-size: 0.9rem;">Aplicar</button>
+                    <button type="submit" class="btn btn-danger" formaction="{{ route('admin.peticiones.bulk-delete') }}" onclick="return confirm('¿Eliminar seleccionados?');" style="padding: 6px 15px; font-size: 0.9rem;">
+                        🗑️
                     </button>
                 </div>
             </div>
 
-            <table>
-                <thead>
+            <table class="table-hover">
+                <thead style="background-color: rgba(255,255,255,0.4);">
                     <tr>
-                        <th style="width: 1%;"><input type="checkbox" id="select-all"></th>
-                        <th>ID</th>
-                        <th>Usuario</th>
-                        <th>Título</th>
-                        <th>Estado</th>
-                        <th>Fecha</th>
-                        <th>Acciones</th>
+                        <th style="padding-left: 20px; width: 40px;"><input type="checkbox" id="select-all"></th>
+                        <th scope="col">Solicitud</th>
+                        <th scope="col">Cliente</th>
+                        <th scope="col">Estado</th>
+                        <th scope="col" style="text-align: right; padding-right: 30px;">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($peticiones as $peticion)
-                        <tr>
-                            <td><input type="checkbox" name="ids[]" value="{{ $peticion->id_peticion }}" class="row-checkbox"></td>
-                            <td data-label="ID">{{ $peticion->id_peticion }}</td>
-                            <td data-label="Usuario" class="cliente-cell">
-                                {{ $peticion->usuario->nombre }}
-                                <small>{{ $peticion->usuario->email }}</small>
+                    @forelse($peticiones as $peticion)
+                        <tr style="transition: background 0.3s;">
+                            <td style="padding-left: 20px;">
+                                <input type="checkbox" name="ids[]" value="{{ $peticion->id_peticion }}" class="row-checkbox">
                             </td>
-                            <td data-label="Título">{{ $peticion->titulo }}</td>
-                            <td data-label="Estado">
-                                <span class="status-badge status-{{ str_replace(' ', '-', $peticion->estado) }}">{{ ucfirst($peticion->estado) }}</span>
-                            </td>
-                            <td data-label="Fecha">{{ $peticion->created_at?->format('d/m/Y') ?? 'No especificado' }}</td>
-                            <td data-label="Acciones">
-                                <div class="action-links">
-                                    <a href="{{ route('admin.peticiones.show', $peticion->id_peticion) }}" class="btn btn-primary">Ver</a>
-                                    <button type="button" class="btn btn-danger" onclick="submitRowDelete('{{ route('admin.peticiones.destroy', $peticion->id_peticion) }}')">Eliminar</button>
+                            
+                            {{-- ID, Título y Fecha --}}
+                            <td>
+                                <div style="font-weight: 700; color: var(--text-dark);">
+                                    {{ Str::limit($peticion->titulo, 30) }}
+                                </div>
+                                <div style="font-size: 0.85em; color: var(--text-muted); margin-top: 4px;">
+                                    <span style="color: var(--accent);">#{{ $peticion->id_peticion }}</span> • {{ $peticion->created_at?->format('d M, Y') }}
                                 </div>
                             </td>
+
+                            {{-- Cliente --}}
+                            <td>
+                                <div style="font-weight: 600;">{{ $peticion->usuario->nombre }}</div>
+                                <small style="color: var(--text-muted);">{{ $peticion->usuario->email }}</small>
+                            </td>
+
+                            {{-- Estado --}}
+                            <td>
+                                @php
+                                    $slug = Str::slug($peticion->estado);
+                                @endphp
+                                <span class="status-badge status-{{ $slug }}">
+                                    {{ ucfirst($peticion->estado) }}
+                                </span>
+                            </td>
+
+                            {{-- Botón Ver --}}
+                            <td style="text-align: right; padding-right: 30px;">
+                                <a href="{{ route('admin.peticiones.show', $peticion->id_peticion) }}" class="btn-icon" title="Ver Detalles">
+                                    👁️
+                                </a>
+                            </td>
                         </tr>
-                    @endforeach
+                    @empty
+                        <tr>
+                            <td colspan="5" class="empty-row">No hay peticiones en el buzón.</td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
         </form>
-        
-        <div class="pagination-links" style="padding: 20px;">
-            {{ $peticiones->links() }}
-        </div>
     </div>
-@endsection
 
-@section('scripts')
-<script src="{{ asset('js/admin/peticiones.js') }}?v=2"></script>
+    <div class="pagination-links" style="margin-top: 20px;">
+        {{ $peticiones->links() }}
+    </div>
+
+    {{-- Script simple para "Seleccionar todos" --}}
+    <script>
+        document.getElementById('select-all').addEventListener('change', function() {
+            var checkboxes = document.querySelectorAll('.row-checkbox');
+            for (var checkbox of checkboxes) {
+                checkbox.checked = this.checked;
+            }
+        });
+    </script>
 @endsection
