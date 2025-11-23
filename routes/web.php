@@ -11,7 +11,8 @@ use App\Http\Controllers\Admin\{
     CategoriaController,
     PeticionController,
     PromocionController,
-    CarruselController
+    CarruselController,
+    FaqController
 };
 use App\Http\Controllers\Cliente\{
     CarritoController,
@@ -34,6 +35,9 @@ Route::middleware(['web', 'track-user-activity'])->group(function () {
     // Página principal y tienda
     Route::get('/', [TiendaController::class, 'index'])->name('tienda');
     Route::get('/tienda', [TiendaController::class, 'index']);
+
+    // Página pública de FAQs
+    Route::get('/faq', [\App\Http\Controllers\Cliente\FaqController::class, 'index'])->name('faq');
 
     // Autenticación
     Route::get('/login', [LoginController::class, 'mostrarLogin'])->name('login.form');
@@ -164,6 +168,9 @@ Route::middleware(['web', 'track-user-activity'])->group(function () {
         // Carrusel
         Route::resource('carrusel', CarruselController::class)->except(['show']);
         Route::patch('carrusel/{carrusel}/toggle', [CarruselController::class, 'toggle'])->name('carrusel.toggle');
+
+        // FAQs
+        Route::resource('faqs', FaqController::class)->except(['show']);
 
     });
 });

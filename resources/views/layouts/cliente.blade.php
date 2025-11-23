@@ -8,14 +8,38 @@
     
     <link rel="stylesheet" href="{{ asset('css/tienda.css') }}?v=15">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ asset('css/loading.css') }}">
 </head>
 <body>
+    <div id="loading-overlay">
+        <div class="loading-logo">Crochettittos</div>
+        <div class="crochet-spinner">
+            <div class="yarn-ball"></div>
+            <div class="crochet-hook">
+                <div class="hook-handle"></div>
+            </div>
+            <div class="stitch"></div>
+            <div class="stitch"></div>
+            <div class="stitch"></div>
+        </div>
+        <div class="loading-text">
+            Tejiendo momentos especiales<span class="loading-dots"></span>
+        </div>
+        <div class="craft-message">
+            Cada producto está hecho a mano con amor y dedicación
+        </div>
+        <!-- Mantener el spinner original como respaldo -->
+        <div class="spinner"></div>
+    </div>
 
     <header class="site-header">
         <nav class="navbar">
             <h1><a href="{{ url('/') }}">Crochettittos</a></h1>
             
             <div class="nav-auth">
+                <a href="{{ route('faq') }}" class="nav-button nav-button-pastel-secondary">
+                    <i class="fas fa-question-circle"></i> Preguntas Frecuentes
+                </a>
                 @auth
                     {{-- Si el usuario HA iniciado sesión --}}
                     <a href="{{ route('perfil.index') }}" class="welcome-user">
@@ -80,7 +104,15 @@
     </main>
 
     <footer class="site-footer">
-        <p>&copy; {{ date('Y') }} Crochettitos. Todos los derechos reservados.</p>
+        <p>&copy; {{ date('Y') }} Crochettittos. Todos los derechos reservados.</p>
+        <div class="social-links">
+            <a href="https://www.facebook.com/Crochettittos" target="_blank" rel="noopener noreferrer" aria-label="Visita nuestra página de Facebook">
+                <i class="fab fa-facebook-f"></i>
+            </a>
+            <a href="https://www.instagram.com/Crochettittos" target="_blank" rel="noopener noreferrer" aria-label="Visita nuestra página de Instagram">
+                <i class="fab fa-instagram"></i>
+            </a>
+        </div>
     </footer>
 
     {{-- MODALES --}}
@@ -226,6 +258,12 @@
 
     <script src="{{ asset('js/main.js') }}?v=15"></script>
     <script src="{{ asset('js/cliente/peticion-modal.js') }}"></script>
+
+    <script>
+        window.addEventListener('load', function() {
+            document.getElementById('loading-overlay').style.display = 'none';
+        });
+    </script>
 
     @stack('scripts')
 </body>

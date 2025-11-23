@@ -6,10 +6,13 @@
 
     <link rel="stylesheet" href="{{ asset('css/admin.css') }}?v=12">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    @yield('styles')
+    <link rel="stylesheet" href="{{ asset('css/loading.css') }}">
+    
 </head>
 <body>
+    <div id="loading-overlay">
+        <div class="spinner"></div>
+    </div>
     <!-- Toggle del modo oscuro -->
     <div class="theme-toggle">
         <form action="{{ route('admin.theme.toggle') }}" method="POST" class="toggle-form">
@@ -58,6 +61,11 @@
                 Promociones
             </a>
 
+            <a href="{{ route('admin.faqs.index') }}" class="{{ request()->routeIs('admin.faqs.*') ? 'active' : '' }}">
+                <i class="fas fa-question-circle"></i>
+                FAQs
+            </a>
+
             <a href="{{ route('admin.carrusel.index') }}" class="{{ request()->routeIs('admin.carrusel.*') ? 'active' : '' }}">
                 <i class="fas fa-images"></i>
                 Gestionar Carrusel
@@ -80,6 +88,11 @@
     </div>
     
     <script src="{{ asset('js/admin/theme.js') }}"></script>
+    <script>
+        window.addEventListener('load', function() {
+            document.getElementById('loading-overlay').style.display = 'none';
+        });
+    </script>
 
     @yield('scripts')
 </body>

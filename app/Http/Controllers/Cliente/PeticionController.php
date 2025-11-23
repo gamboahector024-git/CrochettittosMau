@@ -12,28 +12,17 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\NuevaPeticion;
 use App\Models\Usuario;
+use App\Http\Requests\StorePeticionRequest;
 
 class PeticionController extends Controller
 {
     /**
      * Store a newly created Peticion from authenticated user.
      */
-    public function store(Request $request)
+    public function store(StorePeticionRequest $request)
     {
         $user = Auth::user();
-
-        $validated = $request->validate([
-            'titulo' => 'required|string|max:255',
-            'descripcion' => 'required|string',
-            'cantidad' => 'required|integer|min:1|max:100',
-            'id_categoria' => 'required|exists:categorias,id_categoria',
-            'imagen_referencia' => 'nullable|image|max:2048',
-            'calle' => 'required|string|max:255',
-            'colonia' => 'required|string|max:255',
-            'municipio_ciudad' => 'required|string|max:255',
-            'codigo_postal' => 'required|string|max:10',
-            'estado_direccion' => 'required|string|max:100',
-        ]);
+        $validated = $request->validated();
 
         $data = [
             'id_usuario' => $user->id_usuario,

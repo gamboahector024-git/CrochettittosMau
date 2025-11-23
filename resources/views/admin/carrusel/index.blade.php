@@ -3,7 +3,7 @@
 @section('title', 'Gestionar Carrusel')
 
 @push('styles')
-<link rel="stylesheet" href="{{ asset('css/admin-carrusel.css') }}">
+<link rel="stylesheet" href="{{ asset('css/admin.css') }}">
 @endpush
 
 @section('content')
