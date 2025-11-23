@@ -14,7 +14,9 @@ class TiendaController extends Controller
     public function index(Request $request)
     {
         // Obtener imágenes del carrusel
-        $carruseles = Carrusel::orderBy('orden')->get();
+        $carruseles = Carrusel::where('activo', true)
+            ->orderBy('orden')
+            ->get();
         
         // Obtener productos y categorías para ambos tipos de usuarios
         $query = Producto::with(['promocionActiva', 'categoria']);

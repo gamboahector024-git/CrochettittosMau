@@ -27,7 +27,7 @@ class PedidoSeeder extends Seeder
             return; // No continuar si no existen productos
         }
 
-        // Crear pedidos de prueba
+        // Crear pedidos de prueba (solo 3 ejemplos)
         $pedidos = [
             // Pedido entregado
             [
@@ -85,44 +85,6 @@ class PedidoSeeder extends Seeder
                 'fecha_entrega_estimada' => null,
                 'created_at' => now()->subDays(7),
                 'updated_at' => now()->subDays(7),
-            ],
-            // Pedido enviado
-            [
-                'id_usuario' => $diegoId,
-                'fecha_pedido' => now()->subDays(4),
-                'total' => 299.00,
-                'estado' => 'enviado',
-                'calle' => 'Calle Morelos 45',
-                'colonia' => 'Centro',
-                'municipio_ciudad' => 'Cuauhtémoc',
-                'codigo_postal' => '06000',
-                'estado_direccion' => 'Ciudad de México',
-                'metodo_pago' => 'tarjeta',
-                'empresa_envio' => 'DHL',
-                'codigo_rastreo' => 'DH'.Str::upper(Str::random(10)),
-                'fecha_envio' => now()->subDays(2),
-                'fecha_entrega_estimada' => now()->addDays(3),
-                'created_at' => now()->subDays(4),
-                'updated_at' => now()->subDays(2),
-            ],
-            // Pedido pendiente
-            [
-                'id_usuario' => $valeriaId,
-                'fecha_pedido' => now()->subDays(2),
-                'total' => 249.00,
-                'estado' => 'pendiente',
-                'calle' => 'Paseo de la Reforma 222',
-                'colonia' => 'Juárez',
-                'municipio_ciudad' => 'Cuauhtémoc',
-                'codigo_postal' => '06600',
-                'estado_direccion' => 'Ciudad de México',
-                'metodo_pago' => 'paypal',
-                'empresa_envio' => null,
-                'codigo_rastreo' => null,
-                'fecha_envio' => null,
-                'fecha_entrega_estimada' => null,
-                'created_at' => now()->subDays(2),
-                'updated_at' => now()->subDays(2),
             ],
         ];
 

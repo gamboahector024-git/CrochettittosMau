@@ -49,16 +49,26 @@ class PeticionController extends Controller
 
     public function show(Peticion $peticion)
     {
+        $peticion->load('categoria', 'usuario');
         return view('admin.peticiones.show', compact('peticion'));
     }
 
-    public function responder(UpdatePeticionRequest $request, Peticion $peticion)
+    public function responder(Request $request, Peticion $peticion)
     {
-        $peticion->respuesta_admin = $request->respuesta_admin;
-        $peticion->estado = $request->estado;
-        $peticion->save();
+        $validated = $request->validate([
+            'respuesta_admin' => 'required|string|max:5000',
+            'precio_propuesto' => 'required|numeric|min:0.01|max:999999.99',
+        ]);
 
-        Session::flash('success', 'Respuesta y estado actualizados');
+        // Al responder con precio, el estado cambia automáticamente a "aceptada"
+        $peticion->update([
+            'respuesta_admin' => $validated['respuesta_admin'],
+            'precio_propuesto' => $validated['precio_propuesto'],
+            'fecha_respuesta_admin' => now(),
+            'estado' => 'aceptada' // Cambia a aceptada cuando el admin envía propuesta
+        ]);
+
+        Session::flash('success', 'Propuesta enviada al cliente. Precio: $' . number_format($peticion->precio_propuesto, 2));
         return back();
     }
     

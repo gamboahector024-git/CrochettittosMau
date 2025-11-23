@@ -46,37 +46,6 @@ class ProductoSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
-            // Nuevos productos para más realismo
-            [
-                'nombre' => 'Bufanda de Lana Invernal',
-                'descripcion' => 'Bufanda suave y cálida hecha de lana 100% natural. Disponible en varios colores, ideal para el frío. Medida: 180cm x 30cm.',
-                'precio' => 149.50,
-                'stock' => 30,
-                'id_categoria' => $idPers,
-                'imagen_url' => 'https://placehold.co/600x400?text=Bufanda+Lana',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'nombre' => 'Jarrón Decorativo Floral',
-                'descripcion' => 'Jarrón de cerámica con diseño floral, perfecto para arreglos frescos o artificiales. Altura: 25cm, colores variados.',
-                'precio' => 89.99,
-                'stock' => 15,
-                'id_categoria' => $idFlores,
-                'imagen_url' => 'https://placehold.co/600x400?text=Jarrón+Floral',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'nombre' => 'Llavero Personalizado con Iniciales',
-                'descripcion' => 'Llavero con iniciales bordadas a mano. Elige tu letra y color. Material: madera y cuerda. Medida: 5cm.',
-                'precio' => 59.00,
-                'stock' => 40,
-                'id_categoria' => $idLlaveros,
-                'imagen_url' => 'https://placehold.co/600x400?text=Llavero+Iniciales',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
         ];
 
         // Evitar duplicados por nombre

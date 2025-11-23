@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('imagen');
             $table->integer('orden')->default(0);
+            $table->boolean('activo')->default(true);
             $table->timestamps();
         });
     }

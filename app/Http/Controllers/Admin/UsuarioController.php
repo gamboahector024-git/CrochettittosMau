@@ -7,6 +7,8 @@ use App\Models\Usuario;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
+use App\Http\Requests\StoreUsuarioRequest;
+use App\Http\Requests\UpdateUsuarioRequest;
 
 class UsuarioController extends Controller
 {
@@ -21,19 +23,9 @@ class UsuarioController extends Controller
         return view('admin.usuarios.create');
     }
 
-    public function store(Request $request)
+    public function store(StoreUsuarioRequest $request)
     {
-        $request->validate([
-            'nombre' => 'required|string|max:50',
-            'apellido' => 'required|string|max:50',
-            'email' => 'required|email|unique:usuarios,email',
-            'password' => 'required|min:8',
-            'direccion' => 'nullable|string',
-            'telefono' => 'nullable|string',
-            'rol' => 'required|in:admin,cliente'
-        ]);
-
-        $data = $request->all();
+        $data = $request->validated();
         $data['password_hash'] = Hash::make($request->password);
         
         Usuario::create($data);
@@ -48,23 +40,14 @@ class UsuarioController extends Controller
         return view('admin.usuarios.edit', compact('usuario'));
     }
 
-    public function update(Request $request, $id)
+    public function update(UpdateUsuarioRequest $request, $id)
     {
-        $request->validate([
-            'nombre' => 'required|string|max:50',
-            'apellido' => 'required|string|max:50',
-            'email' => 'required|email|unique:usuarios,email,'.$id.',id_usuario',
-            'password' => 'nullable|min:8',
-            'direccion' => 'nullable|string',
-            'telefono' => 'nullable|string',
-            'rol' => 'required|in:admin,cliente'
-        ]);
-
         $usuario = Usuario::findOrFail($id);
-        $data = $request->except('password');
+        $data = $request->validated();
         
-        if($request->password) {
-            $data['password_hash'] = Hash::make($request->password);
+        if(!empty($data['password'])) {
+            $data['password_hash'] = Hash::make($data['password']);
+            unset($data['password']);
         }
         
         $usuario->update($data);

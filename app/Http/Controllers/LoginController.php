@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
+use App\Http\Requests\LoginRequest;
+use App\Http\Requests\RegisterRequest;
 use App\Models\Usuario;
 use Illuminate\Support\Facades\Hash;
 
@@ -13,22 +15,19 @@ class LoginController extends Controller
     // Muestra el formulario de login
     public function mostrarLogin()
     {
-        return view('login');
+        return view('auth.login');
     }
 
     // Procesa el login
-    public function procesarLogin(Request $request)
+    public function procesarLogin(LoginRequest $request)
     {
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required'
-        ]);
+        $credentials = $request->validated();
 
         // Busca al usuario por email
-        $usuario = Usuario::where('email', $request->email)->first();
+        $usuario = Usuario::where('email', $credentials['email'])->first();
 
         // Verifica contraseña
-        if ($usuario && Hash::check($request->password, $usuario->password_hash)) {
+        if ($usuario && Hash::check($credentials['password'], $usuario->password_hash)) {
 
             // Loguea al usuario usando el guard 'web'
             auth('web')->login($usuario);
@@ -54,28 +53,21 @@ class LoginController extends Controller
     // Muestra el formulario de registro
     public function mostrarRegistro()
     {
-        return view('registro');
+        return view('auth.registro');
     }
 
     // Procesa el registro
-    public function procesarRegistro(Request $request)
+    public function procesarRegistro(RegisterRequest $request)
     {
-        $request->validate([
-            'nombre' => 'required|string|max:100',
-            'apellido' => 'required|string|max:100',
-            'email' => 'required|email|unique:usuarios,email',
-            'password' => 'required|string|min:6|confirmed',
-            'telefono' => 'nullable|string|max:20',
-            'direccion' => 'nullable|string',
-        ]);
+        $data = $request->validated();
 
         Usuario::create([
-            'nombre' => $request->nombre,
-            'apellido' => $request->apellido,
-            'email' => $request->email,
-            'password_hash' => \Illuminate\Support\Facades\Hash::make($request->password),
-            'telefono' => $request->telefono,
-            'direccion' => $request->direccion,
+            'nombre' => $data['nombre'],
+            'apellido' => $data['apellido'],
+            'email' => $data['email'],
+            'password_hash' => \Illuminate\Support\Facades\Hash::make($data['password']),
+            'telefono' => $data['telefono'] ?? null,
+            'direccion' => $data['direccion'] ?? null,
             'rol' => 'cliente', // por defecto
         ]);
 

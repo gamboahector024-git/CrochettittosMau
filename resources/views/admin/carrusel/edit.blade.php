@@ -57,6 +57,19 @@
             @enderror
         </div>
 
+        <div class="form-group form-check">
+            <input type="hidden" name="activo" value="0">
+            <input 
+                type="checkbox" 
+                id="activo" 
+                name="activo" 
+                class="form-check-input"
+                value="1"
+                {{ old('activo', $carrusel->activo) ? 'checked' : '' }}
+            >
+            <label class="form-check-label" for="activo">Mostrar en el carrusel</label>
+        </div>
+
         <div class="form-actions">
             <button type="submit" class="btn btn-success">
                 <i class="fas fa-save"></i> Actualizar Imagen

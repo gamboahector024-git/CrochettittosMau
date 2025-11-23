@@ -8,14 +8,38 @@
     
     <link rel="stylesheet" href="{{ asset('css/tienda.css') }}?v=15">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ asset('css/loading.css') }}">
 </head>
 <body>
+    <div id="loading-overlay">
+        <div class="loading-logo">Crochettittos</div>
+        <div class="crochet-spinner">
+            <div class="yarn-ball"></div>
+            <div class="crochet-hook">
+                <div class="hook-handle"></div>
+            </div>
+            <div class="stitch"></div>
+            <div class="stitch"></div>
+            <div class="stitch"></div>
+        </div>
+        <div class="loading-text">
+            Tejiendo momentos especiales<span class="loading-dots"></span>
+        </div>
+        <div class="craft-message">
+            Cada producto está hecho a mano con amor y dedicación
+        </div>
+        <!-- Mantener el spinner original como respaldo -->
+        <div class="spinner"></div>
+    </div>
 
     <header class="site-header">
         <nav class="navbar">
             <h1><a href="{{ url('/') }}">Crochettittos</a></h1>
             
             <div class="nav-auth">
+                <a href="{{ route('faq') }}" class="nav-button nav-button-pastel-secondary">
+                    <i class="fas fa-question-circle"></i> Preguntas Frecuentes
+                </a>
                 @auth
                     {{-- Si el usuario HA iniciado sesión --}}
                     <a href="{{ route('perfil.index') }}" class="welcome-user">
@@ -80,7 +104,15 @@
     </main>
 
     <footer class="site-footer">
-        <p>&copy; {{ date('Y') }} Crochettitos. Todos los derechos reservados.</p>
+        <p>&copy; {{ date('Y') }} Crochettittos. Todos los derechos reservados.</p>
+        <div class="social-links">
+            <a href="https://www.facebook.com/Crochettittos" target="_blank" rel="noopener noreferrer" aria-label="Visita nuestra página de Facebook">
+                <i class="fab fa-facebook-f"></i>
+            </a>
+            <a href="https://www.instagram.com/Crochettittos" target="_blank" rel="noopener noreferrer" aria-label="Visita nuestra página de Instagram">
+                <i class="fab fa-instagram"></i>
+            </a>
+        </div>
     </footer>
 
     {{-- MODALES --}}
@@ -140,27 +172,84 @@
 
     {{-- Modal de Petición --}}
     <div id="peticionModal" class="modal" style="display:none;">
-        <div class="modal-content" style="display: block; max-width: 600px;">
+        <div class="modal-content" style="display: block; max-width: 700px; max-height: 90vh; overflow-y: auto;">
             <button class="close-modal" id="closePeticionModal">&times;</button>
             <div class="modal-details" style="padding: 2.5rem;">
                 <h2 id="modalName">Enviar Petición Personalizada</h2>
                 <form action="{{ route('peticiones.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
+                    
+                    <h3>Detalles del Producto</h3>
+                    
                     <div class="form-group">
-                        <label for="titulo">Título</label>
-                        <input id="titulo" name="titulo" type="text" class="form-input" required maxlength="255">
+                        <label for="titulo">Título *</label>
+                        <input id="titulo" name="titulo" type="text" class="form-input" required maxlength="255" placeholder="Ej: Amigurumi personalizado de mi mascota">
                     </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="id_categoria">Categoría *</label>
+                            <select id="id_categoria" name="id_categoria" class="form-input" required>
+                                <option value="">Selecciona una categoría</option>
+                                @php
+                                    $categorias = \App\Models\Categoria::orderBy('nombre')->get();
+                                @endphp
+                                @foreach($categorias as $categoria)
+                                    <option value="{{ $categoria->id_categoria }}">{{ $categoria->nombre }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="cantidad">Cantidad *</label>
+                            <input id="cantidad" name="cantidad" type="number" class="form-input" required min="1" max="100" value="1" placeholder="1">
+                        </div>
+                    </div>
+                    
                     <div class="form-group">
-                        <label for="descripcion">Descripción</label>
-                        <textarea id="descripcion" name="descripcion" rows="4" class="form-input" required></textarea>
+                        <label for="descripcion">Descripción *</label>
+                        <textarea id="descripcion" name="descripcion" rows="4" class="form-input" required placeholder="Describe lo que necesitas: colores, tamaño, detalles especiales..."></textarea>
                     </div>
+                    
                     <div class="form-group">
                         <label for="imagen_referencia">Imagen de referencia (opcional)</label>
                         <input id="imagen_referencia" name="imagen_referencia" type="file" accept="image/*" class="form-input-file">
                     </div>
-                    <div class="modal-actions" style="flex-direction: row; gap: 1rem; margin-top: 1.5rem;">
-                        <button type="submit" class="primary-button" style="flex: 1;">Enviar Petición</button>
-                        <button type="button" class="tertiary-button" id="cancelPeticion" style="flex: 1;">Cancelar</button>
+
+                    <h3>Dirección de Entrega</h3>
+                    
+                    <div class="form-group">
+                        <label for="calle">Calle y número *</label>
+                        <input id="calle" name="calle" type="text" class="form-input" required maxlength="255" placeholder="Ej: Av. Juárez 123">
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="colonia">Colonia *</label>
+                            <input id="colonia" name="colonia" type="text" class="form-input" required maxlength="255" placeholder="Ej: Centro">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="codigo_postal">Código Postal *</label>
+                            <input id="codigo_postal" name="codigo_postal" type="text" class="form-input" required maxlength="10" placeholder="Ej: 44100">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="municipio_ciudad">Municipio/Ciudad *</label>
+                            <input id="municipio_ciudad" name="municipio_ciudad" type="text" class="form-input" required maxlength="255" placeholder="Ej: Guadalajara">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="estado_direccion">Estado *</label>
+                            <input id="estado_direccion" name="estado_direccion" type="text" class="form-input" required maxlength="100" placeholder="Ej: Jalisco">
+                        </div>
+                    </div>
+
+                    <div class="modal-actions">
+                        <button type="submit" class="primary-button">Enviar Petición</button>
+                        <button type="button" class="tertiary-button" id="cancelPeticion">Cancelar</button>
                     </div>
                 </form>
             </div>
@@ -168,35 +257,12 @@
     </div>
 
     <script src="{{ asset('js/main.js') }}?v=15"></script>
-    
+    <script src="{{ asset('js/cliente/peticion-modal.js') }}"></script>
+
     <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        var btns = document.querySelectorAll('#newPeticionButton'); 
-        var modal = document.getElementById('peticionModal');
-        var close = document.getElementById('closePeticionModal');
-        var cancel = document.getElementById('cancelPeticion');
-
-        function openModal(e) {
-            e.preventDefault();
-            if(modal) { modal.style.display = 'flex'; }
-        }
-        function closeModal() {
-            if(modal) { modal.style.display = 'none'; }
-        }
-
-        if (btns.length > 0 && modal) {
-            btns.forEach(function(btn) {
-                btn.addEventListener('click', openModal);
-            });
-        }
-        if (close) { close.addEventListener('click', closeModal); }
-        if (cancel) { cancel.addEventListener('click', closeModal); }
-        window.addEventListener('click', function (e) {
-            if (e.target === modal) { closeModal(); }
-            var loginModal = document.getElementById('loginModal');
-            if (e.target === loginModal) { loginModal.style.display = 'none'; }
+        window.addEventListener('load', function() {
+            document.getElementById('loading-overlay').style.display = 'none';
         });
-    });
     </script>
 
     @stack('scripts')

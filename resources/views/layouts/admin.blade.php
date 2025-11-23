@@ -6,10 +6,13 @@
 
     <link rel="stylesheet" href="{{ asset('css/admin.css') }}?v=12">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    @yield('styles')
+    <link rel="stylesheet" href="{{ asset('css/loading.css') }}">
+    
 </head>
 <body>
+    <div id="loading-overlay">
+        <div class="spinner"></div>
+    </div>
     <!-- Toggle del modo oscuro -->
     <div class="theme-toggle">
         <form action="{{ route('admin.theme.toggle') }}" method="POST" class="toggle-form">
@@ -58,6 +61,11 @@
                 Promociones
             </a>
 
+            <a href="{{ route('admin.faqs.index') }}" class="{{ request()->routeIs('admin.faqs.*') ? 'active' : '' }}">
+                <i class="fas fa-question-circle"></i>
+                FAQs
+            </a>
+
             <a href="{{ route('admin.carrusel.index') }}" class="{{ request()->routeIs('admin.carrusel.*') ? 'active' : '' }}">
                 <i class="fas fa-images"></i>
                 Gestionar Carrusel
@@ -79,41 +87,10 @@
         @yield('content')
     </div>
     
-    <!-- Script para el modo oscuro -->
+    <script src="{{ asset('js/admin/theme.js') }}"></script>
     <script>
-        // Detectar preferencia del sistema
-        function detectSystemTheme() {
-            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                return 'dark';
-            }
-            return 'light';
-        }
-
-        // Aplicar tema al cargar la página
-        document.addEventListener('DOMContentLoaded', function() {
-            const savedTheme = document.documentElement.getAttribute('data-theme');
-            
-            // Si no hay tema guardado, usar el del sistema
-            if (!savedTheme) {
-                const systemTheme = detectSystemTheme();
-                document.documentElement.setAttribute('data-theme', systemTheme);
-            }
-            
-            // Suavizar transiciones después de cargar
-            setTimeout(() => {
-                document.body.style.transition = 'all 0.3s ease';
-            }, 100);
-        });
-
-        // Escuchar cambios en la preferencia del sistema
-        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
-            const currentTheme = document.documentElement.getAttribute('data-theme');
-            
-            // Solo cambiar si el usuario no ha establecido una preferencia manual
-            if (!currentTheme || currentTheme === 'auto') {
-                const newTheme = e.matches ? 'dark' : 'light';
-                document.documentElement.setAttribute('data-theme', newTheme);
-            }
+        window.addEventListener('load', function() {
+            document.getElementById('loading-overlay').style.display = 'none';
         });
     </script>
 

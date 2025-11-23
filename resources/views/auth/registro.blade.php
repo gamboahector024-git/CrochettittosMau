@@ -69,7 +69,7 @@
     </div>
 
     <footer class="site-footer">
-        © 2025 Crochettitos. Todos los derechos reservados.
+        © 2025 Crochettittos. Todos los derechos reservados.
     </footer>
 
 </body>

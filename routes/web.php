@@ -11,7 +11,8 @@ use App\Http\Controllers\Admin\{
     CategoriaController,
     PeticionController,
     PromocionController,
-    CarruselController
+    CarruselController,
+    FaqController
 };
 use App\Http\Controllers\Cliente\{
     CarritoController,
@@ -34,6 +35,9 @@ Route::middleware(['web', 'track-user-activity'])->group(function () {
     // Página principal y tienda
     Route::get('/', [TiendaController::class, 'index'])->name('tienda');
     Route::get('/tienda', [TiendaController::class, 'index']);
+
+    // Página pública de FAQs
+    Route::get('/faq', [\App\Http\Controllers\Cliente\FaqController::class, 'index'])->name('faq');
 
     // Autenticación
     Route::get('/login', [LoginController::class, 'mostrarLogin'])->name('login.form');
@@ -82,6 +86,7 @@ Route::middleware(['web', 'track-user-activity'])->group(function () {
     Route::middleware('auth')->prefix('mis-peticiones')->name('cliente.peticiones.')->group(function () {
         Route::get('/', [ClientePeticionController::class, 'index'])->name('index');
         Route::get('/{peticion}', [ClientePeticionController::class, 'show'])->name('show');
+        Route::post('/{peticion}/rechazar', [ClientePeticionController::class, 'rechazar'])->name('rechazar');
     });
 
     /*
@@ -100,11 +105,16 @@ Route::middleware(['web', 'track-user-activity'])->group(function () {
     |--------------------------------------------------------------------------
     */
     Route::middleware('auth')->group(function () {
+        // Pago de carrito
         Route::post('/paypal/create-payment', [PayPalController::class, 'createPayment']);
         Route::post('/paypal/capture-payment', [PayPalController::class, 'capturePayment']);
-        // Rutas de retorno/cancelación
         Route::get('/paypal/return', [PayPalController::class, 'handleReturn']);
         Route::get('/paypal/cancel', [PayPalController::class, 'handleCancel']);
+        
+        // Pago de peticiones personalizadas
+        Route::post('/paypal/peticion/{id_peticion}/create-payment', [PayPalController::class, 'createPeticionPayment'])->name('paypal.peticion.create');
+        Route::get('/paypal/peticion/return', [PayPalController::class, 'capturePeticionPayment'])->name('paypal.peticion.return');
+        Route::get('/paypal/peticion/cancel', [PayPalController::class, 'cancelPeticionPayment'])->name('paypal.peticion.cancel');
     });
 
     /*
@@ -157,5 +167,10 @@ Route::middleware(['web', 'track-user-activity'])->group(function () {
         
         // Carrusel
         Route::resource('carrusel', CarruselController::class)->except(['show']);
+        Route::patch('carrusel/{carrusel}/toggle', [CarruselController::class, 'toggle'])->name('carrusel.toggle');
+
+        // FAQs
+        Route::resource('faqs', FaqController::class)->except(['show']);
+
     });
 });

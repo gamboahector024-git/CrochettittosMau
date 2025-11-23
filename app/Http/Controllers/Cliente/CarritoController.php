@@ -36,7 +36,7 @@ class CarritoController extends Controller
             'producto_ids' => $carrito->detalles->pluck('id_producto')->all(),
         ]);
 
-        return view('cliente.carrito', [
+        return view('cliente.carrito.index', [
             'carrito' => $carrito
         ]);
     }

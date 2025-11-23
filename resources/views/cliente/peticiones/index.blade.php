@@ -19,7 +19,7 @@
                 @foreach($peticiones as $peticion)
                     <div class="peticion-card">
                         <div class="peticion-header">
-                            <span class="peticion-id">Petición #{{ $peticion->id_peticion }}</span>
+                            <span class="peticion-id">Petición #{{ $peticion->numero_peticion_cliente ?? $peticion->id_peticion }}</span>
                             <span class="peticion-date">{{ optional($peticion->created_at)->format('d/m/Y') }}</span>
                             
                             {{-- Usamos tu lógica para el estado, pero en minúsculas --}}
@@ -29,6 +29,12 @@
                         </div>
                         <div class="peticion-body">
                             <strong>{{ $peticion->titulo }}</strong>
+                            <div class="peticion-meta">
+                                @if($peticion->categoria)
+                                    <span> {{ $peticion->categoria->nombre }}</span>
+                                @endif
+                                <span> Cantidad: {{ $peticion->cantidad }}</span>
+                            </div>
                             <p>{{ \Illuminate\Support\Str::limit($peticion->descripcion, 200) }}</p>
                             
                             {{-- 4. Usamos la clase de botón correcta --}}
