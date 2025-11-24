@@ -157,6 +157,6 @@
 @endsection
 
 @section('scripts')
-{{-- Asegúrate de que tu JS maneje la selección de checkboxes y muestre el botón bulk-delete-btn --}}
-<script src="{{ asset('js/admin/promociones.js') }}?v=1"></script>
+    {{-- Asegúrate de que tu JS maneje la selección de checkboxes y muestre el botón bulk-delete-btn --}}
+    @vite('resources/js/admin/promociones.js')
 @endsection

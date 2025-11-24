@@ -15,28 +15,54 @@ use Carbon\Carbon;
 class AdminController extends Controller
 {
     public function dashboard() {
-        // Ventas del mes
+        $now = Carbon::now();
+
         $ventasMes = Pedido::where('estado', 'entregado')
-            ->whereMonth('created_at', now()->month)
-            ->whereYear('created_at', now()->year)
+            ->whereBetween('created_at', [$now->copy()->startOfMonth(), $now])
             ->sum('total');
 
-        // Productos vendidos (suma de cantidades) solo en pedidos ENTREGADOS del mes actual
+        $ventasMesAnterior = Pedido::where('estado', 'entregado')
+            ->whereBetween('created_at', [
+                $now->copy()->subMonth()->startOfMonth(),
+                $now->copy()->subMonth()->endOfMonth(),
+            ])->sum('total');
+
+        $variacionVentas = $this->calculateTrend($ventasMesAnterior, $ventasMes);
+
         $productosVendidos = Pedido::where('estado', 'entregado')
-            ->whereMonth('created_at', now()->month)
-            ->whereYear('created_at', now()->year)
+            ->whereBetween('created_at', [$now->copy()->startOfMonth(), $now])
             ->with('detalles')
             ->get()
-            ->sum(function($pedido) {
+            ->sum(function ($pedido) {
                 return $pedido->detalles->sum('cantidad');
             });
 
-        // Usuarios activos (métrica deshabilitada)
-        $usuariosActivos = 0;
+        $productosVendidosAnterior = Pedido::where('estado', 'entregado')
+            ->whereBetween('created_at', [
+                $now->copy()->subMonth()->startOfMonth(),
+                $now->copy()->subMonth()->endOfMonth(),
+            ])
+            ->with('detalles')
+            ->get()
+            ->sum(function ($pedido) {
+                return $pedido->detalles->sum('cantidad');
+            });
 
-        // Pedidos pendientes
-        $pedidosPendientes = Pedido::where('estado', 'pendiente')
+        $variacionProductos = $this->calculateTrend($productosVendidosAnterior, $productosVendidos);
+
+        $usuariosActivos = Usuario::whereNotNull('ultima_actividad')
+            ->where('ultima_actividad', '>=', $now->copy()->subMinutes(15))
             ->count();
+
+        $pedidosPendientes = Pedido::where('estado', 'pendiente')->count();
+
+        $pedidosPendientesAnterior = Pedido::where('estado', 'pendiente')
+            ->whereBetween('created_at', [
+                $now->copy()->subMonth()->startOfMonth(),
+                $now->copy()->subMonth()->endOfMonth(),
+            ])->count();
+
+        $variacionPedidosPendientes = $this->calculateTrend($pedidosPendientesAnterior, $pedidosPendientes);
 
         // Visitas del sitio (últimos 7 días con detalle diario)
         $finRangoDiario = Carbon::now()->startOfDay();
@@ -58,6 +84,13 @@ class AdminController extends Controller
         }
 
         $visitas = array_sum($visitasDiariasData);
+
+        $visitasPrevias = Visita::whereBetween('created_at', [
+                $inicioRangoDiario->copy()->subDays(7),
+                $inicioRangoDiario->copy()->subSecond(),
+            ])->count();
+
+        $variacionVisitas = $this->calculateTrend($visitasPrevias, $visitas);
 
         // Visitas del sitio (últimos 6 meses con detalle mensual)
         $finRangoMensual = Carbon::now()->startOfMonth();
@@ -84,6 +117,54 @@ class AdminController extends Controller
         // Productos con stock bajo
         $lowStockProducts = Producto::where('stock', '<', 5)->orderBy('stock')->take(10)->get();
 
+        $activityEvents = [];
+
+        if ($lastPedido = Pedido::latest('created_at')->first()) {
+            $activityEvents[] = [
+                'icon' => 'fas fa-shopping-cart',
+                'variant' => 'success',
+                'message' => "Pedido #{$lastPedido->id_pedido} ({$lastPedido->estado})",
+                'timestamp' => $lastPedido->created_at ?? $lastPedido->fecha_pedido,
+            ];
+        }
+
+        if ($lastUsuario = Usuario::orderByDesc('fecha_registro')->first()) {
+            $activityEvents[] = [
+                'icon' => 'fas fa-user',
+                'variant' => 'info',
+                'message' => "Nuevo usuario: {$lastUsuario->nombre}",
+                'timestamp' => $lastUsuario->fecha_registro,
+            ];
+        }
+
+        if ($lastPeticion = Peticion::latest()->first()) {
+            $activityEvents[] = [
+                'icon' => 'fas fa-lightbulb',
+                'variant' => 'warning',
+                'message' => "Nueva petición: {$lastPeticion->titulo}",
+                'timestamp' => $lastPeticion->created_at,
+            ];
+        }
+
+        $recentActivity = collect($activityEvents)
+            ->filter(fn ($event) => !empty($event['timestamp']))
+            ->map(function ($event) {
+                $event['time'] = Carbon::parse($event['timestamp'])->locale('es')->diffForHumans();
+                return $event;
+            })
+            ->sortByDesc(fn ($event) => $event['timestamp'])
+            ->take(4)
+            ->values()
+            ->all();
+
+        $tasaConversion = $visitas > 0 ? ($productosVendidos / max($visitas, 1)) * 100 : null;
+
+        $tasaConversionAnterior = $visitasPrevias > 0
+            ? ($productosVendidosAnterior / max($visitasPrevias, 1)) * 100
+            : null;
+
+        $variacionConversion = $this->calculateTrend($tasaConversionAnterior, $tasaConversion, precision: 1);
+
         return view('admin.dashboard', [
             'ventasMes' => $ventasMes,
             'productosVendidos' => $productosVendidos,
@@ -96,6 +177,41 @@ class AdminController extends Controller
             'visitasMensualesLabels' => $visitasMensualesLabels,
             'visitasMensualesData' => $visitasMensualesData,
             'lowStockProducts' => $lowStockProducts,
+            'variacionVentas' => $variacionVentas,
+            'variacionProductos' => $variacionProductos,
+            'variacionPedidosPendientes' => $variacionPedidosPendientes,
+            'variacionVisitas' => $variacionVisitas,
+            'tasaConversion' => $tasaConversion,
+            'variacionConversion' => $variacionConversion,
+            'recentActivity' => $recentActivity,
         ]);
+    }
+
+    private function calculateTrend($previous, $current, int $precision = 0): ?array
+    {
+        if ($previous === null && $current === null) {
+            return null;
+        }
+
+        if (empty($previous) && empty($current)) {
+            return null;
+        }
+
+        if (empty($previous)) {
+            return [
+                'direction' => 'up',
+                'percentage' => null,
+            ];
+        }
+
+        $change = $current - $previous;
+        $percentage = $previous == 0
+            ? null
+            : round(($change / $previous) * 100, $precision);
+
+        return [
+            'direction' => $change >= 0 ? 'up' : 'down',
+            'percentage' => $percentage,
+        ];
     }
 }

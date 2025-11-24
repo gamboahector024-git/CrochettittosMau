@@ -34,7 +34,7 @@
             {{-- 1. Tarjeta Principal de la Solicitud --}}
             <div class="card" style="margin-bottom: 25px;">
                 <h3 style="font-size: 1.2rem; color: var(--text-dark); margin-bottom: 15px; display:flex; align-items:center; gap:10px;">
-                    🧶 {{ $peticion->titulo }}
+                    {{ $peticion->titulo }}
                 </h3>
                 
                 <div style="background: rgba(0,0,0,0.03); padding: 15px; border-radius: 12px; margin-bottom: 20px;">
@@ -71,7 +71,7 @@
                 <div class="card">
                     <h4 style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 10px;">DIRECCIÓN DE ENTREGA DESEADA</h4>
                     <address style="font-style: normal; color: var(--text-dark);">
-                        📍 {{ $peticion->calle }}, {{ $peticion->colonia }}<br>
+                        {{ $peticion->calle }}, {{ $peticion->colonia }}<br>
                         {{ $peticion->municipio_ciudad }}, {{ $peticion->estado_direccion }}<br>
                         CP: {{ $peticion->codigo_postal }}
                     </address>
@@ -84,7 +84,7 @@
             
             <div class="card" style="position: sticky; top: 20px; border-top: 5px solid var(--accent);">
                 <h3 style="font-size: 1.2rem; color: var(--accent); margin-bottom: 20px;">
-                    📝 Enviar Propuesta
+                    Enviar Propuesta
                 </h3>
 
                 <form action="{{ route('admin.peticiones.responder', $peticion->id_peticion) }}" method="POST">
@@ -109,7 +109,7 @@
 
                     @if($peticion->estado === 'completada')
                         <div class="alert alert-success" style="margin-top: 20px;">
-                            ✅ <strong>Pedido Generado</strong><br>
+                            <strong>Pedido Generado</strong><br>
                             Esta petición ya se convirtió en venta.
                         </div>
                     @else
@@ -127,7 +127,7 @@
 
                 @if($peticion->estado === 'rechazada')
                      <div class="alert alert-danger" style="margin-top: 20px;">
-                        ❌ El cliente rechazó esta propuesta.
+                        El cliente rechazó esta propuesta.
                     </div>
                 @endif
             </div>

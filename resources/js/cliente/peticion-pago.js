@@ -38,3 +38,13 @@ function initPeticionPayPal(peticionId, createUrl, returnUrl, cancelUrl, csrfTok
         }
     }).render('#paypal-button-container');
 }
+
+window.initPeticionPayPalConfig = function(config) {
+    initPeticionPayPal(
+        config.peticionId,
+        config.createUrl,
+        config.returnUrl,
+        config.cancelUrl,
+        config.csrfToken
+    );
+};

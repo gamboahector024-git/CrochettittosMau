@@ -121,4 +121,20 @@ class CarruselController extends Controller
             return back()->with('error', 'Error al eliminar la imagen: ' . $e->getMessage());
         }
     }
+
+    public function toggle(Carrusel $carrusel)
+    {
+        try {
+            $carrusel->activo = ! $carrusel->activo;
+            $carrusel->save();
+
+            $mensaje = $carrusel->activo
+                ? 'Imagen del carrusel marcada como visible.'
+                : 'Imagen del carrusel marcada como oculta.';
+
+            return back()->with('success', $mensaje);
+        } catch (\Exception $e) {
+            return back()->with('error', 'No se pudo actualizar el estado de la imagen: ' . $e->getMessage());
+        }
+    }
 }

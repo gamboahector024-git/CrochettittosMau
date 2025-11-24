@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -21,11 +22,16 @@ class Usuario extends Authenticatable
         'direccion',
         'telefono',
         'rol',
-        'fecha_registro'
+        'fecha_registro',
+        'ultima_actividad',
     ];
 
     protected $hidden = [
         'password_hash',
+    ];
+
+    protected $casts = [
+        'ultima_actividad' => 'datetime',
     ];
 
     public function getRouteKeyName(): string

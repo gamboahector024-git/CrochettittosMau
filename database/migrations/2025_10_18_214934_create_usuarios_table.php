@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('telefono', 20)->nullable();
             $table->enum('rol', ['cliente', 'admin'])->default('cliente');
             $table->timestamp('fecha_registro')->useCurrent();
+            $table->timestamp('ultima_actividad')->nullable()->comment('Última interacción del usuario');
         });
     }
 

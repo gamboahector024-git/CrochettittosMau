@@ -12,7 +12,7 @@
 
     {{-- Estilos --}}
     {{-- Asegúrate de que admin.css tenga los estilos nuevos que agregamos hoy --}}
-    <link rel="stylesheet" href="{{ asset('css/admin.css') }}?v={{ time() }}">
+    @vite('resources/css/admin.css')
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     {{-- Estilos extra por vista --}}
@@ -99,29 +99,7 @@
     </button>
 
     {{-- Scripts Globales --}}
-    <script>
-        // Toggle Menú Móvil
-        const mobileBtn = document.querySelector('.mobile-menu-toggle');
-        const sidebar = document.querySelector('.sidebar');
-        
-        if(mobileBtn) {
-            mobileBtn.addEventListener('click', function() {
-                sidebar.classList.toggle('mobile-open');
-            });
-        }
-
-        // Auto-ocultar alertas después de 5 segundos
-        document.addEventListener('DOMContentLoaded', function() {
-            setTimeout(() => {
-                const alerts = document.querySelectorAll('.alert');
-                alerts.forEach(alert => {
-                    alert.style.transition = "opacity 0.5s ease";
-                    alert.style.opacity = '0';
-                    setTimeout(() => alert.remove(), 500);
-                });
-            }, 5000);
-        });
-    </script>
+    @vite('resources/js/admin/layout.js')
     
     @yield('scripts')
     @stack('scripts')

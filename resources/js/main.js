@@ -194,4 +194,63 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('Add to cart form found:', !!addToCartForm);
     console.log('Buy buttons found:', buyButtons.length);
 
+    // ==============================
+    // Modal de peticiones personalizadas
+    // ==============================
+
+    const btns = document.querySelectorAll('#newPeticionButton'); 
+    const peticionModal = document.getElementById('peticionModal');
+    const closePeticionModalBtn = document.getElementById('closePeticionModal');
+    const cancelPeticionBtn = document.getElementById('cancelPeticion');
+
+    function openPeticionModal(e) {
+        e.preventDefault();
+        if(peticionModal) { 
+            peticionModal.style.display = 'flex'; 
+        }
+    }
+
+    function closePeticionModal() {
+        if(peticionModal) { 
+            peticionModal.style.display = 'none'; 
+        }
+    }
+
+    // Abrir modal
+    if (btns.length > 0 && peticionModal) {
+        btns.forEach(function(btn) {
+            btn.addEventListener('click', openPeticionModal);
+        });
+    }
+
+    // Cerrar modal
+    if (closePeticionModalBtn) { 
+        closePeticionModalBtn.addEventListener('click', closePeticionModal); 
+    }
+    if (cancelPeticionBtn) { 
+        cancelPeticionBtn.addEventListener('click', closePeticionModal); 
+    }
+
+    // Cerrar al hacer clic fuera del modal
+    window.addEventListener('click', function (e) {
+        if (e.target === peticionModal) { 
+            closePeticionModal(); 
+        }
+        
+        // También manejar el modal de login si existe
+        if (e.target === loginModal) { 
+            loginModal.style.display = 'none'; 
+        }
+    });
+});
+
+// ==============================
+// Ocultar overlay de carga al terminar de cargar
+// ==============================
+
+window.addEventListener('load', () => {
+    const overlay = document.getElementById('loading-overlay');
+    if (overlay) {
+        overlay.style.display = 'none';
+    }
 });
