@@ -9,34 +9,6 @@
         <p class="page-subtitle">Resumen general del rendimiento de la tienda</p>
     </div>
 
-    @php
-        $trendFormatter = function (?array $trend, string $label) {
-            if (!$trend) {
-                return [
-                    'class' => 'trend neutral',
-                    'icon' => 'fas fa-minus',
-                    'text' => 'Sin datos previos',
-                ];
-            }
-
-            $direction = $trend['direction'] ?? 'up';
-            $class = 'trend ' . ($direction === 'down' ? 'down' : 'up');
-            $icon = $direction === 'down' ? 'fas fa-arrow-down' : 'fas fa-arrow-up';
-
-            $text = !is_null($trend['percentage'])
-                ? number_format(abs($trend['percentage']), $direction === 'down' ? 0 : 0) . "% {$label}"
-                : 'Sin datos previos';
-
-            return compact('class', 'icon', 'text');
-        };
-
-        $ventasTrend = $trendFormatter($variacionVentas ?? null, 'vs mes anterior');
-        $productosTrend = $trendFormatter($variacionProductos ?? null, 'vs mes anterior');
-        $pedidosTrend = $trendFormatter($variacionPedidosPendientes ?? null, 'vs mes anterior');
-        $visitasTrend = $trendFormatter($variacionVisitas ?? null, 'vs semana anterior');
-        $conversionTrend = $trendFormatter($variacionConversion ?? null, 'vs periodo anterior');
-    @endphp
-
     <!-- Grid de estadísticas principales -->
     <div class="dashboard-grid">
         <!-- Tarjeta 1: Ventas del mes -->
@@ -48,10 +20,6 @@
                 <h3>Ventas del Mes</h3>
                 <div class="value">${{ number_format($ventasMes, 2) }}</div>
                 <div class="label">Total generado en ventas</div>
-                <div class="{{ $ventasTrend['class'] }}">
-                    <i class="{{ $ventasTrend['icon'] }}"></i>
-                    <span>{{ $ventasTrend['text'] }}</span>
-                </div>
             </div>
         </div>
 
@@ -64,10 +32,6 @@
                 <h3>Productos Vendidos</h3>
                 <div class="value">{{ $productosVendidos }}</div>
                 <div class="label">En el mes actual</div>
-                <div class="{{ $productosTrend['class'] }}">
-                    <i class="{{ $productosTrend['icon'] }}"></i>
-                    <span>{{ $productosTrend['text'] }}</span>
-                </div>
             </div>
         </div>
 
@@ -96,10 +60,6 @@
                 <h3>Pedidos Pendientes</h3>
                 <div class="value">{{ $pedidosPendientes }}</div>
                 <div class="label">En proceso de envío</div>
-                <div class="{{ $pedidosTrend['class'] }}">
-                    <i class="{{ $pedidosTrend['icon'] }}"></i>
-                    <span>{{ $pedidosTrend['text'] }}</span>
-                </div>
             </div>
         </div>
 
@@ -112,10 +72,6 @@
                 <h3>Visitas del Sitio</h3>
                 <div class="value">{{ $visitas }}</div>
                 <div class="label">Últimos 7 días</div>
-                <div class="{{ $visitasTrend['class'] }}">
-                    <i class="{{ $visitasTrend['icon'] }}"></i>
-                    <span>{{ $visitasTrend['text'] }}</span>
-                </div>
             </div>
         </div>
 
@@ -130,10 +86,6 @@
                     {{ $tasaConversion !== null ? number_format($tasaConversion, 1) . '%' : '—' }}
                 </div>
                 <div class="label">Ratio visitas a ventas</div>
-                <div class="{{ $conversionTrend['class'] }}">
-                    <i class="{{ $conversionTrend['icon'] }}"></i>
-                    <span>{{ $conversionTrend['text'] }}</span>
-                </div>
             </div>
         </div>
     </div>
@@ -191,37 +143,7 @@
         </div>
     </div>
 
-    <!-- Sección de actividad reciente -->
-    <div class="card">
-        <div class="card-header">
-            <h2>
-                <i class="fas fa-history"></i>
-                Actividad Reciente
-            </h2>
-        </div>
-        <div class="card-body">
-            <div class="activity-list">
-                @forelse($recentActivity as $event)
-                    <div class="activity-item">
-                        <div class="activity-icon {{ $event['variant'] ?? 'info' }}">
-                            <i class="{{ $event['icon'] ?? 'fas fa-info-circle' }}"></i>
-                        </div>
-                        <div class="activity-content">
-                            <div class="activity-message">{{ $event['message'] }}</div>
-                            <div class="activity-time">{{ $event['time'] ?? 'Hace unos momentos' }}</div>
-                        </div>
-                    </div>
-                @empty
-                    <div class="empty-state" style="padding: 1.5rem 0;">
-                        <i class="fas fa-smile"></i>
-                        <h3>Sin actividad reciente</h3>
-                        <p>Aún no hay eventos registrados.</p>
-                    </div>
-                @endforelse
-            </div>
-        </div>
-    </div>
-@endsection
+    @endsection
 
 @section('styles')
 <style>
