@@ -44,7 +44,8 @@ Route::middleware(['web', 'track-user-activity'])->group(function () {
     Route::post('/login', [LoginController::class, 'procesarLogin'])->name('login.procesar');
     Route::get('/registro', [LoginController::class, 'mostrarRegistro'])->name('registro.form');
     Route::post('/registro', [LoginController::class, 'procesarRegistro'])->name('registro.guardar');
-    Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
+    Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
 
     /*
     |--------------------------------------------------------------------------
