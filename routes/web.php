@@ -12,7 +12,8 @@ use App\Http\Controllers\Admin\{
     PeticionController,
     PromocionController,
     CarruselController,
-    FaqController
+    FaqController,
+    PagoController
 };
 use App\Http\Controllers\Cliente\{
     CarritoController,
@@ -66,6 +67,11 @@ Route::middleware(['web', 'track-user-activity'])->group(function () {
         ->name('paypal.webhook')
         ->withoutMiddleware([ValidateCsrfToken::class]);
 
+    // Webhook de Stripe (sin CSRF y sin auth)
+    Route::post('/stripe/webhook', [PagoController::class, 'handleStripeWebhook'])
+        ->name('stripe.webhook')
+        ->withoutMiddleware([ValidateCsrfToken::class]);
+
     /*
     |--------------------------------------------------------------------------
     | Perfil de usuario
@@ -99,13 +105,17 @@ Route::middleware(['web', 'track-user-activity'])->group(function () {
         Route::get('/{pedido}', [ClientePedidoController::class, 'show'])->name('show');
     });
 
+
     /*
     |--------------------------------------------------------------------------
-    | PayPal
+    | Pagos (PayPal y Stripe)
     |--------------------------------------------------------------------------
     */
     Route::middleware('auth')->group(function () {
-        // Pago de carrito
+        // Stripe
+        Route::post('/stripe/payment-intent', [PagoController::class, 'createStripePaymentIntent'])->name('stripe.payment-intent');
+
+        // PayPal
         Route::post('/paypal/create-payment', [PayPalController::class, 'createPayment']);
         Route::post('/paypal/capture-payment', [PayPalController::class, 'capturePayment']);
         Route::get('/paypal/return', [PayPalController::class, 'handleReturn']);

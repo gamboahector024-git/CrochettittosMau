@@ -78,7 +78,7 @@ class PedidoSeeder extends Seeder
                 'municipio_ciudad' => 'Cuauhtémoc',
                 'codigo_postal' => '06000',
                 'estado_direccion' => 'Ciudad de México',
-                'metodo_pago' => 'transferencia',
+                'metodo_pago' => '',
                 'empresa_envio' => null,
                 'codigo_rastreo' => null,
                 'fecha_envio' => null,

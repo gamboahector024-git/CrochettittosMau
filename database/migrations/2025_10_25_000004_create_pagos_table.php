@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('pagos', function (Blueprint $table) {
             $table->id('id_pago');
             $table->foreignId('id_pedido')->constrained('pedidos', 'id_pedido')->onDelete('cascade');
-            $table->enum('metodo', ['tarjeta', 'paypal', 'transferencia', 'efectivo']);
+            $table->enum('metodo', ['tarjeta', 'paypal', 'efectivo']);
             $table->decimal('monto', 10, 2);
             $table->string('referencia', 255)->nullable()->unique();
             $table->enum('estado', ['pendiente', 'completado', 'fallido'])->default('pendiente');
