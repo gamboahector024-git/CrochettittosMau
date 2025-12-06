@@ -150,7 +150,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     // Crear formulario temporal para enviar
                     const form = document.createElement('form');
                     form.method = 'POST';
-                    form.action = '{{ route("carrito.store") }}';
+                    const carritoRouteMeta = document.querySelector('meta[name="route-carrito-store"]');
+                    form.action = carritoRouteMeta ? carritoRouteMeta.getAttribute('content') : '/carrito/agregar';
                     
                     const tokenInput = document.createElement('input');
                     tokenInput.type = 'hidden';

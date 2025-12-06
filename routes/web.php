@@ -134,6 +134,7 @@ Route::middleware(['web', 'track-user-activity'])->group(function () {
     */
     Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+        Route::get('/dashboard/stats', [AdminController::class, 'dashboardStats'])->name('dashboard.stats');
 
         // Toggle del tema (modo oscuro) - VERSIÓN CON COOKIES
         Route::post('/theme/toggle', function (Request $request) {

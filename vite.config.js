@@ -22,7 +22,8 @@ export default defineConfig({
                 // JS admin
                 'resources/js/admin/layout.js',
                 'resources/js/admin/promociones.js',
-                // (si usas también admin/carrusel.js, admin/peticiones.js, admin/theme.js, podemos agregarlos después)
+                'resources/js/admin/theme.js',
+                // (si usas también admin/carrusel.js, admin/peticiones.js, podemos agregarlos después)
             ],
             refresh: true,
         }),

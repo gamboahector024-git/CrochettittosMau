@@ -12,7 +12,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     {{-- CSS Principal --}}
-    <link rel="stylesheet" href="{{ asset('css/admin.css') }}?v={{ time() }}">
+    
+    @vite(['resources/css/admin.css','resources/js/admin/theme.js','resources/js/admin/dashboard.js'])
     
     @stack('styles')
 </head>
@@ -75,9 +76,6 @@
     <main class="main-content">
         @yield('content')
     </main>
-
-    {{-- Scripts: Aquí conectamos el JS externo --}}
-    <script src="{{ asset('js/admin/theme.js') }}"></script>
     
     @stack('scripts')
 </body>

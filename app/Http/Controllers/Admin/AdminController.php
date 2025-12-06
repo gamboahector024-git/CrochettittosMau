@@ -15,6 +15,36 @@ use Carbon\Carbon;
 class AdminController extends Controller
 {
     public function dashboard() {
+        $data = $this->getDashboardData();
+        return view('admin.dashboard', $data);
+    }
+
+    public function dashboardStats(Request $request)
+    {
+        $data = $this->getDashboardData();
+        return response()->json([
+            'ventasMes' => $data['ventasMes'],
+            'productosVendidos' => $data['productosVendidos'],
+            'usuariosActivos' => $data['usuariosActivos'],
+            'pedidosPendientes' => $data['pedidosPendientes'],
+            'visitas' => $data['visitas'],
+            'tasaConversion' => $data['tasaConversion'],
+            'peticionesPendientes' => $data['peticionesPendientes'],
+            'promocionesActivas' => $data['promocionesActivas'],
+            'lowStockCount' => $data['lowStockProducts']->count(),
+            'lowStockProducts' => $data['lowStockProducts']->map(function ($p) {
+                return [
+                    'id_producto' => $p->id_producto,
+                    'nombre' => $p->nombre,
+                    'stock' => $p->stock,
+                    'categoria' => optional($p->categoria)->nombre,
+                ];
+            })->values(),
+        ]);
+    }
+
+    private function getDashboardData(): array
+    {
         $now = Carbon::now();
 
         $ventasMes = Pedido::where('estado', 'entregado')
@@ -64,7 +94,6 @@ class AdminController extends Controller
 
         $variacionPedidosPendientes = $this->calculateTrend($pedidosPendientesAnterior, $pedidosPendientes);
 
-        // Visitas del sitio (últimos 7 días con detalle diario)
         $finRangoDiario = Carbon::now()->startOfDay();
         $inicioRangoDiario = (clone $finRangoDiario)->subDays(6);
 
@@ -92,7 +121,6 @@ class AdminController extends Controller
 
         $variacionVisitas = $this->calculateTrend($visitasPrevias, $visitas);
 
-        // Visitas del sitio (últimos 6 meses con detalle mensual)
         $finRangoMensual = Carbon::now()->startOfMonth();
         $inicioRangoMensual = (clone $finRangoMensual)->subMonths(5);
 
@@ -113,9 +141,17 @@ class AdminController extends Controller
 
         // Contador de Peticiones
         $peticionesCount = Peticion::count();
+        $peticionesPendientes = Peticion::where('estado', 'pendiente')->count();
+
+        // Promociones activas
+        $promocionesActivas = \App\Models\Promocion::where('activa', true)->count();
 
         // Productos con stock bajo
-        $lowStockProducts = Producto::where('stock', '<', 5)->orderBy('stock')->take(10)->get();
+        $lowStockProducts = Producto::with('categoria')
+            ->where('stock', '<=', 5)
+            ->orderBy('stock')
+            ->take(10)
+            ->get();
 
         $activityEvents = [];
 
@@ -165,13 +201,15 @@ class AdminController extends Controller
 
         $variacionConversion = $this->calculateTrend($tasaConversionAnterior, $tasaConversion, precision: 1);
 
-        return view('admin.dashboard', [
+        return [
             'ventasMes' => $ventasMes,
             'productosVendidos' => $productosVendidos,
             'usuariosActivos' => $usuariosActivos,
             'pedidosPendientes' => $pedidosPendientes,
             'visitas' => $visitas,
             'peticionesCount' => $peticionesCount,
+            'peticionesPendientes' => $peticionesPendientes,
+            'promocionesActivas' => $promocionesActivas,
             'visitasDiariasLabels' => $visitasDiariasLabels,
             'visitasDiariasData' => $visitasDiariasData,
             'visitasMensualesLabels' => $visitasMensualesLabels,
@@ -184,7 +222,7 @@ class AdminController extends Controller
             'tasaConversion' => $tasaConversion,
             'variacionConversion' => $variacionConversion,
             'recentActivity' => $recentActivity,
-        ]);
+        ];
     }
 
     private function calculateTrend($previous, $current, int $precision = 0): ?array

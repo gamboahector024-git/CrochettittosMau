@@ -80,6 +80,28 @@
                 <div class="label">Ratio visitas a ventas</div>
             </div>
         </div>
+
+        <div class="stat-card orange">
+            <div class="card-icon">
+                <i class="fas fa-envelope"></i>
+            </div>
+            <div class="card-content">
+                <h3>Peticiones Pendientes</h3>
+                <div class="value" id="metric-peticionesPendientes">{{ $peticionesPendientes }}</div>
+                <div class="label">Solicitudes personalizadas por responder</div>
+            </div>
+        </div>
+
+        <div class="stat-card teal">
+            <div class="card-icon">
+                <i class="fas fa-tag"></i>
+            </div>
+            <div class="card-content">
+                <h3>Promociones Activas</h3>
+                <div class="value" id="metric-promocionesActivas">{{ $promocionesActivas }}</div>
+                <div class="label">Ofertas vigentes disponibles</div>
+            </div>
+        </div>
     </div>
 
     <div class="card low-stock-section">
@@ -112,15 +134,7 @@
                                     </span>
                                 </div>
                             </div>
-                            <div class="product-actions">
-                                @if(isset($product->id_producto))
-                                    <a href="{{ route('admin.productos.edit', $product->id_producto) }}" 
-                                       class="btn btn-primary btn-sm">
-                                        <i class="fas fa-edit"></i>
-                                        Editar Stock
-                                    </a>
-                                @endif
-                            </div>
+                            <div class="product-actions"></div>
                         </div>
                     @endforeach
                 </div>
@@ -131,46 +145,6 @@
                     <p>No hay productos con bajo stock en este momento.</p>
                 </div>
             @endif
-        </div>
-    </div>
-
-    <div class="card">
-        <div class="card-header">
-            <h2>
-                <i class="fas fa-history"></i>
-                Actividad Reciente
-            </h2>
-        </div>
-        <div class="card-body">
-            <div class="activity-list">
-                <div class="activity-item">
-                    <div class="activity-icon success">
-                        <i class="fas fa-shopping-cart"></i>
-                    </div>
-                    <div class="activity-content">
-                        <div class="activity-message">Nuevo pedido recibido #{{ rand(1000, 9999) }}</div>
-                        <div class="activity-time">Hace 5 minutos</div>
-                    </div>
-                </div>
-                <div class="activity-item">
-                    <div class="activity-icon info">
-                        <i class="fas fa-user"></i>
-                    </div>
-                    <div class="activity-content">
-                        <div class="activity-message">Nuevo usuario registrado</div>
-                        <div class="activity-time">Hace 15 minutos</div>
-                    </div>
-                </div>
-                <div class="activity-item">
-                    <div class="activity-icon warning">
-                        <i class="fas fa-box"></i>
-                    </div>
-                    <div class="activity-content">
-                        <div class="activity-message">Producto agotado: Llavero Snoopy</div>
-                        <div class="activity-time">Hace 1 hora</div>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 @endsection
