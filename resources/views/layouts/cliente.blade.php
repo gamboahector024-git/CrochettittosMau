@@ -39,8 +39,13 @@
         <nav class="navbar">
             <h1><a href="{{ url('/') }}">Crochettittos</a></h1>
             
-            {{-- MENÚ DE NAVEGACIÓN MEJORADO --}}
-            <div class="nav-auth">
+            {{-- >>> MODIFICACIÓN AQUÍ: Botón Hamburguesa para Móvil <<< --}}
+            <button class="mobile-menu-btn" id="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+
+            {{-- MENÚ DE NAVEGACIÓN (Agregué id="nav-menu") --}}
+            <div class="nav-auth" id="nav-menu">
                 {{-- 1. Enlace de Ayuda (Visible para todos) --}}
                 <a href="{{ route('faq') }}" class="nav-link-minimal" title="Preguntas Frecuentes">
                     <i class="fas fa-question-circle"></i> <span>Ayuda</span>
@@ -85,16 +90,21 @@
                             <span class="user-name">{{ Auth::user()->nombre }}</span>
                         </a>
                         
-                        <a href="{{ route('logout') }}" class="logout-icon-btn" title="Cerrar Sesión">
-                            <i class="fas fa-sign-out-alt"></i>
-                        </a>
+                        <form action="{{ route('logout') }}" method="POST" style="display:inline;">
+                             @csrf
+                            <button type="submit" class="logout-icon-btn" title="Cerrar Sesión" style="background:none; border:none; cursor:pointer;">
+                                <i class="fas fa-sign-out-alt"></i>
+                            </button>
+                        </form>
                     </div>
 
                 @else
                     {{-- Versión Invitado --}}
-                    <a href="{{ route('login.form') }}" class="nav-link-minimal">Iniciar Sesión</a>
-                    <a href="{{ route('registro.form') }}" class="nav-action-btn btn-rose">Registrarse</a>
-                
+                    {{-- Agrupamos en un div para mejor control en móvil --}}
+                    <div class="guest-menu-group" style="display: flex; align-items: center; gap: 1rem;">
+                        <a href="{{ route('login.form') }}" class="nav-link-minimal">Iniciar Sesión</a>
+                        <a href="{{ route('registro.form') }}" class="nav-action-btn btn-rose">Registrarse</a>
+                    </div>
                 @endauth
             </div>
         </nav>

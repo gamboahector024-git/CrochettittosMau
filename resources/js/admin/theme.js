@@ -1,38 +1,40 @@
-/**
- * Manejo del tema oscuro/claro en el panel de administración
- */
-
-// Detectar preferencia del sistema
-function detectSystemTheme() {
-    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        return 'dark';
-    }
-    return 'light';
-}
-
-// Aplicar tema al cargar la página
 document.addEventListener('DOMContentLoaded', function() {
-    const savedTheme = document.documentElement.getAttribute('data-theme');
-    
-    // Si no hay tema guardado, usar el del sistema
-    if (!savedTheme) {
-        const systemTheme = detectSystemTheme();
-        document.documentElement.setAttribute('data-theme', systemTheme);
-    }
-    
-    // Suavizar transiciones después de cargar
-    setTimeout(() => {
-        document.body.style.transition = 'all 0.3s ease';
-    }, 100);
-});
 
-// Escuchar cambios en la preferencia del sistema
-window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
-    const currentTheme = document.documentElement.getAttribute('data-theme');
-    
-    // Solo cambiar si el usuario no ha establecido una preferencia manual
-    if (!currentTheme || currentTheme === 'auto') {
-        const newTheme = e.matches ? 'dark' : 'light';
-        document.documentElement.setAttribute('data-theme', newTheme);
+    // ==========================================
+    // 1. LÓGICA DEL MENÚ MÓVIL (SIDEBAR)
+    // ==========================================
+    const mobileBtn = document.getElementById('btn-toggle');
+    const sidebar = document.getElementById('sidebar');
+
+    if(mobileBtn && sidebar) {
+        // Al dar clic en el botón hamburguesa
+        mobileBtn.addEventListener('click', function(e) {
+            e.stopPropagation(); // Evita clics fantasmas
+            sidebar.classList.toggle('mobile-open');
+        });
+
+        // Cerrar menú automáticamente al hacer clic fuera de él (Solo en móvil)
+        document.addEventListener('click', function(e) {
+            if (window.innerWidth <= 768) { 
+                // Si el clic NO fue en el sidebar NI en el botón
+                if (!sidebar.contains(e.target) && !mobileBtn.contains(e.target)) {
+                    sidebar.classList.remove('mobile-open');
+                }
+            }
+        });
+    }
+
+    // ==========================================
+    // 2. AUTO-CERRAR ALERTAS (Notificaciones)
+    // ==========================================
+    const alerts = document.querySelectorAll('.alert');
+    if (alerts.length > 0) {
+        setTimeout(() => {
+            alerts.forEach(alert => {
+                alert.style.transition = "opacity 0.5s ease";
+                alert.style.opacity = '0'; // Desvanecer
+                setTimeout(() => alert.remove(), 500); // Eliminar del HTML
+            });
+        }, 5000); // Esperar 5 segundos antes de borrar
     }
 });

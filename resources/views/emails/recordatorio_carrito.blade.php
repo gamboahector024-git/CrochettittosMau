@@ -3,52 +3,123 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Recordatorio de carrito</title>
+    <title>Recordatorio de Carrito</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        .container { max-width: 600px; margin: 0 auto; font-family: Arial, sans-serif; color: #333; }
-        .header { background: #A77BFF; color: #fff; padding: 16px; text-align: center; }
-        .content { padding: 16px; }
-        .product { display: flex; gap: 12px; border-bottom: 1px solid #eee; padding: 12px 0; }
-        .product img { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; }
-        .product h4 { margin: 0 0 4px 0; }
-        .footer { text-align: center; padding: 16px; color: #666; font-size: 12px; }
-        .btn { display: inline-block; padding: 10px 16px; background: #A77BFF; color: #fff !important; text-decoration: none; border-radius: 6px; margin-top: 12px; }
+        /* Consultas para móviles */
+        @media only screen and (max-width: 480px) {
+            .mobile-padding { padding: 20px !important; }
+            .mobile-image { width: 80px !important; height: 80px !important; }
+            .mobile-text { font-size: 14px !important; }
+        }
     </style>
 </head>
-<body>
-<div class="container">
-    <div class="header">
-        <h2>¡Tienes productos esperando en tu carrito!</h2>
-    </div>
-    <div class="content">
-        <p>Hola {{ $usuario->nombre }},</p>
-        <p>Notamos que dejaste algunos productos en tu carrito hace un rato. Aquí tienes un recordatorio por si deseas completar tu compra:</p>
+<body style="margin: 0; padding: 0; background-color: #F3EEF1; font-family: 'Poppins', Helvetica, Arial, sans-serif; color: #5D4A56; line-height: 1.6;">
 
-        @foreach($productos as $producto)
-            <div class="product">
-                <img src="{{ $producto->imagen_url ?? 'https://via.placeholder.com/80' }}" alt="{{ $producto->nombre }}">
-                <div>
-                    <h4>{{ $producto->nombre }}</h4>
-                    <div>
-                        @php
-                            $precio = $producto->promocionActiva
-                                ? $producto->precio * (1 - $producto->promocionActiva->descuento/100)
-                                : $producto->precio;
-                        @endphp
-                        Precio: ${{ number_format($precio, 2) }}
-                    </div>
-                </div>
-            </div>
-        @endforeach
+    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #F3EEF1; padding: 40px 0;">
+        <tr>
+            <td align="center">
+                
+                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px; background-color: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05); border: 1px solid rgba(255, 255, 255, 0.6);">
+                    
+                    <tr>
+                        <td align="center" style="padding: 35px 20px; background-color: #ffffff; border-bottom: 2px solid #F3EEF1;">
+                            <h1 style="color: #D56989; margin: 0; font-family: 'Playfair Display', serif; font-size: 32px; letter-spacing: 0.5px;">
+                                Crochettittos
+                            </h1>
+                        </td>
+                    </tr>
 
-        <p style="text-align: center;">
-            <!-- <a href="{{ route('carrito.index') }}" class="btn">Volver al carrito</a> -->
-        </p>
-    </div>
+                    <tr>
+                        <td style="padding: 30px 30px 10px 30px;">
+                            <div style="background-color: #F1F6E6; border: 2px solid #C2DC80; border-radius: 16px; padding: 25px; text-align: center;">
+                                
+                                <h2 style="color: #D56989; margin-top: 0; font-family: 'Playfair Display', serif; font-size: 22px; margin-bottom: 10px;">
+                                    ¡Tus productos te esperan! 🧶
+                                </h2>
+                                
+                                <p style="color: #5D4A56; font-size: 16px; line-height: 1.6; margin: 0;">
+                                    Hola <strong>{{ $usuario->nombre }}</strong>,<br>
+                                    Notamos que dejaste cositas hermosas en tu carrito. Recuerda que en <strong>Crochettittos</strong> cada pieza es única y hecha con mucho amor. ❤️
+                                </p>
+                            </div>
+                        </td>
+                    </tr>
 
-    <div class="footer">
-        Crochettittos · Este es un mensaje automático. Si ya realizaste tu compra, ignora este correo.
-    </div>
-</div>
+                    <tr>
+                        <td style="padding: 20px 30px;">
+                            <h3 style="color: #4A3A44; font-family: 'Poppins', sans-serif; font-size: 18px; margin-bottom: 15px; border-bottom: 1px solid #EA9CAF; padding-bottom: 10px; display: inline-block;">
+                                Tu selección pendiente:
+                            </h3>
+                            
+                            <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                @foreach($productos as $detalle)
+                                    <tr>
+                                        <td style="padding: 15px 0; border-bottom: 1px dashed #EA9CAF;">
+                                            <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                                <tr>
+                                                    <td width="80" style="padding-right: 15px;">
+                                                        <img src="{{ $message->embed(public_path($detalle->producto->imagen_url ?? 'img/placeholder.png')) }}" 
+                                                             alt="Producto" width="80" height="80" 
+                                                             style="border-radius: 12px; display: block; object-fit: cover; border: 1px solid #F3EEF1;">
+                                                    </td>
+                                                    <td valign="middle">
+                                                        <span style="display: block; font-size: 16px; color: #4A3A44; font-weight: 700; margin-bottom: 4px;">
+                                                            {{ $detalle->producto->nombre }}
+                                                        </span>
+                                                        <span style="font-size: 14px; color: #7A6A74;">
+                                                            Cantidad: {{ $detalle->cantidad }}
+                                                        </span>
+                                                    </td>
+                                                    <td align="right" valign="middle">
+                                                        <span style="color: #D56989; font-weight: 700; font-size: 18px;">
+                                                            ${{ number_format($detalle->producto->precio, 2) }}
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </table>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td align="center" style="padding: 20px 30px 40px 30px;">
+                            <a href="{{ route('carrito.index') }}" 
+                               style="background-color: #D56989; color: #ffffff; text-decoration: none; padding: 16px 40px; border-radius: 30px; font-weight: 700; font-size: 16px; display: inline-block; box-shadow: 0 6px 15px rgba(213, 105, 137, 0.4); font-family: 'Poppins', sans-serif;">
+                                🎀 Continuar con mi compra
+                            </a>
+                            <p style="margin-top: 25px; font-size: 13px; color: #7A6A74;">
+                                🔒 Tu carrito se guarda automáticamente por 7 días.
+                            </p>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td align="center" style="background-color: #F8F6F8; padding: 30px; border-top: 1px solid #F3EEF1;">
+                            <p style="margin: 0 0 15px 0; color: #7A6A74; font-size: 14px;">
+                                Síguenos en nuestras redes 👇
+                            </p>
+                            
+                            <div style="margin-bottom: 20px;">
+                                <a href="https://www.instagram.com/crochettittos?igsh=MWZhZHp2dnV3bmlkbw==" target="_blank" style="color: #D56989; text-decoration: none; margin: 0 10px; font-weight: 700;">Instagram</a>
+                                <span style="color: #EA9CAF;">|</span>
+                                <a href="https://www.facebook.com/share/17dCteCFLo/?mibextid=wwXIfr" target="_blank" style="color: #D56989; text-decoration: none; margin: 0 10px; font-weight: 700;">Facebook</a>
+                            </div>
+
+                            <p style="margin: 0; font-size: 12px; color: #9A8A94; line-height: 1.5;">
+                                © {{ date('Y') }} <strong>Crochettittos</strong>.<br>
+                                Hecho a mano con amor en Chiapas.
+                            </p>
+                        </td>
+                    </tr>
+
+                </table>
+            </td>
+        </tr>
+    </table>
+
 </body>
 </html>
