@@ -39,12 +39,12 @@
         <nav class="navbar">
             <h1><a href="{{ url('/') }}">Crochettittos</a></h1>
             
-            {{-- >>> MODIFICACIÓN AQUÍ: Botón Hamburguesa para Móvil <<< --}}
+            {{-- Botón Hamburguesa para Móvil --}}
             <button class="mobile-menu-btn" id="mobile-menu-btn">
                 <i class="fas fa-bars"></i>
             </button>
 
-            {{-- MENÚ DE NAVEGACIÓN (Agregué id="nav-menu") --}}
+            {{-- MENÚ DE NAVEGACIÓN --}}
             <div class="nav-auth" id="nav-menu">
                 {{-- 1. Enlace de Ayuda (Visible para todos) --}}
                 <a href="{{ route('faq') }}" class="nav-link-minimal" title="Preguntas Frecuentes">
@@ -100,7 +100,6 @@
 
                 @else
                     {{-- Versión Invitado --}}
-                    {{-- Agrupamos en un div para mejor control en móvil --}}
                     <div class="guest-menu-group" style="display: flex; align-items: center; gap: 1rem;">
                         <a href="{{ route('login.form') }}" class="nav-link-minimal">Iniciar Sesión</a>
                         <a href="{{ route('registro.form') }}" class="nav-action-btn btn-rose">Registrarse</a>
@@ -250,10 +249,38 @@
                         <textarea id="descripcion" name="descripcion" rows="4" class="form-input" required placeholder="Describe lo que necesitas: colores, tamaño, detalles especiales..."></textarea>
                     </div>
                     
+                    {{-- >>> MODIFICACIÓN DE IMAGEN (Drag & Drop) <<< --}}
                     <div class="form-group">
-                        <label for="imagen_referencia">Imagen de referencia (opcional)</label>
-                        <input id="imagen_referencia" name="imagen_referencia" type="file" accept="image/*" class="form-input-file">
+                        <label>Imagen de referencia (opcional)</label>
+                        <div class="file-input-wrapper">
+                            <input id="imagen_referencia" name="imagen_referencia" type="file" accept="image/*" style="display:none;">
+                            
+                            <div class="file-drop-zone" id="dropZone">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <div class="drop-text">
+                                    <h4>Arrastra tu imagen aquí</h4>
+                                    <p>o <span class="browse-link">selecciona un archivo</span></p>
+                                    <p class="file-help-text" style="margin-top:0.5rem; font-size: 0.8rem;">
+                                        (JPG, PNG, WEBP - Máx 2MB)
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="image-preview-container" id="previewContainer">
+                                <div class="image-preview">
+                                    <img id="imagePreview" src="" alt="Previsualización">
+                                    <button type="button" class="remove-image-btn" id="removeImageBtn" title="Eliminar imagen">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                                <div class="file-info" id="fileInfo">
+                                    <div class="file-name" id="fileNameText">nombre_archivo.jpg</div>
+                                    <div class="file-size" id="fileSizeText">0.00 KB</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+                    {{-- FIN MODIFICACIÓN --}}
 
                     <h3>Dirección de Entrega</h3>
                     <div class="form-group">

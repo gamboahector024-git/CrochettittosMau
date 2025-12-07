@@ -4,53 +4,78 @@
 
 @section('content')
 <div class="container">
-    {{-- 1. Usamos el contenedor "glass" que ya tienes --}}
-    <div class="profile-container">
-
-        {{-- 2. Usamos el título estilizado --}}
-        <h2 class="profile-title">Mis Peticiones</h2>
+    <div class="peticion-container">
+        <h2 class="peticion-title">Mis Peticiones</h2>
 
         @if($peticiones->isEmpty())
-            <p>No tienes peticiones todavía. Puedes enviar una nueva desde el botón "Nueva Petición" en la barra superior.</p>
+            <div class="peticion-empty">
+                <i class="fas fa-inbox peticion-empty-icon"></i>
+                <h3 class="peticion-empty-title">No tienes peticiones todavía</h3>
+                <p class="peticion-empty-text">Envía tu primera petición personalizada desde el botón "Nueva Petición"</p>
+            </div>
         @else
-            {{-- 3. Reemplazamos la <table> por nuestra lista de tarjetas --}}
-            <div class="petitions-list">
-                
+            <div class="peticion-list">
                 @foreach($peticiones as $peticion)
                     <div class="peticion-card">
                         <div class="peticion-header">
-                            <span class="peticion-id">Petición #{{ $peticion->numero_peticion_cliente ?? $peticion->id_peticion }}</span>
-                            <span class="peticion-date">{{ optional($peticion->created_at)->format('d/m/Y') }}</span>
+                            <div>
+                                <span class="peticion-id">
+                                    <i class="fas fa-hashtag"></i>
+                                    #{{ $peticion->numero_peticion_cliente ?? $peticion->id_peticion }}
+                                </span>
+                                <span class="peticion-date">
+                                    <i class="far fa-calendar"></i>
+                                    {{ optional($peticion->created_at)->format('d/m/Y') }}
+                                </span>
+                            </div>
                             
-                            {{-- Usamos tu lógica para el estado, pero en minúsculas --}}
                             <span class="peticion-status status-{{ strtolower(str_replace(' ', '-', $peticion->estado)) }}">
                                 {{ ucfirst($peticion->estado) }}
                             </span>
                         </div>
+                        
                         <div class="peticion-body">
-                            <strong>{{ $peticion->titulo }}</strong>
+                            <h3 class="peticion-body-title">{{ $peticion->titulo }}</h3>
+                            
                             <div class="peticion-meta">
                                 @if($peticion->categoria)
-                                    <span> {{ $peticion->categoria->nombre }}</span>
+                                    <span class="peticion-meta-item">
+                                        <i class="fas fa-tag peticion-meta-icon"></i>
+                                        {{ $peticion->categoria->nombre }}
+                                    </span>
                                 @endif
-                                <span> Cantidad: {{ $peticion->cantidad }}</span>
+                                <span class="peticion-meta-item">
+                                    <i class="fas fa-cube peticion-meta-icon cube"></i>
+                                    {{ $peticion->cantidad }} {{ $peticion->cantidad == 1 ? 'unidad' : 'unidades' }}
+                                </span>
                             </div>
-                            <p>{{ \Illuminate\Support\Str::limit($peticion->descripcion, 200) }}</p>
                             
-                            {{-- 4. Usamos la clase de botón correcta --}}
-                            <a href="{{ route('cliente.peticiones.show', $peticion->id_peticion) }}" class="tertiary-button">
-                                Ver Detalles
-                            </a>
+                            <p class="peticion-description">
+                                {{ \Illuminate\Support\Str::limit($peticion->descripcion, 200) }}
+                            </p>
+                            
+                            <div class="peticion-actions">
+                                <a href="{{ route('cliente.peticiones.show', $peticion->id_peticion) }}" 
+                                   class="peticion-button">
+                                    <i class="fas fa-eye"></i>
+                                    Ver Detalles
+                                </a>
+                                
+                                @if(!empty($peticion->respuesta_admin) && $peticion->respuesta_cliente === 'pendiente')
+                                    <span class="peticion-notification">
+                                        <i class="fas fa-bell peticion-notification-icon"></i>
+                                        Nueva propuesta disponible
+                                    </span>
+                                @endif
+                            </div>
                         </div>
                     </div>
                 @endforeach
             </div>
 
-            {{-- 5. Le damos estilo a la paginación de Laravel --}}
-            <div class="pagination-links">
+            <div class="peticion-pagination">
                 {{ $peticiones->links() }}
             </div>
-            
         @endif
     </div>
 </div>
