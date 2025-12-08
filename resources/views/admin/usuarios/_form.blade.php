@@ -41,7 +41,7 @@
 
         {{-- Dirección (Area de texto) --}}
         <div class="form-group">
-            <label for="direccion">Dirección de Envío</label>
+            <label for="direccion">Dirección</label>
             <textarea name="direccion" id="direccion" rows="3" class="form-control">{{ old('direccion', $usuario?->direccion) }}</textarea>
         </div>
     </div>

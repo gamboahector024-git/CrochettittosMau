@@ -56,20 +56,23 @@
                     
                     {{-- Selector de Método --}}
                     <div class="form-group">
-                        <label for="metodo_pago">Selecciona cómo deseas pagar</label>
-                        <div class="select-wrapper">
-                            <select class="form-input" id="metodo_pago" name="metodo_pago" required>
-                                <option value="">-- Seleccione una opción --</option>
-                                <option value="efectivo">💵 Efectivo (Contra entrega)</option>
-                                <option value="transferencia">🏦 Transferencia Bancaria</option>
-                                <option value="tarjeta">💳 Tarjeta de Crédito / Débito</option>
-                                <option value="paypal">🅿️ PayPal</option>
-                            </select>
-                        </div>
+                        <label for="metodo_pago">Selecciona un método</label>
+                        {{-- Agregamos un evento onchange para mostrar/ocultar PayPal --}}
+                        <select class="form-input" id="metodo_pago" name="metodo_pago" required onchange="togglePaymentMethod(this.value)">
+                            <option value="">Seleccione un método</option>
+                            <option value="efectivo">Efectivo (Contra entrega)</option>
+                            <option value="transferencia">Transferencia Bancaria</option>
+                            <option value="tarjeta">Tarjeta de Crédito/Débito</option>
+                            <option value="paypal">PayPal</option>
+                        </select>
                     </div>
+                    
+                    {{-- Contenedor para tarjeta Stripe (si se usa) --}}
+                    {{-- <div id="stripe-container" style="display: none; margin-top: 1rem; padding: 1rem; background: #f8f9fa; border-radius: 8px; border: 1px solid #ddd;">...</div> --}}
 
                     {{-- FORMULARIO DE TARJETA (Oculto por defecto) --}}
-                    <div id="card-form-container" class="card-form-hidden">
+                    {{-- Nota: quitamos la clase 'card-form-hidden' de CSS si queremos controlarlo full con JS inline, o usamos la clase toggling --}}
+                    <div id="card-form-container" style="display: none; margin-top: 1.5rem;">
                         <h4 class="card-form-title">
                             <i class="far fa-credit-card"></i> Datos de la Tarjeta
                         </h4>
@@ -165,13 +168,18 @@
                             <span>Total a Pagar:</span>
                             <span>${{ number_format($total, 2) }}</span>
                         </div>
-                    </div>
 
-                    {{-- Acciones --}}
-                    <div class="form-actions" style="margin-top: 1.5rem;">
-                        <button type="submit" id="btn-confirmar" class="checkout-button full-width">
-                            Confirmar Compra <i class="fas fa-check"></i>
-                        </button>
+                        {{-- 
+                           AQUÍ ESTÁ LA SOLUCIÓN:
+                           1. Botón estándar para Efectivo/Transferencia/Tarjeta
+                           2. Contenedor de PayPal (oculto por defecto)
+                        --}}
+                        <div class="form-actions" style="margin-top: 1.5rem; flex-direction: column; width: 100%;">
+                            
+                            {{-- Botón normal (visible por defecto) --}}
+                            <button type="submit" id="btn-confirmar" class="checkout-button" style="width: 100%;">
+                                Confirmar Compra
+                            </button>
 
                         <div id="paypal-button-container" style="display: none; width: 100%;"></div>
                         
@@ -188,208 +196,115 @@
 @endsection
 
 @push('scripts')
+{{-- SDK de PayPal --}}
+<script src="https://www.paypal.com/sdk/js?client-id={{ config('paypal.client_id') }}&currency=MXN&disable-funding=card"></script>
+
 <script>
-// Función para mostrar/ocultar el formulario de tarjeta
-function togglePaymentMethod(method) {
-    const cardForm = document.getElementById('card-form-container');
-    const paypalContainer = document.getElementById('paypal-button-container');
-    const confirmButton = document.getElementById('btn-confirmar');
-    
-    // Ocultar todo primero
-    if (cardForm) cardForm.style.display = 'none';
-    if (paypalContainer) paypalContainer.style.display = 'none';
-    if (confirmButton) confirmButton.style.display = 'block';
-    
-    // Mostrar según el método seleccionado
-    if (method === 'tarjeta') {
-        if (cardForm) {
-            cardForm.style.display = 'block';
-            
-            // Hacer campos obligatorios solo cuando se selecciona tarjeta
-            const cardFields = ['card_name', 'card_number', 'card_expiry', 'card_cvv'];
-            cardFields.forEach(fieldId => {
-                const field = document.getElementById(fieldId);
-                if (field) field.required = true;
-            });
+    // Hacer la función global explícitamente y agregar logs para depuración
+    window.togglePaymentMethod = function(metodo) {
+        console.log("Cambiando método de pago a:", metodo);
+        
+        const btnConfirmar = document.getElementById('btn-confirmar');
+        const paypalContainer = document.getElementById('paypal-button-container');
+        const cardContainer = document.getElementById('card-form-container');
+
+        // Resetear visibilidad general
+        cardContainer.style.display = 'none';
+        
+        if (metodo === 'paypal') {
+            console.log("Mostrando contenedor de PayPal");
+            btnConfirmar.style.display = 'none';
+            paypalContainer.style.display = 'block';
+        } else if (metodo === 'tarjeta') {
+            btnConfirmar.style.display = 'block';
+            paypalContainer.style.display = 'none';
+            cardContainer.style.display = 'block';
+        } else {
+            btnConfirmar.style.display = 'block';
+            paypalContainer.style.display = 'none';
         }
-    } else if (method === 'paypal') {
-        if (paypalContainer) paypalContainer.style.display = 'block';
-        if (confirmButton) confirmButton.style.display = 'none';
+    };
+
+    // Renderizar botón de PayPal con integración Server-Side
+    if (typeof paypal !== 'undefined') {
+        paypal.Buttons({
+            createOrder: function(data, actions) {
+                // Validación básica de formulario
+                const form = document.getElementById('checkout-form');
+                if (!form.reportValidity()) {
+                    return Promise.reject(new Error("Por favor completa todos los campos del formulario."));
+                }
+                
+                // Recolectar datos del formulario para enviar al backend
+                const formData = new FormData(form);
+                const payload = Object.fromEntries(formData.entries());
+
+                return fetch('/paypal/create-payment', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify(payload)
+                })
+                .then(function(res) {
+                    if (!res.ok) {
+                        return res.json().then(error => Promise.reject(error));
+                    }
+                    return res.json();
+                })
+                .then(function(orderData) {
+                    if (orderData.error) {
+                        return Promise.reject(new Error(orderData.message)); // Lanza error si el backend falló
+                    }
+                    return orderData.id; // Retorna el ID de la orden de PayPal
+                })
+                .catch(function(err) {
+                    console.error("Error creating order:", err);
+                    alert("No se pudo iniciar el pago: " + (err.message || "Revisa la consola"));
+                });
+            },
+            onApprove: function(data, actions) {
+                return fetch('/paypal/capture-payment', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify({
+                        orderId: data.orderID
+                    })
+                })
+                .then(function(res) {
+                    if (!res.ok) {
+                        return res.json().then(error => Promise.reject(error));
+                    }
+                    return res.json();
+                })
+                .then(function(details) {
+                    if (details.redirect_url) {
+                        window.location.href = details.redirect_url;
+                    } else {
+                        alert("Pago completado. Recargando...");
+                        window.location.reload();
+                    }
+                })
+                .catch(function(err) {
+                    console.error("Error capturing order:", err);
+                    alert("Error al procesar el pago: " + (err.message || "Intenta de nuevo"));
+                });
+            },
+            onError: function (err) {
+                console.error("PayPal onError:", err);
+                // No mostrar alert intrusivo por errores menores, pero loguear
+            }
+        }).render('#paypal-button-container');
     } else {
-        // Para otros métodos (efectivo, transferencia), los campos de tarjeta no son obligatorios
-        const cardFields = ['card_name', 'card_number', 'card_expiry', 'card_cvv'];
-        cardFields.forEach(fieldId => {
-            const field = document.getElementById(fieldId);
-            if (field) {
-                field.required = false;
-                field.value = ''; // Limpiar valores si se cambia de método
-            }
-        });
-    }
-}
-
-// Formatear número de tarjeta con espacios cada 4 dígitos
-function formatCardNumber(input) {
-    let value = input.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
-    let formatted = '';
-    
-    for (let i = 0; i < value.length; i++) {
-        if (i > 0 && i % 4 === 0) {
-            formatted += ' ';
-        }
-        formatted += value[i];
-    }
-    
-    input.value = formatted.substring(0, 19); // Máximo 16 dígitos + 3 espacios
-}
-
-// Formatear fecha de vencimiento (MM/AA)
-function formatExpiryDate(input) {
-    let value = input.value.replace(/\D/g, '');
-    
-    if (value.length >= 2) {
-        input.value = value.substring(0, 2) + '/' + value.substring(2, 4);
-    } else {
-        input.value = value;
-    }
-}
-
-// Validar fecha de vencimiento
-function validateExpiryDate(value) {
-    const regex = /^(0[1-9]|1[0-2])\/([0-9]{2})$/;
-    if (!regex.test(value)) return false;
-    
-    const [month, year] = value.split('/').map(Number);
-    const currentDate = new Date();
-    const currentYear = currentDate.getFullYear() % 100;
-    const currentMonth = currentDate.getMonth() + 1;
-    
-    // La tarjeta está vencida si el año es menor al actual
-    // O si es el mismo año pero el mes ya pasó
-    if (year < currentYear) return false;
-    if (year === currentYear && month < currentMonth) return false;
-    
-    return true;
-}
-
-// Validar formulario antes de enviar
-function validateCheckoutForm(event) {
-    const paymentMethod = document.getElementById('metodo_pago').value;
-    const cardForm = document.getElementById('card-form-container');
-    
-    // Si se seleccionó tarjeta, validar campos
-    if (paymentMethod === 'tarjeta') {
-        const cardFields = ['card_name', 'card_number', 'card_expiry', 'card_cvv'];
-        let isValid = true;
-        let errorMessage = '';
-        
-        // Validar cada campo
-        cardFields.forEach(fieldId => {
-            const field = document.getElementById(fieldId);
-            if (field && !field.value.trim()) {
-                isValid = false;
-                field.style.borderColor = '#ff4757';
-                errorMessage = 'Por favor, complete todos los datos de la tarjeta.';
-            } else if (field) {
-                field.style.borderColor = '';
-            }
-        });
-        
-        // Validar formato de número de tarjeta (debe tener al menos 13 dígitos)
-        const cardNumber = document.getElementById('card_number');
-        if (cardNumber && cardNumber.value) {
-            const cleanNumber = cardNumber.value.replace(/\s/g, '');
-            if (cleanNumber.length < 13 || cleanNumber.length > 16) {
-                isValid = false;
-                cardNumber.style.borderColor = '#ff4757';
-                errorMessage = 'El número de tarjeta debe tener entre 13 y 16 dígitos.';
-            }
-        }
-        
-        // Validar formato de fecha (MM/AA) y que no esté vencida
-        const expiryField = document.getElementById('card_expiry');
-        if (expiryField && expiryField.value) {
-            if (!validateExpiryDate(expiryField.value)) {
-                isValid = false;
-                expiryField.style.borderColor = '#ff4757';
-                errorMessage = 'Fecha de vencimiento inválida o tarjeta vencida. Use MM/AA (ej: 12/25)';
-            }
-        }
-        
-        // Validar CVV (3 o 4 dígitos)
-        const cvvField = document.getElementById('card_cvv');
-        if (cvvField && cvvField.value) {
-            const cvvRegex = /^\d{3,4}$/;
-            if (!cvvRegex.test(cvvField.value)) {
-                isValid = false;
-                cvvField.style.borderColor = '#ff4757';
-                errorMessage = 'El CVV debe tener 3 o 4 dígitos.';
-            }
-        }
-        
-        if (!isValid) {
-            event.preventDefault();
-            if (errorMessage) {
-                alert(errorMessage);
-            }
-            return false;
+        console.error("PayPal SDK no cargó. Verifica tu CLIENT_ID en el .env");
+        const container = document.getElementById('paypal-button-container');
+        if (container) {
+            container.innerHTML = '<div style="color:red; padding:10px; border:1px solid red; background:#fff0f0; border-radius:5px;">Error: No se pudo cargar PayPal. Verifica la configuración.</div>';
         }
     }
-    
-    return true;
-}
-
-// Inicializar eventos cuando el DOM esté cargado
-document.addEventListener('DOMContentLoaded', function() {
-    // Evento para el select de método de pago
-    const paymentSelect = document.getElementById('metodo_pago');
-    if (paymentSelect) {
-        paymentSelect.addEventListener('change', function() {
-            togglePaymentMethod(this.value);
-        });
-        
-        // Si ya hay un valor seleccionado (por ejemplo, al recargar la página)
-        if (paymentSelect.value) {
-            togglePaymentMethod(paymentSelect.value);
-        }
-    }
-    
-    // Eventos para formatear campos de tarjeta
-    const cardNumberInput = document.getElementById('card_number');
-    if (cardNumberInput) {
-        cardNumberInput.addEventListener('input', function() {
-            formatCardNumber(this);
-        });
-    }
-    
-    const expiryInput = document.getElementById('card_expiry');
-    if (expiryInput) {
-        expiryInput.addEventListener('input', function() {
-            formatExpiryDate(this);
-        });
-    }
-    
-    // Solo permitir números en CVV
-    const cvvInput = document.getElementById('card_cvv');
-    if (cvvInput) {
-        cvvInput.addEventListener('input', function() {
-            this.value = this.value.replace(/\D/g, '').substring(0, 4);
-        });
-    }
-    
-    // Solo permitir letras y espacios en nombre del titular
-    const cardNameInput = document.getElementById('card_name');
-    if (cardNameInput) {
-        cardNameInput.addEventListener('input', function() {
-            this.value = this.value.replace(/[^A-Za-zñÑ\s]/g, '');
-        });
-    }
-    
-    // Validar formulario al enviar
-    const checkoutForm = document.getElementById('checkout-form');
-    if (checkoutForm) {
-        checkoutForm.addEventListener('submit', validateCheckoutForm);
-    }
-});
 </script>
 @endpush

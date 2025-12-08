@@ -190,8 +190,7 @@
 @if(!empty($peticion->respuesta_admin) && $peticion->precio_propuesto && $peticion->respuesta_cliente === 'pendiente')
     @push('scripts')
     <script src="https://www.paypal.com/sdk/js?client-id={{ config('paypal.client_id') }}&currency=MXN&disable-funding=card"></script>
-    <script src="{{ asset('js/cliente/peticion-pago.js') }}"></script>
-    <script src="{{ asset('js/cliente/peticion-paypal-init.js') }}"></script>
+    @vite('resources/js/cliente/peticion-pago.js')
     <script>
         window.initPeticionPayPalConfig({
             peticionId: {{ $peticion->id_peticion }},

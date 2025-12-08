@@ -12,7 +12,8 @@ use App\Http\Controllers\Admin\{
     PeticionController,
     PromocionController,
     CarruselController,
-    FaqController
+    FaqController,
+    PagoController
 };
 use App\Http\Controllers\Cliente\{
     CarritoController,
@@ -44,8 +45,7 @@ Route::middleware(['web', 'track-user-activity'])->group(function () {
     Route::post('/login', [LoginController::class, 'procesarLogin'])->name('login.procesar');
     Route::get('/registro', [LoginController::class, 'mostrarRegistro'])->name('registro.form');
     Route::post('/registro', [LoginController::class, 'procesarRegistro'])->name('registro.guardar');
-    Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
-
+    Route::match(['get', 'post'], '/logout', [LoginController::class, 'logout'])->name('logout');
 
     /*
     |--------------------------------------------------------------------------
@@ -65,6 +65,11 @@ Route::middleware(['web', 'track-user-activity'])->group(function () {
     // Webhook de PayPal (sin CSRF y sin auth)
     Route::post('/paypal/webhook', [PayPalController::class, 'webhook'])
         ->name('paypal.webhook')
+        ->withoutMiddleware([ValidateCsrfToken::class]);
+
+    // Webhook de Stripe (sin CSRF y sin auth)
+    Route::post('/stripe/webhook', [PagoController::class, 'handleStripeWebhook'])
+        ->name('stripe.webhook')
         ->withoutMiddleware([ValidateCsrfToken::class]);
 
     /*
@@ -100,13 +105,17 @@ Route::middleware(['web', 'track-user-activity'])->group(function () {
         Route::get('/{pedido}', [ClientePedidoController::class, 'show'])->name('show');
     });
 
+
     /*
     |--------------------------------------------------------------------------
-    | PayPal
+    | Pagos (PayPal y Stripe)
     |--------------------------------------------------------------------------
     */
     Route::middleware('auth')->group(function () {
-        // Pago de carrito
+        // Stripe
+        Route::post('/stripe/payment-intent', [PagoController::class, 'createStripePaymentIntent'])->name('stripe.payment-intent');
+
+        // PayPal
         Route::post('/paypal/create-payment', [PayPalController::class, 'createPayment']);
         Route::post('/paypal/capture-payment', [PayPalController::class, 'capturePayment']);
         Route::get('/paypal/return', [PayPalController::class, 'handleReturn']);
@@ -125,6 +134,7 @@ Route::middleware(['web', 'track-user-activity'])->group(function () {
     */
     Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+        Route::get('/dashboard/stats', [AdminController::class, 'dashboardStats'])->name('dashboard.stats');
 
         // Toggle del tema (modo oscuro) - VERSIÓN CON COOKIES
         Route::post('/theme/toggle', function (Request $request) {

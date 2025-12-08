@@ -22,4 +22,12 @@ class RegisterRequest extends FormRequest
             'direccion' => 'nullable|string',
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
+            'password.confirmed' => 'La confirmación de la contraseña no coincide.',
+        ];
+    }
 }

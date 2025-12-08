@@ -122,16 +122,126 @@ class PayPalController extends Controller
         }
     }
 
+    /**
+     * Lógica centralizada para crear el pedido local tras validación de pago
+     */
+    private function createLocalOrder($user, $carrito, $monto, $data, $captureId, $captureStatus)
+    {
+        return DB::transaction(function () use ($user, $carrito, $monto, $data, $captureId, $captureStatus) {
+            $pedido = Pedido::create([
+                'id_usuario' => $user->id_usuario,
+                'invoice_id' => $data['invoice_id'] ?? null,
+                'total' => $monto,
+                'estado' => 'procesando',
+                'calle' => $data['calle'] ?? '',
+                'colonia' => $data['colonia'] ?? '',
+                'municipio_ciudad' => $data['municipio_ciudad'] ?? '',
+                'codigo_postal' => $data['codigo_postal'] ?? '',
+                'estado_direccion' => $data['estado'] ?? '',
+                'metodo_pago' => 'paypal',
+                'fecha_pedido' => now(),
+            ]);
+
+            foreach ($carrito->detalles as $detalle) {
+                // Crear detalle del pedido
+                PedidoDetalle::create([
+                    'id_pedido' => $pedido->id_pedido,
+                    'id_producto' => $detalle->id_producto,
+                    'cantidad' => $detalle->cantidad,
+                    'precio_unitario' => $detalle->producto->precio,
+                ]);
+                
+                // Reducir stock del producto
+                $producto = Producto::lockForUpdate()->find($detalle->id_producto);
+                if ($producto) {
+                    $producto->decrement('stock', $detalle->cantidad);
+                    Log::info('Stock reducido', [
+                        'producto_id' => $producto->id_producto,
+                        'cantidad' => $detalle->cantidad,
+                        'stock_anterior' => $producto->stock + $detalle->cantidad,
+                        'stock_nuevo' => $producto->stock
+                    ]);
+                }
+            }
+
+            Pago::create([
+                'id_pedido' => $pedido->id_pedido,
+                'metodo' => 'paypal',
+                'monto' => $monto,
+                'referencia' => $captureId,
+                'estado' => $captureStatus,
+            ]);
+
+            $carrito->detalles()->delete();
+
+            return $pedido;
+        });
+    }
+
     public function capturePayment(Request $request)
     {
         $validated = $request->validate([
             'orderId' => 'required|string'
         ]);
+        $orderId = $validated['orderId'];
 
         try {
-            $response = $this->paypal->captureOrder($validated['orderId']);
-            return response()->json($response->result);
+            $capture = $this->paypal->captureOrder($orderId);
+            
+            // Validaciones básicas del resultado
+            $status = $capture->result->status ?? null;
+            if ($status !== 'COMPLETED') {
+                 return response()->json(['error' => true, 'message' => 'El pago no se completó (Status: '.$status.')'], 422);
+            }
+
+            $user = Auth::user();
+            $carrito = Carrito::firstOrCreate(['id_usuario' => $user->id_usuario]);
+            $carrito->load('detalles.producto');
+
+            if ($carrito->detalles->isEmpty()) {
+                 return response()->json(['error' => true, 'message' => 'El carrito está vacío.'], 422);
+            }
+
+            // Validar stock
+            $stockValidation = $this->validateStock($carrito);
+            if (!$stockValidation['valid']) {
+                 return response()->json([
+                     'error' => true, 
+                     'message' => 'Stock insuficiente: ' . implode(', ', $stockValidation['errors'])
+                 ], 422);
+            }
+
+            $total = $carrito->detalles->sum(function ($d) {
+                return $d->cantidad * $d->producto->precio;
+            });
+            $monto = number_format($total, 2, '.', '');
+            
+            // Recuperar datos de sesión guardados en createPayment
+            $data = session('checkout.paypal', []);
+
+            $captures = $capture->result->purchase_units[0]->payments->captures ?? [];
+            $captureId = $captures[0]->id ?? null;
+            $captureStatus = $this->mapPayPalStatus($captures[0]->status ?? 'COMPLETED');
+
+            // Verificar duplicados
+            $pagoExistente = Pago::where('referencia', $captureId)->first();
+            if ($pagoExistente) {
+                 return response()->json(['error' => true, 'message' => 'Pago ya registrado anteriormente.'], 422);
+            }
+
+            // CREAR ORDEN LOCAL
+            $pedido = $this->createLocalOrder($user, $carrito, $monto, $data, $captureId, $captureStatus);
+
+            session()->forget('checkout.paypal');
+            
+            // Retornamos URL de éxito para que el JS redirija
+            return response()->json([
+                'status' => 'COMPLETED',
+                'redirect_url' => route('cliente.pedidos.show', $pedido->id_pedido)
+            ]);
+
         } catch (\Throwable $e) {
+            Log::error('PayPal capturePayment error', ['message' => $e->getMessage()]);
             return response()->json(['error' => true, 'message' => $e->getMessage()], 422);
         }
     }
@@ -158,14 +268,8 @@ class PayPalController extends Controller
                 return redirect()->route('carrito.checkout')->with('error', 'El carrito está vacío.');
             }
 
-            // Validar stock nuevamente antes de capturar (por si cambió mientras el usuario estaba en PayPal)
             $stockValidation = $this->validateStock($carrito);
             if (!$stockValidation['valid']) {
-                Log::error('Stock insuficiente al capturar pago', [
-                    'user_id' => $user->id_usuario,
-                    'order_id' => $orderId,
-                    'errors' => $stockValidation['errors']
-                ]);
                 return redirect()->route('carrito.checkout')
                     ->with('error', 'Stock insuficiente: ' . implode(', ', $stockValidation['errors']));
             }
@@ -181,7 +285,6 @@ class PayPalController extends Controller
             $captureId = $captures[0]->id ?? null;
             $captureStatus = $this->mapPayPalStatus($captures[0]->status ?? 'COMPLETED');
 
-            // Verificar si ya existe un pago con esta referencia para evitar duplicados
             $pagoExistente = Pago::where('referencia', $captureId)->first();
             if ($pagoExistente) {
                 $pedido = Pedido::find($pagoExistente->id_pedido);
@@ -194,55 +297,8 @@ class PayPalController extends Controller
                 }
             } 
 
-            $pedido = DB::transaction(function () use ($user, $carrito, $monto, $data, $captureId, $captureStatus) {
-                $pedido = Pedido::create([
-                    'id_usuario' => $user->id_usuario,
-                    'invoice_id' => $data['invoice_id'] ?? null,
-                    'total' => $monto,
-                    'estado' => 'procesando',
-                    'calle' => $data['calle'] ?? '',
-                    'colonia' => $data['colonia'] ?? '',
-                    'municipio_ciudad' => $data['municipio_ciudad'] ?? '',
-                    'codigo_postal' => $data['codigo_postal'] ?? '',
-                    'estado_direccion' => $data['estado'] ?? '',
-                    'metodo_pago' => 'paypal',
-                    'fecha_pedido' => now(),
-                ]);
-
-                foreach ($carrito->detalles as $detalle) {
-                    // Crear detalle del pedido
-                    PedidoDetalle::create([
-                        'id_pedido' => $pedido->id_pedido,
-                        'id_producto' => $detalle->id_producto,
-                        'cantidad' => $detalle->cantidad,
-                        'precio_unitario' => $detalle->producto->precio,
-                    ]);
-                    
-                    // Reducir stock del producto
-                    $producto = Producto::lockForUpdate()->find($detalle->id_producto);
-                    if ($producto) {
-                        $producto->decrement('stock', $detalle->cantidad);
-                        Log::info('Stock reducido', [
-                            'producto_id' => $producto->id_producto,
-                            'cantidad' => $detalle->cantidad,
-                            'stock_anterior' => $producto->stock + $detalle->cantidad,
-                            'stock_nuevo' => $producto->stock
-                        ]);
-                    }
-                }
-
-                Pago::create([
-                    'id_pedido' => $pedido->id_pedido,
-                    'metodo' => 'paypal',
-                    'monto' => $monto,
-                    'referencia' => $captureId,
-                    'estado' => $captureStatus,
-                ]);
-
-                $carrito->detalles()->delete();
-
-                return $pedido;
-            });
+            // USO DEL MÉTODO COMPARTIDO
+            $pedido = $this->createLocalOrder($user, $carrito, $monto, $data, $captureId, $captureStatus);
 
             session()->forget('checkout.paypal');
 

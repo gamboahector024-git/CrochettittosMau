@@ -5,7 +5,7 @@
 @section('content')
 
 {{-- Vinculamos el CSS externo --}}
-<link rel="stylesheet" href="{{ asset('css/faq.css') }}">
+@vite('resources/css/faq.css')
 
 <div class="faq-section">
     <div class="faq-container-width">

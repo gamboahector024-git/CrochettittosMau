@@ -84,7 +84,7 @@
                                 </div>
                                 <div>
                                     <div style="font-weight: 700; color: var(--text-dark); font-size: 1rem;">{{ $producto->nombre }}</div>
-                                    <small style="color: var(--text-muted);">ID: #{{ $producto->id }}</small>
+                                    <small style="color: var(--text-muted);">ID: #{{ $producto->id_producto }}</small>
                                 </div>
                             </div>
                         </td>

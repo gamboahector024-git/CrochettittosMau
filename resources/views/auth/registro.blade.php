@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crear una Cuenta - Crochettittos</title>
     
-    <link rel="stylesheet" href="{{ asset('css/registro.css') }}?v=11">
+    @vite('resources/css/registro.css')
+
 </head>
 <body>
 
@@ -20,12 +21,7 @@
 
         @if ($errors->any())
             <div class="error-message">
-                <strong>¡Ups! Algo salió mal.</strong>
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
+                <strong>¡Ups! Algo salió mal al crear tu cuenta.</strong>
             </div>
         @endif
         

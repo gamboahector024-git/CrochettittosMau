@@ -8,6 +8,8 @@ use App\Models\Producto;
 use App\Models\Pedido;
 use App\Models\PedidoDetalle;
 use App\Models\CarritoDetalle;
+use App\Models\Pago;
+use Stripe\StripeClient;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -231,18 +233,37 @@ class CarritoController extends Controller
             return $detalle->cantidad * $detalle->producto->precio;
         });
 
+        // Validar pago con Stripe ANTES de crear el pedido
+        if ($request->metodo_pago === 'stripe') {
+            if (!$request->stripe_payment_id) {
+                return redirect()->back()->with('error', 'Error: No se recibió la confirmación del pago de Stripe.');
+            }
+
+            try {
+                $stripe = new StripeClient(config('services.stripe.secret'));
+                $paymentIntent = $stripe->paymentIntents->retrieve($request->stripe_payment_id);
+
+                if ($paymentIntent->status !== 'succeeded') {
+                    return redirect()->back()->with('error', 'Error: El pago no se completó correctamente.');
+                }
+            } catch (\Exception $e) {
+                Log::error('Error validando Stripe payment: ' . $e->getMessage());
+                return redirect()->back()->with('error', 'Error al validar el pago: ' . $e->getMessage());
+            }
+        }
+
         // Crear el pedido
         $pedido = Pedido::create([
             'id_usuario' => $user->id_usuario,
             'total' => $total,
-            'estado' => 'pendiente',
+            'estado' => ($request->metodo_pago === 'stripe' || ($request->metodo_pago === 'paypal' && $request->paypal_order_id)) ? 'procesando' : 'pendiente',
             'calle' => $request->calle,
             'colonia' => $request->colonia,
             'municipio_ciudad' => $request->municipio_ciudad,
             'codigo_postal' => $request->codigo_postal,
             'estado_direccion' => $request->estado,
             'metodo_pago' => $request->metodo_pago,
-            'fecha_pedido' => now() // Asegura que sea DateTime
+            'fecha_pedido' => now()
         ]);
 
         // Crear detalles del pedido
@@ -252,6 +273,37 @@ class CarritoController extends Controller
                 'id_producto' => $detalle->id_producto,
                 'cantidad' => $detalle->cantidad,
                 'precio_unitario' => $detalle->producto->precio
+            ]);
+        }
+
+        // Registrar pago Stripe
+        if ($request->metodo_pago === 'stripe' && isset($paymentIntent)) {
+            Pago::create([
+                'id_pedido' => $pedido->id_pedido,
+                'metodo' => 'tarjeta',
+                'monto' => $paymentIntent->amount / 100,
+                'referencia' => $paymentIntent->id,
+                'estado' => 'completado'
+            ]);
+
+            // Actualizar metadata en Stripe
+            try {
+                $stripe->paymentIntents->update($paymentIntent->id, [
+                    'metadata' => ['pedido_id' => $pedido->id_pedido]
+                ]);
+            } catch (\Exception $e) {
+                Log::warning('No se pudo actualizar metadata en Stripe: ' . $e->getMessage());
+            }
+        }
+
+        // Registrar pago PayPal (si viene ID)
+        if ($request->metodo_pago === 'paypal' && $request->paypal_order_id) {
+             Pago::create([
+                'id_pedido' => $pedido->id_pedido,
+                'metodo' => 'paypal',
+                'monto' => $total,
+                'referencia' => $request->paypal_order_id,
+                'estado' => 'completado'
             ]);
         }
 

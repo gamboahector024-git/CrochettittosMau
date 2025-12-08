@@ -182,5 +182,5 @@
 @endsection
 
 @push('scripts')
-<script src="{{ asset('js/cliente/carrito.js') }}"></script>
+    @vite('resources/js/cliente/carrito.js')
 @endpush

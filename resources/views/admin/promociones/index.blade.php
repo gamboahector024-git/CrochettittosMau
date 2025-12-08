@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+﻿@extends('layouts.admin')
 
 @section('title', 'Promociones')
 
@@ -16,9 +16,9 @@
             <div class="form-group" style="margin-bottom: 0;">
                 <label for="filtro-promociones" style="display:inline-block; margin-right: 10px;">Ver:</label>
                 <select id="filtro-promociones" onchange="filtrarPromociones()" class="form-control" style="width: auto; display: inline-block; min-width: 200px;">
-                    <option value="todos" {{ $filtro === 'todos' ? 'selected' : '' }}>📂 Todos los productos</option>
-                    <option value="con_promocion" {{ $filtro === 'con_promocion' ? 'selected' : '' }}>🏷️ Con promoción</option>
-                    <option value="sin_promocion" {{ $filtro === 'sin_promocion' ? 'selected' : '' }}>❌ Sin promoción</option>
+                    <option value="todos" {{ $filtro === 'todos' ? 'selected' : '' }}> Todos los productos</option>
+                    <option value="con_promocion" {{ $filtro === 'con_promocion' ? 'selected' : '' }}> Con promoción</option>
+                    <option value="sin_promocion" {{ $filtro === 'sin_promocion' ? 'selected' : '' }}> Sin promoción</option>
                 </select>
             </div>
             
@@ -80,7 +80,7 @@
                                     {{ optional($ultima->fecha_inicio)->format('d/m/Y') }} - {{ optional($ultima->fecha_fin)->format('d/m/Y') }}
                                 </small>
                             @else
-                                <span style="color: var(--text-muted); font-style: italic;">—</span>
+                                <span style="color: var(--text-muted); font-style: italic;"></span>
                             @endif
                         </td>
 
@@ -105,24 +105,24 @@
                                 @if($ultima)
                                     {{-- Editar --}}
                                     <a href="{{ route('admin.promociones.edit', $ultima) }}" class="btn-icon" title="Editar">
-                                        ✏️
+                                        
                                     </a>
 
                                     {{-- Toggle Activar/Desactivar --}}
                                     <form action="{{ route('admin.promociones.toggle-status', $ultima) }}" method="POST">
                                         @csrf
                                         <button type="submit" class="btn-icon" title="{{ $ultima->activa ? 'Desactivar' : 'Activar' }}" style="color: {{ $ultima->activa ? '#f59e0b' : '#10b981' }};">
-                                            {{ $ultima->activa ? '⏸️' : '▶️' }}
+                                            {{ $ultima->activa ? '' : '' }}
                                         </button>
                                     </form>
 
                                     {{-- Eliminar --}}
-                                    <form action="{{ route('admin.promociones.destroy', $ultima) }}" method="POST" onsubmit="return confirm('¿Eliminar esta promoción?');">
+                                    <form action="{{ route('admin.promociones.destroy', $ultima) }}" method="POST" onsubmit="return confirm('Eliminar esta promoción?');">
                                         @csrf
                                         @method('DELETE')
                                         <input type="hidden" name="filtro" value="{{ $filtro }}">
                                         <button type="submit" class="btn-icon delete" title="Eliminar">
-                                            🗑️
+                                            
                                         </button>
                                     </form>
                                 @else
@@ -156,7 +156,7 @@
     </form>
 @endsection
 
-@section('scripts')
-{{-- Asegúrate de que tu JS maneje la selección de checkboxes y muestre el botón bulk-delete-btn --}}
-<script src="{{ asset('js/admin/promociones.js') }}?v=1"></script>
-@endsection
+@push('scripts')
+    {{-- Asegúrate de que tu JS maneje la selección de checkboxes y muestre el botón bulk-delete-btn --}}
+    @vite('resources/js/admin/promociones.js')
+@endpush

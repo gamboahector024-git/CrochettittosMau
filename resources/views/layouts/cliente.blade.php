@@ -5,12 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Crochettittos')</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="route-carrito-store" content="{{ route('carrito.store') }}">
     
-    {{-- Estilos CSS --}}
-    <link rel="stylesheet" href="{{ asset('css/tienda.css') }}?v=16">
+    {{-- Estilos y JS con Vite --}}
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    {{-- Font Awesome (se puede mantener o instalar vía npm) --}}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="{{ asset('css/loading.css') }}">
-    @stack('styles')
 </head>
 <body>
     {{-- PANTALLA DE CARGA (LOADER) --}}
@@ -319,16 +320,9 @@
         </div>
     </div>
 
-    {{-- SCRIPTS --}}
-    <script src="{{ asset('js/main.js') }}?v=15"></script>
-    <script src="{{ asset('js/cliente/peticion-modal.js') }}"></script>
-
-    <script>
-        window.addEventListener('load', function() {
-            document.getElementById('loading-overlay').style.display = 'none';
-        });
-    </script>
-
+    {{-- Los scripts principales ya se cargan con Vite --}}
+    {{-- Si tienes scripts específicos de una página, puedes usar @push('scripts') --}}
+    
     @stack('scripts')
 </body>
 </html>

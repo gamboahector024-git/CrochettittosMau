@@ -150,7 +150,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     // Crear formulario temporal para enviar
                     const form = document.createElement('form');
                     form.method = 'POST';
-                    form.action = '{{ route("carrito.store") }}';
+                    const carritoRouteMeta = document.querySelector('meta[name="route-carrito-store"]');
+                    form.action = carritoRouteMeta ? carritoRouteMeta.getAttribute('content') : '/carrito/agregar';
                     
                     const tokenInput = document.createElement('input');
                     tokenInput.type = 'hidden';
@@ -194,38 +195,63 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('Add to cart form found:', !!addToCartForm);
     console.log('Buy buttons found:', buyButtons.length);
 
+    // ==============================
+    // Modal de peticiones personalizadas
+    // ==============================
+
+    const btns = document.querySelectorAll('#newPeticionButton'); 
+    const peticionModal = document.getElementById('peticionModal');
+    const closePeticionModalBtn = document.getElementById('closePeticionModal');
+    const cancelPeticionBtn = document.getElementById('cancelPeticion');
+
+    function openPeticionModal(e) {
+        e.preventDefault();
+        if(peticionModal) { 
+            peticionModal.style.display = 'flex'; 
+        }
+    }
+
+    function closePeticionModal() {
+        if(peticionModal) { 
+            peticionModal.style.display = 'none'; 
+        }
+    }
+
+    // Abrir modal
+    if (btns.length > 0 && peticionModal) {
+        btns.forEach(function(btn) {
+            btn.addEventListener('click', openPeticionModal);
+        });
+    }
+
+    // Cerrar modal
+    if (closePeticionModalBtn) { 
+        closePeticionModalBtn.addEventListener('click', closePeticionModal); 
+    }
+    if (cancelPeticionBtn) { 
+        cancelPeticionBtn.addEventListener('click', closePeticionModal); 
+    }
+
+    // Cerrar al hacer clic fuera del modal
+    window.addEventListener('click', function (e) {
+        if (e.target === peticionModal) { 
+            closePeticionModal(); 
+        }
+        
+        // También manejar el modal de login si existe
+        if (e.target === loginModal) { 
+            loginModal.style.display = 'none'; 
+        }
+    });
 });
-document.addEventListener('DOMContentLoaded', function() {
-    
-    const menuBtn = document.getElementById('mobile-menu-btn');
-    const navMenu = document.getElementById('nav-menu');
 
-    if (menuBtn && navMenu) {
-        menuBtn.addEventListener('click', function(e) {
-            e.stopPropagation();
-            navMenu.classList.toggle('active');
-            
-            // Cambiar icono
-            const icon = menuBtn.querySelector('i');
-            if (navMenu.classList.contains('active')) {
-                icon.classList.remove('fa-bars');
-                icon.classList.add('fa-times');
-            } else {
-                icon.classList.remove('fa-times');
-                icon.classList.add('fa-bars');
-            }
-        });
+// ==============================
+// Ocultar overlay de carga al terminar de cargar
+// ==============================
 
-        // Cerrar al dar clic fuera
-        document.addEventListener('click', function(e) {
-            if (!navMenu.contains(e.target) && !menuBtn.contains(e.target)) {
-                navMenu.classList.remove('active');
-                const icon = menuBtn.querySelector('i');
-                if(icon) {
-                    icon.classList.remove('fa-times');
-                    icon.classList.add('fa-bars');
-                }
-            }
-        });
+window.addEventListener('load', () => {
+    const overlay = document.getElementById('loading-overlay');
+    if (overlay) {
+        overlay.style.display = 'none';
     }
 });

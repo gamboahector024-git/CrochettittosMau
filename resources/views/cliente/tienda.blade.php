@@ -178,5 +178,5 @@
 @endsection
 
 @push('scripts')
-<script src="{{ asset('js/cliente/tienda-carousel.js') }}"></script>
+    @vite('resources/js/cliente/tienda-carousel.js')
 @endpush
