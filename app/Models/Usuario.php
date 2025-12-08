@@ -50,6 +50,11 @@ class Usuario extends Authenticatable
         return $this->hasMany(Pedido::class, 'id_usuario', 'id_usuario');
     }
 
+    public function getAuthPassword()
+    {
+        return $this->password_hash;
+    }
+
     // Estado activo sin depender de columnas específicas
     public function isActive(): bool
     {

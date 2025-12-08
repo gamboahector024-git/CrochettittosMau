@@ -3,12 +3,13 @@
 @section('title', 'Tienda - Crochettittos')
 
 @section('content')
+
 <div class="container">
     <div class="welcome-message">
         <h2>¡Bienvenido a Crochettittos! 🧶</h2>
         <p>
             En nuestra tienda encontrarás un universo de creaciones tejidas con amor y dedicación.
-            Desde llaveros adorables y flores únicas, hasta piezas personalizadas para ti o tus seres queridos.  
+            Desde llaveros adorables y flores únicas, hasta piezas personalizadas para ti o tus seres queridos.
             Aquí hay un poquito de todo... pero siempre hecho con mucho corazón 💖.
         </p>
     </div>
@@ -28,106 +29,90 @@
         <div class="carousel-dots"></div>
     </section>
     
-    {{-- (Bloque de mensajes flash eliminado correctamente) --}}
-
+    {{-- Buscador Principal --}}
     <div class="search-container">
         <form action="{{ route('tienda') }}" method="GET">
+            {{-- Mantenemos los filtros actuales al buscar --}}
+            @foreach(request('categorias', []) as $cat)
+                <input type="hidden" name="categorias[]" value="{{ $cat }}">
+            @endforeach
+            <input type="hidden" name="precio_min" value="{{ request('precio_min') }}">
+            <input type="hidden" name="precio_max" value="{{ request('precio_max') }}">
+
             <input type="text" name="busqueda" placeholder="Buscar productos..." value="{{ request('busqueda') }}">
             <button type="submit">Buscar</button>
         </form>
     </div>
 
     <div class="shop-layout">
+        {{-- =============================================== --}}
+        {{-- ============ SIDEBAR DE FILTROS ================ --}}
+        {{-- =============================================== --}}
         <aside class="filters-sidebar">
             <h3>Filtrar por</h3>
 
-            <form action="{{ route('tienda') }}" method="GET">
+            <form action="{{ route('tienda') }}" method="GET" id="filterForm">
+                {{-- Mantenemos la búsqueda si existe --}}
+                @if(request('busqueda'))
+                    <input type="hidden" name="busqueda" value="{{ request('busqueda') }}">
+                @endif
+
+                {{-- FILTRO DE CATEGORÍAS (Multi-selección) --}}
                 <div class="filter-group">
                     <h4>Categorías</h4>
-                    @foreach($categorias as $categoria)
-                        <label>
-                            <input type="checkbox" name="categoria" value="{{ $categoria->nombre }}"
-                                {{ request('categoria') == $categoria->nombre ? 'checked' : '' }}>
-                            {{ $categoria->nombre }}
-                        </label>
-                    @endforeach
-                </div>
-
-                <div class="filter-group">
-                    <h4>Rango de precios</h4>
-                    <div class="price-range">
-                        <input type="number" name="precio_min" placeholder="Mínimo" value="{{ request('precio_min') }}">
-                        <span>a</span>
-                        <input type="number" name="precio_max" placeholder="Máximo" value="{{ request('precio_max') }}">
+                    <div class="checkbox-list">
+                        @foreach($categorias as $categoria)
+                            <label class="custom-checkbox">
+                                <input type="checkbox" name="categorias[]" value="{{ $categoria->nombre }}"
+                                    {{ in_array($categoria->nombre, request('categorias', [])) ? 'checked' : '' }}>
+                                <span class="checkmark-box"></span>
+                                <span class="label-text">{{ $categoria->nombre }}</span>
+                            </label>
+                        @endforeach
                     </div>
                 </div>
 
-                {{-- =============================================== --}}
-                {{-- ====== RESTAURACIÓN DEL DISEÑO ORIGINAL ====== --}}
-                {{-- =============================================== --}}
-                
+                {{-- FILTRO DE PRECIO --}}
+                <div class="filter-group">
+                    <h4>Rango de precios</h4>
+                    <div class="price-inputs">
+                        <div class="input-wrapper">
+                            <span class="currency-symbol">$</span>
+                            <input type="number" name="precio_min" placeholder="Min" 
+                                   value="{{ request('precio_min') }}" min="0">
+                        </div>
+                        <span class="separator">-</span>
+                        <div class="input-wrapper">
+                            <span class="currency-symbol">$</span>
+                            <input type="number" name="precio_max" placeholder="Max" 
+                                   value="{{ request('precio_max') }}" min="0">
+                        </div>
+                    </div>
+                </div>
+
+                {{-- ORDENAR POR --}}
                 <div class="filter-group">
                     <h4>Ordenar por</h4>
-                    
-                    {{-- Opción Más Recientes --}}
-                    <label class="filter-option">
-                        <input type="radio" name="orden" value="recientes" 
-                            {{ request('orden') == 'recientes' || !request('orden') ? 'checked' : '' }}>
-                        <span>Más Recientes</span>
-                        @if(request('orden') == 'recientes' || !request('orden'))
-                            <span class="checkmark">✔</span>
-                        @endif
-                    </label>
-                    
-                    {{-- Opción Precio: Menor a Mayor --}}
-                    <label class="filter-option">
-                        <input type="radio" name="orden" value="precio_asc"
-                            {{ request('orden') == 'precio_asc' ? 'checked' : '' }}>
-                        <span>Precio: Menor a Mayor</span>
-                        @if(request('orden') == 'precio_asc')
-                            <span class="checkmark">✔</span>
-                        @endif
-                    </label>
-                    
-                    {{-- Opción Precio: Mayor a Menor --}}
-                    <label class="filter-option">
-                        <input type="radio" name="orden" value="precio_desc"
-                            {{ request('orden') == 'precio_desc' ? 'checked' : '' }}>
-                        <span>Precio: Mayor a Menor</span>
-                        @if(request('orden') == 'precio_desc')
-                            <span class="checkmark">✔</span>
-                        @endif
-                    </label>
-                    
-                    {{-- Opción Nombre: A-Z --}}
-                    <label class="filter-option">
-                        <input type="radio" name="orden" value="nombre_asc"
-                            {{ request('orden') == 'nombre_asc' ? 'checked' : '' }}>
-                        <span>Nombre: A-Z</span>
-                        @if(request('orden') == 'nombre_asc')
-                            <span class="checkmark">✔</span>
-                        @endif
-                    </label>
-                    
-                    {{-- Opción Nombre: Z-A --}}
-                    <label class="filter-option">
-                        <input type="radio" name="orden" value="nombre_desc"
-                            {{ request('orden') == 'nombre_desc' ? 'checked' : '' }}>
-                        <span>Nombre: Z-A</span>
-                        @if(request('orden') == 'nombre_desc')
-                            <span class="checkmark">✔</span>
-                        @endif
-                    </label>
+                    <select name="orden" class="styled-select" onchange="document.getElementById('filterForm').submit()">
+                        <option value="recientes" {{ request('orden') == 'recientes' ? 'selected' : '' }}>Más Recientes</option>
+                        <option value="precio_asc" {{ request('orden') == 'precio_asc' ? 'selected' : '' }}>Precio: Menor a Mayor</option>
+                        <option value="precio_desc" {{ request('orden') == 'precio_desc' ? 'selected' : '' }}>Precio: Mayor a Menor</option>
+                        <option value="nombre_asc" {{ request('orden') == 'nombre_asc' ? 'selected' : '' }}>Nombre: A-Z</option>
+                        <option value="nombre_desc" {{ request('orden') == 'nombre_desc' ? 'selected' : '' }}>Nombre: Z-A</option>
+                    </select>
                 </div>
-                
-                {{-- =============================================== --}}
-                {{-- ========= FIN DE LA RESTAURACIÓN ============= --}}
-                {{-- =============================================== --}}
 
-                <button type="submit" class="apply-filters">Aplicar Filtros</button>
+                <button type="submit" class="apply-filters-btn">Aplicar Filtros</button>
+                
+                @if(request()->hasAny(['categorias', 'precio_min', 'precio_max', 'busqueda']))
+                    <a href="{{ route('tienda') }}" class="clear-filters">Limpiar todos los filtros</a>
+                @endif
             </form>
         </aside>
 
+        {{-- =============================================== --}}
+        {{-- ============ GRILLA DE PRODUCTOS =============== --}}
+        {{-- =============================================== --}}
         <main class="products-grid">
             @if($productos->count())
                 @foreach($productos as $producto)
@@ -181,91 +166,17 @@
                     </div>
                 @endforeach
             @else
-                <p class="no-products">No se encontraron productos con los filtros seleccionados.</p>
+                {{-- Mensaje Empty State --}}
+                <div class="no-products" style="grid-column: 1 / -1; text-align: center; padding: 40px;">
+                    <h3 style="color: #888;">No encontramos coincidencias 🧶</h3>
+                    <p>Intenta ajustar tus filtros o buscar con otra palabra.</p>
+                </div>
             @endif
         </main>
     </div>
 </div>
 @endsection
 
-{{-- JAVASCRIPT EXCLUSIVO PARA ESTA PÁGINA (EL CARRUSEL) --}}
 @push('scripts')
-<script>
-    // Espera a que el DOM esté cargado
-    document.addEventListener('DOMContentLoaded', () => {
-        const carouselTrack = document.querySelector('.carousel-track');
-        
-        if (carouselTrack) {
-            const slides = Array.from(carouselTrack.children);
-            const dotsContainer = document.querySelector('.carousel-dots');
-            let slideIndex = 0;
-            let intervalId;
-
-            if (slides.length === 0) return;
-            
-            slides.forEach(slide => {
-                carouselTrack.appendChild(slide.cloneNode(true));
-            });
-
-            function goToSlide(index, smooth = true) {
-                const slides = Array.from(carouselTrack.children);
-                if (slides.length === 0 || !slides[0]) return;
-                const currentSlideWidth = slides[0].getBoundingClientRect().width;
-                if (!smooth) carouselTrack.style.transition = 'none';
-                carouselTrack.style.transform = `translateX(-${index * currentSlideWidth}px)`;
-                if (!smooth) {
-                    carouselTrack.offsetHeight; 
-                    carouselTrack.style.transition = 'transform 0.8s ease-in-out';
-                }
-                
-                let activeDotIndex = index % (slides.length / 2);
-                dots.forEach(dot => dot.classList.remove('active'));
-                if (dots[activeDotIndex]) {
-                    dots[activeDotIndex].classList.add('active');
-                }
-            }
-
-            function autoSlide() {
-                const slides = Array.from(carouselTrack.children);
-                const totalSlides = slides.length / 2;
-                
-                slideIndex++;
-                goToSlide(slideIndex);
-
-                if (slideIndex >= totalSlides) {
-                    setTimeout(() => {
-                        slideIndex = 0;
-                        goToSlide(slideIndex, false);
-                    }, 800); 
-                }
-            }
-            
-            const dots = [];
-            const originalSlidesCount = slides.length;
-            for(let i = 0; i < originalSlidesCount; i++) {
-                const dot = document.createElement('span');
-                dot.classList.add('dot');
-                if (i === 0) dot.classList.add('active');
-                dot.addEventListener('click', () => {
-                    slideIndex = i;
-                    goToSlide(slideIndex);
-                    resetAutoSlide();
-                });
-                dotsContainer.appendChild(dot);
-                dots.push(dot);
-            }
-
-            intervalId = setInterval(autoSlide, 5000); 
-
-            function resetAutoSlide() {
-                clearInterval(intervalId);
-                intervalId = setInterval(autoSlide, 5000);
-            }
-
-            window.addEventListener('resize', () => {
-                goToSlide(slideIndex, false);
-            });
-        }
-    });
-</script>
+<script src="{{ asset('js/cliente/tienda-carousel.js') }}"></script>
 @endpush
