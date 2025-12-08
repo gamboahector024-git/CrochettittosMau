@@ -19,6 +19,7 @@ return Application::configure(basePath: dirname(__DIR__))
          // Registrar alias de middleware
          $middleware->alias([
              'admin' => \App\Http\Middleware\VerificarAdmin::class,
+             'redirect.if.guest' => \App\Http\Middleware\RedirectIfGuest::class,
          ]);
 
          // --- 2. AÑADE ESTA LÍNEA AQUÍ ---

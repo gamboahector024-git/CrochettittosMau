@@ -114,26 +114,7 @@
         </form>
     </div>
 
-    {{-- Script simple para previsualizar la imagen al seleccionarla --}}
-    <script>
-        function previewImage(input) {
-            const preview = document.getElementById('imagePreview');
-            const placeholder = document.getElementById('uploadPlaceholder');
-            
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                
-                reader.onload = function(e) {
-                    preview.src = e.target.result;
-                    preview.style.display = 'block'; // Mostrar imagen
-                    placeholder.style.opacity = '0'; // Ocultar texto
-                }
-                
-                reader.readAsDataURL(input.files[0]);
-            } else {
-                preview.style.display = 'none';
-                placeholder.style.opacity = '1';
-            }
-        }
-    </script>
+@push('scripts')
+@vite('resources/js/admin/productos.js')
+@endpush
 @endsection

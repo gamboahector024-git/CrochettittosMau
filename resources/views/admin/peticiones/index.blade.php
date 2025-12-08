@@ -138,13 +138,7 @@
         {{ $peticiones->links() }}
     </div>
 
-    {{-- Script simple para "Seleccionar todos" --}}
-    <script>
-        document.getElementById('select-all').addEventListener('change', function() {
-            var checkboxes = document.querySelectorAll('.row-checkbox');
-            for (var checkbox of checkboxes) {
-                checkbox.checked = this.checked;
-            }
-        });
-    </script>
+@push('scripts')
+@vite('resources/js/admin/util.js')
+@endpush
 @endsection

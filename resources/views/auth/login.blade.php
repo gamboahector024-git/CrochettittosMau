@@ -13,10 +13,6 @@
     <header class="site-header">
         <nav class="navbar">
             <h1><a href="{{ url('/') }}">Crochettittos</a></h1>
-
-            <div class="nav-auth">
-                <a href="{{ route('registro.form') }}" class="nav-button nav-button-pastel-primary">Registrarse</a>
-            </div>
         </nav>
     </header>
 
@@ -26,6 +22,15 @@
         @if(session('success'))
             <div class="success-message">
                 {{ session('success') }}
+            </div>
+        @endif
+
+        @if(session('warning'))
+            <div class="alert alert-warning">
+                {{ session('warning') }}
+                <div class="mt-2">
+                    ¿No tienes cuenta? <a href="{{ route('registro.form') }}" class="font-bold">Regístrate aquí</a>
+                </div>
             </div>
         @endif
 

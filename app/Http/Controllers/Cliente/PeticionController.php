@@ -8,6 +8,9 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use App\Models\Peticion;
+use App\Models\Pedido;
+use App\Models\Pago;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\NuevaPeticion;
@@ -52,6 +55,21 @@ class PeticionController extends Controller
         }
 
         try {
+            // Evitar que se duplique la misma petición si el usuario envía
+            // el formulario dos veces muy rápido con los mismos datos.
+            $existing = Peticion::where('id_usuario', $user->id_usuario)
+                ->where('titulo', $data['titulo'])
+                ->where('descripcion', $data['descripcion'])
+                ->where('estado', 'en revisión')
+                ->where('created_at', '>=', now()->subMinutes(1))
+                ->first();
+
+            if ($existing) {
+                return redirect()
+                    ->route('cliente.peticiones.index')
+                    ->with('success', 'Ya habías enviado una petición igual recientemente. Revisa tu lista de peticiones.');
+            }
+
             $peticion = Peticion::create($data);
 
             // Notificar por correo a los administradores
@@ -146,5 +164,80 @@ class PeticionController extends Controller
 
         Session::flash('success', 'Has rechazado la propuesta. Puedes crear una nueva petición si lo deseas.');
         return redirect()->route('cliente.peticiones.index');
+    }
+
+    /**
+     * Simular pago con tarjeta para una petición aceptada por el cliente.
+     */
+    public function pagarTarjeta(Request $request, Peticion $peticion)
+    {
+        $user = Auth::user();
+
+        // Verificar que la petición pertenece al usuario
+        if ($peticion->id_usuario !== $user->id_usuario) {
+            abort(403);
+        }
+
+        // Verificar que hay una propuesta del admin y que el cliente aún no ha respondido
+        if (!$peticion->precio_propuesto || !$peticion->respuesta_admin || $peticion->respuesta_cliente !== 'pendiente') {
+            return back()->with('error', 'La petición no está disponible para pago.');
+        }
+
+        $request->validate([
+            'card_name'   => 'required|string|max:255',
+            'card_number' => 'required|string|min:13|max:19',
+            'card_expiry' => 'required|string|max:5',
+            'card_cvv'    => 'required|string|min:3|max:4',
+        ]);
+
+        try {
+            $monto = (float) $peticion->precio_propuesto;
+
+            $pedido = DB::transaction(function () use ($user, $peticion, $monto) {
+                // Crear pedido vinculado a la petición
+                $pedido = Pedido::create([
+                    'id_usuario'        => $user->id_usuario,
+                    'id_peticion'       => $peticion->id_peticion,
+                    'invoice_id'        => 'CARD-PET-' . $peticion->id_peticion . '-' . Str::uuid()->toString(),
+                    'total'             => $monto,
+                    'estado'            => 'procesando',
+                    'calle'             => $peticion->calle,
+                    'colonia'           => $peticion->colonia,
+                    'municipio_ciudad'  => $peticion->municipio_ciudad,
+                    'codigo_postal'     => $peticion->codigo_postal,
+                    'estado_direccion'  => $peticion->estado_direccion,
+                    'metodo_pago'       => 'tarjeta',
+                    'fecha_pedido'      => now(),
+                ]);
+
+                // Registrar pago simulado con tarjeta
+                Pago::create([
+                    'id_pedido'  => $pedido->id_pedido,
+                    'metodo'     => 'tarjeta',
+                    'monto'      => $monto,
+                    'referencia' => 'CARD-' . $pedido->id_pedido,
+                    'estado'     => 'completado',
+                ]);
+
+                // Actualizar petición: cliente aceptó y se completó
+                $peticion->update([
+                    'respuesta_cliente'       => 'aceptada',
+                    'fecha_respuesta_cliente' => now(),
+                    'estado'                  => 'completada',
+                ]);
+
+                return $pedido;
+            });
+
+            return redirect()->route('cliente.pedidos.show', $pedido->id_pedido)
+                ->with('success', 'Pago con tarjeta registrado. Tu pedido personalizado está en proceso.');
+        } catch (\Throwable $e) {
+            Log::error('Error en pago con tarjeta de petición: ' . $e->getMessage(), [
+                'peticion_id' => $peticion->id_peticion ?? null,
+                'user_id'     => $user->id_usuario ?? null,
+            ]);
+
+            return back()->with('error', 'Ocurrió un error al procesar el pago. Intenta de nuevo.');
+        }
     }
 }

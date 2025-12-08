@@ -190,6 +190,7 @@
                 <form action="{{ route('carrito.store') }}" method="POST" class="modal-form">
                     @csrf
                     <input type="hidden" name="id_producto" id="modalProductId">
+                    <div id="modal-cart-message" class="modal-cart-message" style="display: none;"></div>
                     <button type="submit" class="add-to-cart-button">
                         <i class="fas fa-shopping-cart"></i> Agregar al Carrito
                     </button>

@@ -121,24 +121,7 @@
         </form>
     </div>
 
-    {{-- Script JS para actualizar la vista previa al seleccionar archivo --}}
-    <script>
-        function previewImage(input) {
-            const preview = document.getElementById('imagePreview');
-            const placeholder = document.getElementById('uploadPlaceholder');
-            
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                
-                reader.onload = function(e) {
-                    preview.src = e.target.result;
-                    preview.style.display = 'block';
-                    placeholder.style.opacity = '0';
-                }
-                
-                reader.readAsDataURL(input.files[0]);
-            }
-            // Nota: Si cancelan la selección, mantenemos la imagen que ya estaba (o la vacía)
-        }
-    </script>
+@push('scripts')
+@vite('resources/js/admin/productos.js')
+@endpush
 @endsection

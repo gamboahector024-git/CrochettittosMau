@@ -33,9 +33,13 @@ class LoginController extends Controller
             auth('web')->login($usuario);
 
             // Redirige según rol
-            return $usuario->rol === 'admin'
-                ? redirect()->route('admin.dashboard')
-                : redirect()->route('tienda');
+            if ($usuario->rol === 'admin') {
+                return redirect()->route('admin.dashboard');
+            }
+
+            // Para clientes: regresar a la URL que intentaban visitar (carrito/checkout),
+            // o a la tienda si no hay una URL previa guardada
+            return redirect()->intended(route('tienda'));
         }
 
         return back()->with('error', 'Email o contraseña incorrectos.');

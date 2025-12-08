@@ -22,6 +22,11 @@
         @if ($errors->any())
             <div class="error-message">
                 <strong>¡Ups! Algo salió mal al crear tu cuenta.</strong>
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
             </div>
         @endif
         

@@ -93,6 +93,8 @@ Route::middleware(['web', 'track-user-activity'])->group(function () {
         Route::get('/', [ClientePeticionController::class, 'index'])->name('index');
         Route::get('/{peticion}', [ClientePeticionController::class, 'show'])->name('show');
         Route::post('/{peticion}/rechazar', [ClientePeticionController::class, 'rechazar'])->name('rechazar');
+        Route::post('/{peticion}/pagar-tarjeta', [ClientePeticionController::class, 'pagarTarjeta'])->name('pagarTarjeta');
+        Route::delete('/{peticion}', [ClientePeticionController::class, 'destroy'])->name('destroy');
     });
 
     /*

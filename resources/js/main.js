@@ -9,6 +9,12 @@ document.addEventListener('DOMContentLoaded', () => {
     window.openModal = function (productId, name, price, description, imageUrl, categoryName, originalPrice, discountBadgeText) {
         if (!productModal) return;
 
+        // Ocultar el mensaje de error/login al abrir el modal
+        const messageDiv = document.getElementById('modal-cart-message');
+        if (messageDiv) {
+            messageDiv.style.display = 'none';
+        }
+
         // Asignar valores a los elementos del modal
         document.getElementById("modalProductId").value = productId;
         document.getElementById("modalName").textContent = name;
@@ -95,6 +101,19 @@ document.addEventListener('DOMContentLoaded', () => {
     
     if (addToCartForm) {
         addToCartForm.addEventListener('submit', function(e) {
+            // Detectar si el usuario está autenticado (hay un elemento con clase .user-menu-group)
+            const isGuest = !document.querySelector('.user-menu-group');
+            if (isGuest) {
+                e.preventDefault();
+                const messageDiv = document.getElementById('modal-cart-message');
+                if (messageDiv) {
+                    messageDiv.innerHTML = `Necesitas <a href="/login">iniciar sesión</a> o <a href="/registro">registrarte</a> para comprar.`;
+                    messageDiv.style.display = 'block';
+                }
+                return false;
+            }
+
+            // Si está autenticado, sigue la lógica normal
             e.preventDefault();
             
             const productoId = document.getElementById('modalProductId').value;
@@ -230,6 +249,26 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (cancelPeticionBtn) { 
         cancelPeticionBtn.addEventListener('click', closePeticionModal); 
+    }
+
+    // Evitar envío doble del formulario de peticiones personalizadas
+    if (peticionModal) {
+        const peticionForm = peticionModal.querySelector('form');
+        if (peticionForm) {
+            let peticionSubmitting = false;
+            peticionForm.addEventListener('submit', function (e) {
+                if (peticionSubmitting) {
+                    e.preventDefault();
+                    return;
+                }
+                peticionSubmitting = true;
+
+                const submitBtn = peticionForm.querySelector('button[type="submit"]');
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                }
+            });
+        }
     }
 
     // Cerrar al hacer clic fuera del modal

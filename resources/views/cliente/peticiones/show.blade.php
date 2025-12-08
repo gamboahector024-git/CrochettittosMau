@@ -97,14 +97,94 @@
                             @if($peticion->respuesta_cliente === 'pendiente')
                                 <div class="peticion-response-actions">
                                     <h5 class="peticion-response-title">¿Qué deseas hacer?</h5>
-                                    
-                                    <div class="peticion-paypal-container">
+
+                                    {{-- Selector de método de pago --}}
+                                    <div class="form-group">
+                                        <label for="peticion_metodo_pago">Selecciona cómo deseas pagar</label>
+                                        <div class="select-wrapper">
+                                            <select class="form-input" id="peticion_metodo_pago" name="peticion_metodo_pago">
+                                                <option value="">-- Seleccione una opción --</option>
+                                                <option value="tarjeta">💳 Tarjeta de Crédito / Débito</option>
+                                                <option value="paypal">🅿️ PayPal</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    {{-- Formulario de tarjeta similar al checkout --}}
+                                    <form action="{{ route('cliente.peticiones.pagarTarjeta', $peticion->id_peticion) }}" method="POST" id="peticion-card-form" style="display: none; margin-top: 1rem;">
+                                        @csrf
+                                        <div class="glass-card" style="padding: 1.5rem;">
+                                            <h4 class="card-form-title">
+                                                <i class="far fa-credit-card"></i> Datos de la Tarjeta
+                                            </h4>
+
+                                            <div class="form-group mb-3">
+                                                <label for="peticion_card_name">Nombre del Titular</label>
+                                                <div class="input-with-icon">
+                                                    <input type="text" class="form-input" id="peticion_card_name" name="card_name"
+                                                        placeholder="Ej: JUAN PEREZ GARCIA"
+                                                        pattern="[A-Za-zñÑ\s]+"
+                                                        title="Solo letras y espacios">
+                                                    <i class="fas fa-user input-icon-right"></i>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group mb-3">
+                                                <label for="peticion_card_number">Número de Tarjeta</label>
+                                                <div class="input-with-icon">
+                                                    <input type="text" class="form-input" id="peticion_card_number" name="card_number"
+                                                        placeholder="0000 0000 0000 0000"
+                                                        maxlength="19">
+                                                    <i class="fas fa-lock input-icon-right"></i>
+                                                </div>
+                                            </div>
+
+                                            <div class="checkout-form-grid">
+                                                <div class="form-group">
+                                                    <label for="peticion_card_expiry">Fecha de Vencimiento</label>
+                                                    <div class="input-with-icon">
+                                                        <input type="text" class="form-input" id="peticion_card_expiry" name="card_expiry"
+                                                            placeholder="MM/AA"
+                                                            maxlength="5">
+                                                        <i class="far fa-calendar-alt input-icon-right"></i>
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label for="peticion_card_cvv">Código de Seguridad</label>
+                                                    <div class="input-with-icon cvv-tooltip">
+                                                        <input type="text" class="form-input" id="peticion_card_cvv" name="card_cvv"
+                                                            placeholder="123"
+                                                            maxlength="4">
+                                                        <i class="fas fa-shield-alt input-icon-right"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="card-icons-row">
+                                                <i class="fab fa-cc-visa" title="Visa" style="color: #1A1F71;"></i>
+                                                <i class="fab fa-cc-mastercard" title="Mastercard" style="color: #EB001B;"></i>
+                                                <i class="fab fa-cc-amex" title="American Express" style="color: #006FCF;"></i>
+                                                <i class="fab fa-cc-discover" title="Discover" style="color: #FF6000;"></i>
+                                            </div>
+
+                                            <div style="text-align:center; margin-top:1rem;">
+                                                <button type="submit" class="peticion-button">
+                                                    <i class="fas fa-credit-card"></i>
+                                                    Pagar con Tarjeta
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+
+                                    {{-- Contenedor de PayPal (como antes) --}}
+                                    <div class="peticion-paypal-container" id="peticion-paypal-container" style="display:none; margin-top:1rem;">
                                         <div id="paypal-button-container"></div>
                                     </div>
                                     
                                     <form action="{{ route('cliente.peticiones.rechazar', $peticion->id_peticion) }}" method="POST" 
                                           onsubmit="return confirm('¿Estás seguro de rechazar esta propuesta?');"
-                                          style="text-align: center;">
+                                          style="text-align: center; margin-top:1.5rem;">
                                         @csrf
                                         <button type="submit" class="peticion-button-secondary">
                                             <i class="fas fa-times"></i>
@@ -189,17 +269,26 @@
 
 @if(!empty($peticion->respuesta_admin) && $peticion->precio_propuesto && $peticion->respuesta_cliente === 'pendiente')
     @push('scripts')
-    <script src="https://www.paypal.com/sdk/js?client-id={{ config('paypal.client_id') }}&currency=MXN&disable-funding=card"></script>
-    @vite('resources/js/cliente/peticion-pago.js')
-    <script>
-        window.initPeticionPayPalConfig({
-            peticionId: {{ $peticion->id_peticion }},
-            createUrl: '{{ route("paypal.peticion.create", $peticion->id_peticion) }}',
-            returnUrl: '{{ route("paypal.peticion.return") }}',
-            cancelUrl: '{{ route("paypal.peticion.cancel") }}',
-            csrfToken: '{{ csrf_token() }}'
-        });
-    </script>
+        <script src="https://www.paypal.com/sdk/js?client-id={{ config('paypal.client_id') }}&currency=MXN&disable-funding=card"></script>
+        @vite('resources/js/cliente/peticion-pago.js')
+        @vite('resources/js/cliente/peticion-show.js')
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                // Marcar como inicializado desde la vista
+                window.peticionConfigInitialized = true;
+                
+                // Inicializar página con configuración
+                if (window.initializePeticionShowPage) {
+                    window.initializePeticionShowPage({
+                        peticionId: {{ $peticion->id_peticion }},
+                        createUrl: '{{ route("paypal.peticion.create", $peticion->id_peticion) }}',
+                        returnUrl: '{{ route("paypal.peticion.return") }}',
+                        cancelUrl: '{{ route("paypal.peticion.cancel") }}',
+                        csrfToken: '{{ csrf_token() }}'
+                    });
+                }
+            });
+        </script>
     @endpush
 @endif
 @endsection

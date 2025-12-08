@@ -18,12 +18,21 @@ export default defineConfig({
                 'resources/js/cliente/tienda-carousel.js',
                 'resources/js/cliente/carrito.js',
                 'resources/js/cliente/peticion-pago.js',
+                'resources/js/cliente/peticion-show.js',
+                'resources/js/cliente/faq.js',
+                'resources/js/cliente/checkout.js',
 
                 // JS admin
                 'resources/js/admin/layout.js',
                 'resources/js/admin/promociones.js',
+                'resources/js/admin/tema-admin.js',
                 'resources/js/admin/theme.js',
-                // (si usas también admin/carrusel.js, admin/peticiones.js, podemos agregarlos después)
+                'resources/js/admin/image-preview.js',
+                'resources/js/admin/dashboard.js',
+                'resources/js/admin/peticiones.js',
+                'resources/js/admin/carrusel.js',
+                'resources/js/admin/productos.js',
+                'resources/js/admin/util.js'
             ],
             refresh: true,
         }),

@@ -104,22 +104,6 @@
     </div>
 </div>
 
-{{-- Script necesario para la previsualización (incluido en el partial para que siempre funcione) --}}
-<script>
-    function previewImage(input) {
-        const preview = document.getElementById('imagePreview');
-        const placeholder = document.getElementById('uploadPlaceholder');
-        
-        if (input.files && input.files[0]) {
-            const reader = new FileReader();
-            
-            reader.onload = function(e) {
-                preview.src = e.target.result;
-                preview.style.display = 'block';
-                placeholder.style.opacity = '0';
-            }
-            
-            reader.readAsDataURL(input.files[0]);
-        }
-    }
-</script>
+@push('scripts')
+@vite('resources/js/admin/productos.js')
+@endpush

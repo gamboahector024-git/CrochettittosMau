@@ -54,18 +54,31 @@
                             
                             <table border="0" cellpadding="0" cellspacing="0" width="100%">
                                 @foreach($productos as $detalle)
+                                    @php
+                                        $producto = $detalle->producto ?? null;
+                                    @endphp
+
+                                    @if(!$producto)
+                                        @continue
+                                    @endif
+
                                     <tr>
                                         <td style="padding: 15px 0; border-bottom: 1px dashed #EA9CAF;">
                                             <table border="0" cellpadding="0" cellspacing="0" width="100%">
                                                 <tr>
-                                                    <td width="80" style="padding-right: 15px;">
-                                                        <img src="{{ $message->embed(public_path($detalle->producto->imagen_url ?? 'img/placeholder.png')) }}" 
-                                                             alt="Producto" width="80" height="80" 
-                                                             style="border-radius: 12px; display: block; object-fit: cover; border: 1px solid #F3EEF1;">
-                                                    </td>
+                                                    @if($producto->imagen_url)
+                                                        <td width="80" style="padding-right: 15px;">
+                                                            @php
+                                                                $imagenPath = public_path($producto->imagen_url);
+                                                            @endphp
+                                                            <img src="{{ isset($message) ? $message->embed($imagenPath) : asset($producto->imagen_url) }}" 
+                                                                 alt="Producto" width="80" height="80" 
+                                                                 style="border-radius: 12px; display: block; object-fit: cover; border: 1px solid #F3EEF1;">
+                                                        </td>
+                                                    @endif
                                                     <td valign="middle">
                                                         <span style="display: block; font-size: 16px; color: #4A3A44; font-weight: 700; margin-bottom: 4px;">
-                                                            {{ $detalle->producto->nombre }}
+                                                            {{ $producto->nombre }}
                                                         </span>
                                                         <span style="font-size: 14px; color: #7A6A74;">
                                                             Cantidad: {{ $detalle->cantidad }}
@@ -73,7 +86,7 @@
                                                     </td>
                                                     <td align="right" valign="middle">
                                                         <span style="color: #D56989; font-weight: 700; font-size: 18px;">
-                                                            ${{ number_format($detalle->producto->precio, 2) }}
+                                                            ${{ number_format($producto->precio, 2) }}
                                                         </span>
                                                     </td>
                                                 </tr>

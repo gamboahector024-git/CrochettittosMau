@@ -49,13 +49,11 @@ class RecordatorioCarrito extends Command
                         continue;
                     }
 
-                    // Extraer productos desde los detalles del carrito (para la vista existente)
-                    $productos = $carrito->detalles->map(function ($detalle) {
-                        return $detalle->producto;
-                    });
+                    // Usar directamente los detalles del carrito para que la vista pueda acceder a $detalle->producto
+                    $detalles = $carrito->detalles;
 
                     // Enviar correo (sin colas para pruebas inmediatas)
-                    Mail::to($carrito->usuario->email)->send(new RecordatorioCarritoMail($carrito, $productos));
+                    Mail::to($carrito->usuario->email)->send(new RecordatorioCarritoMail($carrito, $detalles));
 
                     // Registrar momento del último recordatorio
                     $carrito->last_reminder_sent_at = now();

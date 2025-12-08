@@ -51,44 +51,5 @@
 @endsection
 
 @push('scripts')
-<script>
-    function toggleFaq(btn) {
-        const item = btn.closest('.faq-item');
-        const answer = item.querySelector('.faq-answer');
-        
-        // Alternar clase visual
-        item.classList.toggle('open');
-
-        // Calcular altura para animación suave (slide down)
-        if (item.classList.contains('open')) {
-            answer.style.maxHeight = answer.scrollHeight + "px";
-        } else {
-            answer.style.maxHeight = null;
-        }
-    }
-
-    function filterFaqs(cat, btnElement) {
-        // 1. Actualizar botones visualmente
-        if(btnElement) {
-            document.querySelectorAll('.faq-categories .btn').forEach(btn => btn.classList.remove('active'));
-            btnElement.classList.add('active');
-        }
-
-        // 2. Filtrar items
-        document.querySelectorAll('.faq-item').forEach(item => {
-            if (cat === 'all' || item.getAttribute('data-category') === cat) {
-                // Mostrar con animación de opacidad
-                item.classList.remove('hidden');
-                item.style.opacity = '0';
-                setTimeout(() => {
-                    item.style.opacity = '1';
-                    item.style.transform = 'translateY(0)';
-                }, 50);
-            } else {
-                // Ocultar
-                item.classList.add('hidden');
-            }
-        });
-    }
-</script>
+@vite('resources/js/cliente/faq.js')
 @endpush
