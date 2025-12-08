@@ -11,17 +11,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    {{-- CSS y JS principal usando Vite --}}
-    @vite([
-        'resources/css/admin.css',
-        'resources/js/admin/theme.js'
-    ])
-
+    {{-- CSS Principal --}}
+    <link rel="stylesheet" href="{{ asset('css/admin.css') }}?v={{ time() }}">
+    
     @stack('styles')
 </head>
 <body>
     
-    {{-- Botón Menú Móvil --}}
+    {{-- Botón Menú Móvil (Ahora visible/invisible por CSS) --}}
     <button class="mobile-menu-toggle" id="btn-toggle">
         <i class="fas fa-bars"></i>
     </button>
@@ -79,8 +76,9 @@
         @yield('content')
     </main>
 
-    {{-- Scripts adicionales por página --}}
+    {{-- Scripts: Aquí conectamos el JS externo --}}
+    <script src="{{ asset('js/admin/theme.js') }}"></script>
+    
     @stack('scripts')
-
 </body>
 </html>
