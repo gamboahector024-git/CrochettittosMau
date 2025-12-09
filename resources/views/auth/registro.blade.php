@@ -5,7 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crear una Cuenta - Crochettittos</title>
     
-    @vite('resources/css/registro.css')
+    @vite(['resources/css/registro.css', 'resources/js/auth/password-toggle.js'])
+
+    {{-- Font Awesome para los iconos --}}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 </head>
 <body>
@@ -46,11 +49,21 @@
             </div>
             <div class="form-group">
                 <label for="password">Contraseña:</label>
-                <input type="password" id="password" name="password" required>
+                <div class="password-field">
+                    <input type="password" id="password" name="password" required class="password-input">
+                    <button type="button" class="toggle-password-btn" data-target="password" title="Mostrar/Ocultar contraseña">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
             </div>
             <div class="form-group">
                 <label for="password_confirmation">Confirmar Contraseña:</label>
-                <input type="password" id="password_confirmation" name="password_confirmation" required>
+                <div class="password-field">
+                    <input type="password" id="password_confirmation" name="password_confirmation" required class="password-input">
+                    <button type="button" class="toggle-password-btn" data-target="password_confirmation" title="Mostrar/Ocultar contraseña">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
             </div>
             <div class="form-group">
                 <label for="telefono">Teléfono:</label>
@@ -70,7 +83,7 @@
     </div>
 
     <footer class="site-footer">
-        © 2025 Crochettittos. Todos los derechos reservados.
+        2025 Crochettittos. Todos los derechos reservados.
     </footer>
 
 </body>

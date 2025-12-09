@@ -69,7 +69,12 @@
             
             <div class="form-group">
                 <label for="password" style="font-size: 0.9em;">Contraseña</label>
-                <input type="password" name="password" id="password" class="form-control" {{ $isEdit ? '' : 'required' }}>
+                <div class="password-field">
+                    <input type="password" name="password" id="password" class="form-control password-input" {{ $isEdit ? '' : 'required' }}>
+                    <button type="button" class="toggle-password-btn" data-target="password" title="Mostrar/Ocultar contraseña">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
                 @if($isEdit)
                     <small style="color: var(--text-muted); font-style: italic; display:block; margin-top:5px;">
                         Déjalo vacío si no quieres cambiarla.
@@ -79,7 +84,12 @@
 
             <div class="form-group" style="margin-bottom: 0;">
                 <label for="password_confirmation" style="font-size: 0.9em;">Confirmar Contraseña</label>
-                <input type="password" name="password_confirmation" id="password_confirmation" class="form-control" {{ $isEdit ? '' : 'required' }}>
+                <div class="password-field">
+                    <input type="password" name="password_confirmation" id="password_confirmation" class="form-control password-input" {{ $isEdit ? '' : 'required' }}>
+                    <button type="button" class="toggle-password-btn" data-target="password_confirmation" title="Mostrar/Ocultar contraseña">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
             </div>
         </div>
     </div>

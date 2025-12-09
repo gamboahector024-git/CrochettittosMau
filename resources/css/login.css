@@ -306,3 +306,49 @@ body {
     font-size: 1.7rem;
   }
 }
+
+/* En resources/css/login.css */
+.password-field {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-field .password-input {
+    padding-right: 44px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.password-field .toggle-password-btn {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.92);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 999px;
+    width: 30px;
+    height: 30px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--text-muted, #6c757d);
+    padding: 0;
+    font-size: 0.95rem;
+    line-height: 1;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    transition: all 0.2s ease;
+}
+
+.password-field .toggle-password-btn:hover {
+    background: var(--accent-pink-soft, #EA9CAF);
+    color: #fff;
+    transform: translateY(-50%) translateY(-1px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+.password-field .toggle-password-btn i {
+    pointer-events: none;
+}

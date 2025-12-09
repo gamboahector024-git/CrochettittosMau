@@ -13,7 +13,7 @@ class AdminSeeder extends Seeder
         DB::table('usuarios')->insert([
             'nombre' => 'Administrador',
             'apellido' => 'Principal',
-            'email' => 'admin@correo.com',
+            'email' => 'bizagifpga69@gmail.com',
             'password_hash' => Hash::make('123'), // contraseña segura
             'direccion' => 'Oficina central',
             'telefono' => '555-1234',

@@ -60,8 +60,6 @@
                         {{-- Agregamos un evento onchange para mostrar/ocultar PayPal --}}
                         <select class="form-input" id="metodo_pago" name="metodo_pago" required onchange="togglePaymentMethod(this.value)">
                             <option value="">Seleccione un método</option>
-                            <option value="efectivo">Efectivo (Contra entrega)</option>
-                            <option value="transferencia">Transferencia Bancaria</option>
                             <option value="tarjeta">Tarjeta de Crédito/Débito</option>
                             <option value="paypal">PayPal</option>
                         </select>

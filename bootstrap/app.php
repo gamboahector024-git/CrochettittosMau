@@ -4,6 +4,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request; // <-- 1. AÑADE ESTA LÍNEA AL INICIO
+use App\Http\Middleware\RegistrarVisita;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -26,6 +27,11 @@ return Application::configure(basePath: dirname(__DIR__))
          // Esto le dice a Laravel que tu ruta de login se llama 'login.form'
          $middleware->redirectGuestsTo(fn (Request $request) => route('login.form'));
          // ---------------------------------
+
+         // Registrar middleware para contar visitas del sitio
+         $middleware->web(append: [
+             RegistrarVisita::class,
+         ]);
 
     })
     ->withExceptions(function (Exceptions $exceptions): void {

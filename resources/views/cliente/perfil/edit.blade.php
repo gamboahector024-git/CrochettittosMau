@@ -67,15 +67,25 @@
                 {{-- CAMPO: NUEVA CONTRASEÑA --}}
                 <div class="form-group">
                     <label for="password">Nueva Contraseña</label>
-                    <input type="password" id="password" name="password" class="form-input" 
-                           autocomplete="new-password">
+                    <div class="password-field">
+                        <input type="password" id="password" name="password" class="form-input password-input" 
+                               autocomplete="new-password">
+                        <button type="button" class="toggle-password-btn" data-target="password" title="Mostrar/Ocultar contraseña">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
                 </div>
 
                 {{-- CAMPO: CONFIRMAR CONTRASEÑA --}}
                 <div class="form-group">
                     <label for="password_confirmation">Confirmar Contraseña</label>
-                    <input type="password" id="password_confirmation" name="password_confirmation" 
-                           class="form-input">
+                    <div class="password-field">
+                        <input type="password" id="password_confirmation" name="password_confirmation" 
+                               class="form-input password-input">
+                        <button type="button" class="toggle-password-btn" data-target="password_confirmation" title="Mostrar/Ocultar contraseña">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -88,4 +98,5 @@
         </form>
     </div>
 </div>
+
 @endsection

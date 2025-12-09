@@ -119,10 +119,19 @@
                     
                     @php
                         $oferta = $producto->promocionActiva;
-                        $precioFinal = $producto->precio_promocional ?? $producto->precio;
-                        $precioOriginalNum = ($oferta) ? $producto->precio : null;
-                        $badge = null;
+                        $precioOriginalNum = $producto->precio;
 
+                        if ($oferta) {
+                            if ($oferta->tipo === 'porcentaje') {
+                                $precioFinal = max($precioOriginalNum * (1 - ($oferta->valor / 100)), 0);
+                            } else { // fijo
+                                $precioFinal = max($precioOriginalNum - $oferta->valor, 0);
+                            }
+                        } else {
+                            $precioFinal = $precioOriginalNum;
+                        }
+
+                        $badge = null;
                         if ($oferta) {
                             if ($oferta->tipo === 'porcentaje') {
                                 $badge = $oferta->valor . '% OFF';
@@ -156,9 +165,8 @@
                                 {{ json_encode($producto->descripcion ?? 'Sin descripción.') }},
                                 '{{ $producto->imagen_url ?? 'https://via.placeholder.com/250' }}',
                                 '{{ $producto->categoria->nombre ?? 'Sin categoría' }}',
-                                {{ $oferta ? 'true' : 'false' }},
-                                {{ $badge ? json_encode($badge) : 'null' }},
-                                {{ $precioOriginalNum ? "'".number_format($precioOriginalNum, 2)."'" : 'null' }}
+                                {{ $precioOriginalNum ? "'".number_format($precioOriginalNum, 2)."'" : 'null' }},
+                                {{ $badge ? json_encode($badge) : 'null' }}
                             )">
                                 Ver Detalles
                             </button>

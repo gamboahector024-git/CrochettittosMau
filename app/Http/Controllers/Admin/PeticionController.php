@@ -5,11 +5,13 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Peticion;
 use App\Models\Pedido;
+use App\Mail\PeticionPropuesta;
 use Illuminate\Http\Request;
 use App\Http\Requests\UpdatePeticionRequest;
 use App\Http\Requests\BulkStatusPeticionRequest;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class PeticionController extends Controller
 {
@@ -67,6 +69,21 @@ class PeticionController extends Controller
             'fecha_respuesta_admin' => now(),
             'estado' => 'aceptada' // Cambia a aceptada cuando el admin envía propuesta
         ]);
+
+        try {
+            $peticion->loadMissing('usuario');
+
+            if ($peticion->usuario && !empty($peticion->usuario->email)) {
+                Mail::to($peticion->usuario->email)
+                    ->send(new PeticionPropuesta($peticion));
+            }
+        } catch (\Throwable $e) {
+            Log::error('Error al enviar correo de propuesta de petición', [
+                'peticion_id' => $peticion->id_peticion ?? null,
+                'user_id' => $peticion->id_usuario ?? null,
+                'error' => $e->getMessage(),
+            ]);
+        }
 
         Session::flash('success', 'Propuesta enviada al cliente. Precio: $' . number_format($peticion->precio_propuesto, 2));
         return back();

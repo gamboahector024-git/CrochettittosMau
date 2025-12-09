@@ -5,7 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iniciar Sesión - Crochettittos</title>
     
-    @vite('resources/css/login.css')
+    @vite(['resources/css/login.css', 'resources/js/auth/password-toggle.js'])
+
+    {{-- Font Awesome para los iconos --}}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
 </head>
 <body>
@@ -59,7 +62,12 @@
             </div>
             <div class="form-group">
                 <label for="password">Contraseña:</label>
-                <input type="password" id="password" name="password" required>
+                <div class="password-field">
+                    <input type="password" id="password" name="password" required class="password-input">
+                    <button type="button" class="toggle-password-btn" data-target="password" title="Mostrar/Ocultar contraseña">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
             </div>
 
             <button type="submit" class="submit-btn">Iniciar Sesión</button>
@@ -71,7 +79,7 @@
     </div>
 
     <footer class="site-footer">
-        © 2025 Crochettittos. Todos los derechos reservados.
+        2025 Crochettittos. Todos los derechos reservados.
     </footer>
 
 </body>

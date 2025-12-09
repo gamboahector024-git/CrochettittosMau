@@ -13,7 +13,7 @@
 
     {{-- CSS Principal --}}
     
-    @vite(['resources/css/admin.css','resources/js/admin/theme.js','resources/js/admin/dashboard.js'])
+    @vite(['resources/css/admin.css','resources/js/admin/theme.js','resources/js/admin/dashboard.js','resources/js/admin/util.js'])
     
     @stack('styles')
 </head>
