@@ -37,7 +37,7 @@ class AdminController extends Controller
                     'id_producto' => $p->id_producto,
                     'nombre' => $p->nombre,
                     'stock' => $p->stock,
-                    'categoria' => $p->categoria instanceof \App\Models\Categoria ? $p->categoria->nome : 'N/A',
+                    'categoria' => optional($p->categoria)->nombre,
                 ];
             })->values(),
         ]);

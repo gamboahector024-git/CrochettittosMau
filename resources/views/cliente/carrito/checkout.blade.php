@@ -56,20 +56,23 @@
                     
                     {{-- Selector de Método --}}
                     <div class="form-group">
-                        <label for="metodo_pago">Selecciona cómo deseas pagar</label>
-                        <div class="select-wrapper">
-                            <select class="form-input" id="metodo_pago" name="metodo_pago" required>
-                                <option value="">-- Seleccione una opción --</option>
-                                <option value="efectivo">💵 Efectivo (Contra entrega)</option>
-                                <option value="transferencia">🏦 Transferencia Bancaria</option>
-                                <option value="tarjeta">💳 Tarjeta de Crédito / Débito</option>
-                                <option value="paypal">🅿️ PayPal</option>
-                            </select>
-                        </div>
+                        <label for="metodo_pago">Selecciona un método</label>
+                        {{-- Agregamos un evento onchange para mostrar/ocultar PayPal --}}
+                        <select class="form-input" id="metodo_pago" name="metodo_pago" required onchange="togglePaymentMethod(this.value)">
+                            <option value="">Seleccione un método</option>
+                            <option value="efectivo">Efectivo (Contra entrega)</option>
+                            <option value="transferencia">Transferencia Bancaria</option>
+                            <option value="tarjeta">Tarjeta de Crédito/Débito</option>
+                            <option value="paypal">PayPal</option>
+                        </select>
                     </div>
+                    
+                    {{-- Contenedor para tarjeta Stripe (si se usa) --}}
+                    {{-- <div id="stripe-container" style="display: none; margin-top: 1rem; padding: 1rem; background: #f8f9fa; border-radius: 8px; border: 1px solid #ddd;">...</div> --}}
 
                     {{-- FORMULARIO DE TARJETA (Oculto por defecto) --}}
-                    <div id="card-form-container" class="card-form-hidden">
+                    {{-- Nota: quitamos la clase 'card-form-hidden' de CSS si queremos controlarlo full con JS inline, o usamos la clase toggling --}}
+                    <div id="card-form-container" style="display: none; margin-top: 1.5rem;">
                         <h4 class="card-form-title">
                             <i class="far fa-credit-card"></i> Datos de la Tarjeta
                         </h4>
@@ -165,13 +168,18 @@
                             <span>Total a Pagar:</span>
                             <span>${{ number_format($total, 2) }}</span>
                         </div>
-                    </div>
 
-                    {{-- Acciones --}}
-                    <div class="form-actions" style="margin-top: 1.5rem;">
-                        <button type="submit" id="btn-confirmar" class="checkout-button full-width">
-                            Confirmar Compra <i class="fas fa-check"></i>
-                        </button>
+                        {{-- 
+                           AQUÍ ESTÁ LA SOLUCIÓN:
+                           1. Botón estándar para Efectivo/Transferencia/Tarjeta
+                           2. Contenedor de PayPal (oculto por defecto)
+                        --}}
+                        <div class="form-actions" style="margin-top: 1.5rem; flex-direction: column; width: 100%;">
+                            
+                            {{-- Botón normal (visible por defecto) --}}
+                            <button type="submit" id="btn-confirmar" class="checkout-button" style="width: 100%;">
+                                Confirmar Compra
+                            </button>
 
                         <div id="paypal-button-container" style="display: none; width: 100%;"></div>
                         
